@@ -3,5 +3,14 @@
 	"tradfriUser": "someuser",
 	"tradfriPSK": "abcdEfgHijklMnOP",
 	"tradfriGateway": "tradfri.fritz.box",
-	"serverPort": 8080
+	"serverPort": 8080,
+	"outlets": {
+		"0": {
+			"name": "Power outlet #0",
+			"0": 12345678,
+			"1": 87654321,
+			"protocol": 0,
+			"pulseLength": 100
+		}
+	}
 }
