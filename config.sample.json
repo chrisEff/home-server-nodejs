@@ -1,0 +1,7 @@
+{
+	"superSecretKey": "my-5up3r_53cr3t.KeY!!1",
+	"tradfriUser": "someuser",
+	"tradfriPSK": "abcdEfgHijklMnOP",
+	"tradfriGateway": "tradfri.fritz.box",
+	"serverPort": 8080
+}
