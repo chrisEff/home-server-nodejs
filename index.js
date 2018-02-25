@@ -38,28 +38,41 @@ server.get('/device/:id', (request, response, next) => {
 	next()
 })
 
-server.put('/device/:id', (request, response, next) => {
+function putDevice(id, body) {
 	let state;
-	if (request.body.hasOwnProperty('state')) {
-		state = request.body.state
+	if (body.hasOwnProperty('state')) {
+		state = body.state
 	} else {
-		const deviceInfo = tradfri.getDevice(request.params.id)
+		const deviceInfo = tradfri.getDevice(id)
 		state = deviceInfo[3311][0][5850];
 	}
 
-	if (request.body.hasOwnProperty('color')) {
-		tradfri.setDeviceColor(request.params.id, request.body.color)
+	if (body.hasOwnProperty('color')) {
+		tradfri.setDeviceColor(id, body.color)
 	}
 	
-	if (request.body.hasOwnProperty('brightness')) {
-		tradfri.setDeviceBrightness(request.params.id, request.body.brightness)
+	if (body.hasOwnProperty('brightness')) {
+		tradfri.setDeviceBrightness(id, body.brightness)
 	}
 	
 	// Changing the brightness will set the state to on,
 	// even if you explicitly want to set it to off or not change it at all.
 	// So we set the state last in order to revert any unwanted changes.
-	tradfri.setDeviceState(request.params.id, state)
-	
+	tradfri.setDeviceState(id, state)
+}
+
+server.put('/device', (request, response, next) => {
+	tradfri.getDeviceIds().forEach(id => {
+		putDevice(id, request.body)
+	})
+
+	response.end()
+	next()
+})
+
+server.put('/device/:id', (request, response, next) => {
+	putDevice(request.params.id, request.body)
+
 	response.end()
 	next()
 })
