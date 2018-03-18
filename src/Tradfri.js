@@ -1,20 +1,20 @@
-"use strict";
+'use strict'
 
 const execSync = require('child_process').execSync
 
 class Tradfri {
 	
-	constructor(user, psk, gateway) {
-		this.user = user;
-		this.psk = psk;
-		this.gateway = gateway;
+	constructor (user, psk, gateway) {
+		this.user    = user
+		this.psk     = psk
+		this.gateway = gateway
 		
 		this.colorTemperatures = {
 			warm:    'efd275',
 			neutral: 'f1e0b5',
 			cold:    'f5faf6',
 		}
-		this.colorTemperatures.kalt = this.colorTemperatures.cold;
+		this.colorTemperatures.kalt = this.colorTemperatures.cold
 		
 		this.colorsRGB = {
 			red: {
@@ -54,135 +54,135 @@ class Tradfri {
 				5710: 5879,
 			},
 		}
-		this.colorsRGB.rot   = this.colorsRGB.red;
-		this.colorsRGB.gruen = this.colorsRGB.green;
-		this.colorsRGB.blau  = this.colorsRGB.blue;
-		this.colorsRGB.gelb  = this.colorsRGB.yellow;
-		this.colorsRGB.rosa  = this.colorsRGB.pink;
-		this.colorsRGB.lila  = this.colorsRGB.purple;
+		this.colorsRGB.rot   = this.colorsRGB.red
+		this.colorsRGB.gruen = this.colorsRGB.green
+		this.colorsRGB.blau  = this.colorsRGB.blue
+		this.colorsRGB.gelb  = this.colorsRGB.yellow
+		this.colorsRGB.rosa  = this.colorsRGB.pink
+		this.colorsRGB.lila  = this.colorsRGB.purple
 	}
 	
 	
 	// devices
 
-	getDeviceIds() {
-		return this.request('get', `15001`);
+	getDeviceIds () {
+		return this.request('get', `15001`)
 	}
 	
-	getDevice(deviceId) {
-		return this.request('get', `15001/${deviceId}`);
+	getDevice (deviceId) {
+		return this.request('get', `15001/${deviceId}`)
 	}
 
-	getDevices() {
+	getDevices () {
 		const result = {}
 		this.getDeviceIds().forEach(id => {
 			result[id] = this.getDevice(id)
 		})
-		return result;
+		return result
 	}
 	
-	setDeviceState(id, state) {
-		return this.setState(`15001/${id}`, state);
+	setDeviceState (id, state) {
+		return this.setState(`15001/${id}`, state)
 	}
 	
-	setDeviceBrightness(id, brightness, transitionTime = null, timeUnit = 's') {
-		return this.setBrightness(`15001/${id}`, brightness, transitionTime, timeUnit);
+	setDeviceBrightness (id, brightness, transitionTime = null, timeUnit = 's') {
+		return this.setBrightness(`15001/${id}`, brightness, transitionTime, timeUnit)
 	}
 
-	setDeviceColor(id, color, transitionTime = null, timeUnit = 's') {
-		return this.setColor(`15001/${id}`, color, transitionTime, timeUnit);
+	setDeviceColor (id, color, transitionTime = null, timeUnit = 's') {
+		return this.setColor(`15001/${id}`, color, transitionTime, timeUnit)
 	}
 	
-	static sanitizeTransitionTime(value, unit) {
+	static sanitizeTransitionTime (value, unit) {
 		value = parseInt(value)
 		if (unit === 'm') {
-			return value * 600;
+			return value * 600
 		}
-		
+
 		// default unit: seconds
-		return value *= 10;
+		return value * 10
 	}
 	
 	
 	// groups
 	
-	getGroupIds() {
-		return this.request('get', `15004`);
+	getGroupIds () {
+		return this.request('get', `15004`)
 	}
 	
-	getGroup(id) {
-		return this.request('get', `15004/${id}`);
+	getGroup (id) {
+		return this.request('get', `15004/${id}`)
 	}
 
-	getGroups() {
+	getGroups () {
 		const result = {}
 		this.getGroupIds().forEach(id => {
 			result[id] = this.getGroup(id)
 		})
-		return result;
+		return result
 	}
 
-	setGroupState(id, state) {
-		return this.setState(`15004/${id}`, state);
+	setGroupState (id, state) {
+		return this.setState(`15004/${id}`, state)
 	}
 
-	setGroupBrightness(id, brightness, transitionTime = null, timeUnit = 's') {
-		return this.setBrightness(`15004/${id}`, brightness, transitionTime, timeUnit);
+	setGroupBrightness (id, brightness, transitionTime = null, timeUnit = 's') {
+		return this.setBrightness(`15004/${id}`, brightness, transitionTime, timeUnit)
 	}
 
-	setGroupColor(id, color, transitionTime = null, timeUnit = 's') {
-		return this.setColor(`15004/${id}`, color, transitionTime, timeUnit);
+	setGroupColor (id, color, transitionTime = null, timeUnit = 's') {
+		return this.setColor(`15004/${id}`, color, transitionTime, timeUnit)
 	}
 	
 	
 	// schedules
 	
-	getScheduleIds() {
-		return this.request('get', `15010`);
+	getScheduleIds () {
+		return this.request('get', `15010`)
 	}
 
-	getSchedule(id) {
-		return this.request('get', `15010/${id}`);
+	getSchedule (id) {
+		return this.request('get', `15010/${id}`)
 	}
 
-	getSchedules() {
+	getSchedules () {
 		const result = {}
 		this.getScheduleIds().forEach(id => {
 			result[id] = this.getSchedule(id)
 		})
-		return result;
+		return result
 	}
 	
 	
 	// general
 
-	setState(path, state) {
+	setState (path, state) {
 		return this.request('put', path, JSON.stringify({
 			3311: [{
-				5850: parseInt(state)
-			}]
-		}));
+				5850: parseInt(state),
+			}],
+		}))
 	}
 
-	setBrightness(path, brightness, transitionTime = null, timeUnit = 's') {
+	setBrightness (path, brightness, transitionTime = null, timeUnit = 's') {
 		const body = {
 			3311: [{
-				5851: parseInt(brightness)
-			}]
+				5851: parseInt(brightness),
+			}],
 		}
 		if (transitionTime) {
 			body[3311][0][5712] = Tradfri.sanitizeTransitionTime(transitionTime, timeUnit)
 		}
-		return this.request('put', path, JSON.stringify(body));
+		return this.request('put', path, JSON.stringify(body))
 	}
 
-	setColor(path, color, transitionTime = null, timeUnit = 's') {
+	setColor (path, color, transitionTime = null, timeUnit = 's') {
 		color = color
 			.replace('ä', 'ae')
 			.replace('ö', 'oe')
 			.replace('ü', 'ue')
 
-		let body = {3311: []};
+		let body = {3311: []}
 		if (this.colorTemperatures[color]) {
 			body[3311][0] = {5706: this.colorTemperatures[color]}
 		} else if (this.colorsRGB[color]) {
@@ -197,24 +197,25 @@ class Tradfri {
 			body[3311][0][5712] = Tradfri.sanitizeTransitionTime(transitionTime, timeUnit)
 		}
 
-		return this.request('put', path, JSON.stringify(body));
+		return this.request('put', path, JSON.stringify(body))
 	}
 	
-	request(method, path, body = null) {
+	request (method, path, body = null) {
 		console.log('body:', body)
-		body = body ? `-e '${body}'` : '';
+		body = body ? `-e '${body}'` : ''
 
-		const command = `coap-client -m ${method} -u "${this.user}" -k "${this.psk}" ${body} "coaps://${this.gateway}:5684/${path}"`;
-		const lines = execSync(command).toString().split('\n');
+		const command = `coap-client -m ${method} -u "${this.user}" -k "${this.psk}" ${body} "coaps://${this.gateway}:5684/${path}"`
+		const lines = execSync(command).toString().split('\n')
 
 		for (let i in lines) {
 			if (lines[i].startsWith('{') || lines[i].startsWith('[')) {
-				return JSON.parse(lines[i]);
+				return JSON.parse(lines[i])
 			}
 		}
 
-		return 'OK';
+		return 'OK'
 	}
+
 }
 
 module.exports = Tradfri

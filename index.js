@@ -1,4 +1,4 @@
-"use strict";
+'use strict'
 
 const restify = require('restify')
 const errors = require('restify-errors')
@@ -13,7 +13,7 @@ const server = restify.createServer()
 const tradfri = new Tradfri(config.tradfri.user, config.tradfri.psk, config.tradfri.gateway)
 
 server.pre(restify.plugins.queryParser())
-server.pre(function(request, response, next) {
+server.pre((request, response, next) => {
 	if (request.query.key !== config.superSecretKey) {
 		return next(new errors.UnauthorizedError('nope!'))
 	}
@@ -38,13 +38,13 @@ server.get('/device/:id', (request, response, next) => {
 	next()
 })
 
-function putDevice(id, body) {
-	let state;
+function putDevice (id, body) {
+	let state
 	if (body.hasOwnProperty('state')) {
 		state = body.state
 	} else {
 		const deviceInfo = tradfri.getDevice(id)
-		state = deviceInfo[3311][0][5850];
+		state = deviceInfo[3311][0][5850]
 	}
 
 	if (body.hasOwnProperty('color')) {
@@ -77,7 +77,7 @@ server.put('/device/:id', (request, response, next) => {
 	next()
 })
 
-function setBrightness(request, response, next) {
+function setBrightness (request, response, next) {
 	response.send(tradfri.setDeviceBrightness(request.params.id, request.params.brightness, request.params.transitionTime, request.params.timeUnit))
 	response.end()
 	next()
@@ -86,7 +86,7 @@ server.put('/device/:id/brightness/:brightness', setBrightness)
 server.put('/device/:id/brightness/:brightness/:transitionTime', setBrightness)
 server.put('/device/:id/brightness/:brightness/:transitionTime/:timeUnit', setBrightness)
 
-function setColor(request, response, next) {
+function setColor (request, response, next) {
 	response.send(tradfri.setDeviceColor(request.params.id, request.params.color, request.params.transitionTime, request.params.timeUnit))
 	response.end()
 	next()
@@ -142,10 +142,10 @@ server.put('/outlet/:id/:state', (request, response, next) => {
 	next()
 })
 
-server.listen(config.serverPort, function () {
+server.listen(config.serverPort, () => {
 	log('server started, listening on port ' + config.serverPort)
 })
 
-function log(message) {
+function log (message) {
 	console.log(dateFormat(new Date(), '[yyyy-mm-dd HH:MM:ss] ') + message)
 }
