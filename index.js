@@ -1,5 +1,6 @@
 'use strict'
 
+const fs = require('fs')
 const restify = require('restify')
 const errors = require('restify-errors')
 
@@ -11,7 +12,15 @@ const routers = [
 	require('./routes/tradfri'),
 ]
 
-const server = restify.createServer()
+const options = {}
+if (config.ssl.certificateFile && config.ssl.certificateKeyFile) {
+	options.certificate = fs.readFileSync(config.ssl.certificateFile)
+	options.key = fs.readFileSync(config.ssl.certificateKeyFile)
+}
+
+console.log(options)
+
+const server = restify.createServer(options)
 
 server.pre(restify.plugins.queryParser())
 server.pre((request, response, next) => {
