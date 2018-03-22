@@ -1,9 +1,11 @@
 {
 	"superSecretKey": "my-5up3r_53cr3t.KeY!!1",
-	"tradfriUser": "someuser",
-	"tradfriPSK": "abcdEfgHijklMnOP",
-	"tradfriGateway": "tradfri.fritz.box",
 	"serverPort": 8080,
+	"tradfri": {
+		"user": "someuser",
+		"psk": "abcdEfgHijklMnOP",
+		"gateway": "tradfri.fritz.box"
+	},
 	"outlets": {
 		"0": {
 			"name": "Power outlet #0",
