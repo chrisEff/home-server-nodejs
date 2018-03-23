@@ -17,9 +17,6 @@ if (config.ssl.certificateFile && config.ssl.certificateKeyFile) {
 	options.certificate = fs.readFileSync(config.ssl.certificateFile)
 	options.key = fs.readFileSync(config.ssl.certificateKeyFile)
 }
-
-console.log(options)
-
 const server = restify.createServer(options)
 
 server.pre(restify.plugins.queryParser())
