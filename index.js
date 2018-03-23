@@ -8,8 +8,8 @@ const dateFormat = require('dateformat')
 const config = require('./config.json')
 
 const routers = [
-	require('./routes/rfoutlets'),
-	require('./routes/tradfri'),
+	require('./routers/rfoutlets'),
+	require('./routers/tradfri'),
 ]
 
 const options = {}
