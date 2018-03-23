@@ -9,6 +9,12 @@ const tradfri = new Tradfri(config.tradfri.user, config.tradfri.psk, config.trad
 
 // devices
 
+router.get('/', (request, response, next) => {
+	response.send(['/device', '/group', '/schedule'])
+	response.end()
+	next()
+})
+
 router.get('/device', (request, response, next) => {
 	response.send(tradfri.getDevices())
 	response.end()

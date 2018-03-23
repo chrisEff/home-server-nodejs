@@ -30,6 +30,12 @@ server.pre((request, response, next) => {
 
 server.use(restify.plugins.jsonBodyParser())
 
+server.get('/', (request, response, next) => {
+	response.send(routers.map(router => router.prefix))
+	response.end()
+	next()
+})
+
 routers.forEach(/** @var Router */router => {
 	router.applyRoutes(server, router.prefix)
 })

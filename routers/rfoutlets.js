@@ -7,6 +7,12 @@ router.prefix = '/rfoutlets'
 
 // outlets
 
+router.get('/', (request, response, next) => {
+	response.send(['/outlet'])
+	response.end()
+	next()
+})
+
 router.get('/outlet', (request, response, next) => {
 	response.send(config.outlets)
 	response.end()
