@@ -3,6 +3,7 @@ const config = require('../config.json')
 const execSync = require('child_process').execSync
 
 const router = new Router()
+router.prefix = '/rfoutlets'
 
 // outlets
 

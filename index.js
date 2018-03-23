@@ -31,7 +31,7 @@ server.pre((request, response, next) => {
 server.use(restify.plugins.jsonBodyParser())
 
 routers.forEach(/** @var Router */router => {
-	router.applyRoutes(server)
+	router.applyRoutes(server, router.prefix)
 })
 
 server.listen(config.serverPort, () => {

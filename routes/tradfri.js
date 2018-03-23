@@ -3,6 +3,8 @@ const config = require('../config.json')
 const Tradfri = require('../src/Tradfri.js')
 
 const router = new Router()
+router.prefix = '/tradfri'
+
 const tradfri = new Tradfri(config.tradfri.user, config.tradfri.psk, config.tradfri.gateway)
 
 // devices
