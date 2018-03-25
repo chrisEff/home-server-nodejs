@@ -201,7 +201,6 @@ class Tradfri {
 	}
 	
 	request (method, path, body = null) {
-		console.log('body:', body)
 		body = body ? `-e '${body}'` : ''
 
 		const command = `coap-client -m ${method} -u "${this.user}" -k "${this.psk}" ${body} "coaps://${this.gateway}:5684/${path}"`
