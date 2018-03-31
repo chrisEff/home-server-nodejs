@@ -9,6 +9,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "child-process-promise": "^2.2.1",
     "dateformat": "^3.0.3",
     "restify": "^6.4.0",
     "restify-errors": "^5.0.0",

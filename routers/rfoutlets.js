@@ -1,6 +1,5 @@
 const Router = require('restify-router').Router
-const config = require('../config.json')
-const execSync = require('child_process').execSync
+const RfController = require('../src/RfController')
 
 const router = new Router()
 router.prefix = '/rfoutlets'
@@ -14,17 +13,22 @@ router.get('/', (request, response, next) => {
 })
 
 router.get('/outlet', (request, response, next) => {
-	response.send(config.outlets)
+	response.send(RfController.getOutlets())
 	response.end()
 	next()
 })
 
-router.put('/outlet/:id/:state', (request, response, next) => {
-	let outlet = config.outlets[request.params.id]
-	execSync(`codesend ${outlet[request.params.state]} ${outlet.protocol} ${outlet.pulseLength}`)
-	response.send('OK')
-	response.end()
-	next()
+router.put('/outlet/:id/:state', async (request, response, next) => {
+	try {
+		await RfController.switchOutlet(request.params.id, request.params.state)
+		response.send('OK')
+	} catch (e) {
+		console.log('codesend failed: ', e)
+		response.send({error: e})
+	} finally {
+		response.end()
+		next()
+	}
 })
 
 module.exports = router
