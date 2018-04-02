@@ -3,8 +3,8 @@
 const fs = require('fs')
 const restify = require('restify')
 const errors = require('restify-errors')
+const Logger = require('./src/Logger')
 
-const dateFormat = require('dateformat')
 const config = require('./config.json')
 
 const routers = [
@@ -24,7 +24,7 @@ server.pre((request, response, next) => {
 	if (request.query.key !== config.superSecretKey) {
 		return next(new errors.UnauthorizedError('nope!'))
 	}
-	log(`received request: ${request.method} ${request.getPath()}`)
+	Logger.debug(`received request: ${request.method} ${request.getPath()}`)
 	next()
 })
 
@@ -41,9 +41,5 @@ routers.forEach(/** @var Router */router => {
 })
 
 server.listen(config.serverPort, () => {
-	log('server started, listening on port ' + config.serverPort)
+	Logger.info('server started, listening on port ' + config.serverPort)
 })
-
-function log (message) {
-	console.log(dateFormat(new Date(), '[yyyy-mm-dd HH:MM:ss] ') + message)
-}
