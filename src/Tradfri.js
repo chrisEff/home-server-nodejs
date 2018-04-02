@@ -95,12 +95,13 @@ class Tradfri {
 	
 	static sanitizeTransitionTime (value, unit) {
 		value = parseInt(value)
-		if (unit === 'm') {
-			return value * 600
+		switch (unit) {
+			case 'h':  return value * 36000
+			case 'm':  return value * 600
+			case 'ds': return value // deci-second (1/10 of a second), the smallest unit Tradfri understands
+			case 's':
+			default:   return value * 10
 		}
-
-		// default unit: seconds
-		return value * 10
 	}
 	
 	
