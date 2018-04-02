@@ -1,3 +1,5 @@
+'use strict'
+
 const exec = require('child-process-promise').exec
 
 const outlets = require('../config.json').outlets

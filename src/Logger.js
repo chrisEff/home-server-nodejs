@@ -1,3 +1,5 @@
+'use strict'
+
 const dateFormat = require('dateformat')
 
 const winston = require('winston')

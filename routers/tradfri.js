@@ -1,3 +1,5 @@
+'use strict'
+
 const Router = require('restify-router').Router
 const config = require('../config.json')
 const Tradfri = require('../src/Tradfri.js')
