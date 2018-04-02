@@ -1,6 +1,6 @@
 'use strict'
 
-const execSync = require('child_process').execSync
+const exec = require('child-process-promise').exec
 
 class Tradfri {
 	
@@ -73,11 +73,11 @@ class Tradfri {
 		return this.request('get', `15001/${deviceId}`)
 	}
 
-	getDevices () {
+	async getDevices () {
 		const result = {}
-		this.getDeviceIds().forEach(id => {
-			result[id] = this.getDevice(id)
-		})
+		for (const id of await this.getDeviceIds()) {
+			result[id] = await this.getDevice(id)
+		}
 		return result
 	}
 	
@@ -114,11 +114,11 @@ class Tradfri {
 		return this.request('get', `15004/${id}`)
 	}
 
-	getGroups () {
+	async getGroups () {
 		const result = {}
-		this.getGroupIds().forEach(id => {
-			result[id] = this.getGroup(id)
-		})
+		for (const id of await this.getGroupIds()) {
+			result[id] = await this.getGroup(id)
+		}
 		return result
 	}
 
@@ -145,11 +145,11 @@ class Tradfri {
 		return this.request('get', `15010/${id}`)
 	}
 
-	getSchedules () {
+	async getSchedules () {
 		const result = {}
-		this.getScheduleIds().forEach(id => {
-			result[id] = this.getSchedule(id)
-		})
+		for (const id of await this.getScheduleIds()) {
+			result[id] = await this.getSchedule(id)
+		}
 		return result
 	}
 	
@@ -199,12 +199,19 @@ class Tradfri {
 
 		return this.request('put', path, JSON.stringify(body))
 	}
-	
-	request (method, path, body = null) {
+
+	/**
+	 * @param {string} method
+	 * @param {string} path
+	 * @param {string} body
+	 * @returns {Promise<*>}
+	 */
+	async request (method, path, body = null) {
 		body = body ? `-e '${body}'` : ''
 
 		const command = `coap-client -m ${method} -u "${this.user}" -k "${this.psk}" ${body} "coaps://${this.gateway}:5684/${path}"`
-		const lines = execSync(command).toString().split('\n')
+		const response = await exec(command)
+		const lines = response.stdout.toString().split('\n')
 
 		for (let i in lines) {
 			if (lines[i].startsWith('{') || lines[i].startsWith('[')) {

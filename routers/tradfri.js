@@ -17,14 +17,14 @@ router.get('/', (request, response, next) => {
 	next()
 })
 
-router.get('/device', (request, response, next) => {
-	response.send(tradfri.getDevices())
+router.get('/device', async (request, response, next) => {
+	response.send(await tradfri.getDevices())
 	response.end()
 	next()
 })
 
-router.get('/device/:id', (request, response, next) => {
-	response.send(tradfri.getDevice(request.params.id))
+router.get('/device/:id', async (request, response, next) => {
+	response.send(await tradfri.getDevice(request.params.id))
 	response.end()
 	next()
 })
@@ -52,8 +52,8 @@ function putDevice (id, body) {
 	tradfri.setDeviceState(id, state)
 }
 
-router.put('/device', (request, response, next) => {
-	tradfri.getDeviceIds().forEach(id => {
+router.put('/device', async (request, response, next) => {
+	(await tradfri.getDeviceIds()).forEach(id => {
 		putDevice(id, request.body)
 	})
 
@@ -68,8 +68,8 @@ router.put('/device/:id', (request, response, next) => {
 	next()
 })
 
-function setBrightness (request, response, next) {
-	response.send(tradfri.setDeviceBrightness(request.params.id, request.params.brightness, request.params.transitionTime, request.params.timeUnit))
+async function setBrightness (request, response, next) {
+	response.send(await tradfri.setDeviceBrightness(request.params.id, request.params.brightness, request.params.transitionTime, request.params.timeUnit))
 	response.end()
 	next()
 }
@@ -77,8 +77,8 @@ router.put('/device/:id/brightness/:brightness', setBrightness)
 router.put('/device/:id/brightness/:brightness/:transitionTime', setBrightness)
 router.put('/device/:id/brightness/:brightness/:transitionTime/:timeUnit', setBrightness)
 
-function setColor (request, response, next) {
-	response.send(tradfri.setDeviceColor(request.params.id, request.params.color, request.params.transitionTime, request.params.timeUnit))
+async function setColor (request, response, next) {
+	response.send(await tradfri.setDeviceColor(request.params.id, request.params.color, request.params.transitionTime, request.params.timeUnit))
 	response.end()
 	next()
 }
@@ -89,20 +89,20 @@ router.put('/device/:id/color/:color/:transitionTime/:timeUnit', setColor)
 
 // groups
 
-router.get('/group', (request, response, next) => {
-	response.send(tradfri.getGroups())
+router.get('/group', async (request, response, next) => {
+	response.send(await tradfri.getGroups())
 	response.end()
 	next()
 })
 
-router.get('/group/:id', (request, response, next) => {
-	response.send(tradfri.getGroup(request.params.id))
+router.get('/group/:id', async (request, response, next) => {
+	response.send(await tradfri.getGroup(request.params.id))
 	response.end()
 	next()
 })
 
-router.put('/group/:id/:state', (request, response, next) => {
-	response.send(tradfri.setGroupState(request.params.id, request.params.state))
+router.put('/group/:id/:state', async (request, response, next) => {
+	response.send(await tradfri.setGroupState(request.params.id, request.params.state))
 	response.end()
 	next()
 })
@@ -110,14 +110,14 @@ router.put('/group/:id/:state', (request, response, next) => {
 
 // schedules
 
-router.get('/schedule', (request, response, next) => {
-	response.send(tradfri.getSchedules()).end()
+router.get('/schedule', async (request, response, next) => {
+	response.send(await tradfri.getSchedules()).end()
 	response.end()
 	next()
 })
 
-router.get('/schedule/:id', (request, response, next) => {
-	response.send(tradfri.getSchedule(request.params.id))
+router.get('/schedule/:id', async (request, response, next) => {
+	response.send(await tradfri.getSchedule(request.params.id))
 	response.end()
 	next()
 })
