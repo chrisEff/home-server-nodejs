@@ -35,6 +35,7 @@
 				"blocks": "never",
 				"switches": "never"
 			}
-		]
+		],
+		"no-return-assign": "off"
 	}
 }

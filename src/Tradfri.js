@@ -9,6 +9,8 @@ class Tradfri {
 		this.psk     = psk
 		this.gateway = gateway
 		
+		this.lastRandomColor = ''
+		
 		this.colorTemperatures = {
 			warm:    'efd275',
 			neutral: 'f1e0b5',
@@ -177,11 +179,20 @@ class Tradfri {
 		return this.request('put', path, JSON.stringify(body))
 	}
 
+	getRandomColor () {
+		const colors = ['red', 'green', 'blue', 'yellow', 'pink', 'purple']
+		const color = colors[Math.floor(Math.random() * colors.length)]
+		return color === this.lastRandomColor ? this.getRandomColor() : this.lastRandomColor = color
+	}
+
 	setColor (path, color, transitionTime = null, timeUnit = 's') {
 		color = color
 			.replace('ä', 'ae')
 			.replace('ö', 'oe')
 			.replace('ü', 'ue')
+		if (['random', 'zufall'].indexOf(color) >= 0) {
+			color = this.getRandomColor()
+		}
 
 		let body = {3311: []}
 		if (this.colorTemperatures[color]) {
