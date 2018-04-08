@@ -11,13 +11,15 @@ module.exports = {
 		psk: 'abcdEfgHijklMnOP',
 		gateway: 'tradfri.fritz.box',
 	},
-	outlets: {
-		0: {
+	outlets: [
+		{
+			id: 0,
 			name: 'Power outlet #0',
 			0: 12345678,
 			1: 87654321,
 			protocol: 0,
 			pulseLength: 100,
+			fauxmoPort: 11000, // optional: if set, outlet will be exposed as a fake WeMo ("FauxMo") device on the network under this port
 		},
-	},
+	],
 }

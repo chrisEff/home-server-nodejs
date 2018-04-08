@@ -16,7 +16,8 @@ class RfController {
 	 * @returns {Promise}
 	 */
 	static switchOutlet (id, state) {
-		return RfController._sendCode(outlets[id][state], outlets[id].protocol, outlets[id].pulseLength)
+		const outlet = outlets.find(o => o.id === parseInt(id))
+		return RfController._sendCode(outlet[state], outlet.protocol, outlet.pulseLength)
 	}
 
 	/**

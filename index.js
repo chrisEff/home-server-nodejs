@@ -4,6 +4,8 @@ const fs = require('fs')
 const restify = require('restify')
 const errors = require('restify-errors')
 const Logger = require('./src/Logger')
+const FauxMo = require('fauxmojs')
+const RfController = require('./src/RfController')
 
 const config = require('./config.js')
 
@@ -43,3 +45,22 @@ routers.forEach(/** @var Router */router => {
 server.listen(config.serverPort, () => {
 	Logger.info('server started, listening on port ' + config.serverPort)
 })
+
+const fauxMoDevices =  config.outlets
+	.filter(o => o.hasOwnProperty('fauxmoPort'))
+	.map(o => ({
+		name: o.name,
+		port: o.fauxmoPort,
+		handler: (action) => {
+			Logger.debug(`FauxMo device '${o.name}' switched ${action}`)
+			RfController.switchOutlet(1, (action === 'on') ? 1 : 0)
+		},
+	}))
+
+if (fauxMoDevices.length) {
+	const fauxMo = new FauxMo({
+		devices: fauxMoDevices,
+	})
+	Logger.info(`registered ${fauxMo.getNumberOfRegisteredDevices()} FauxMo devices`)
+}
+
