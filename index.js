@@ -5,7 +5,7 @@ const restify = require('restify')
 const errors = require('restify-errors')
 const Logger = require('./src/Logger')
 
-const config = require('./config.json')
+const config = require('./config.js')
 
 const routers = [
 	require('./routers/rfoutlets'),
