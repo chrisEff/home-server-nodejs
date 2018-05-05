@@ -1,6 +1,7 @@
 'use strict'
 
 const fs = require('fs')
+const get = require('lodash.get')
 const restify = require('restify')
 const errors = require('restify-errors')
 const Logger = require('./src/Logger')
@@ -12,12 +13,15 @@ const config = require('./config.js')
 const routers = [
 	require('./routers/rfoutlets'),
 	require('./routers/tradfri'),
+	require('./routers/tempSensors'),
 ]
 
 const options = {}
-if (config.ssl.certificateFile && config.ssl.certificateKeyFile) {
+if (get(config, 'ssl.certificateFile') && get(config, 'ssl.certificateKeyFile')) {
 	options.certificate = fs.readFileSync(config.ssl.certificateFile)
 	options.key = fs.readFileSync(config.ssl.certificateKeyFile)
+} else {
+	Logger.warn('SSL not configured, falling back to http')
 }
 const server = restify.createServer(options)
 

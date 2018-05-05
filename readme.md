@@ -22,10 +22,16 @@ If you want to control 433 MHz power outlets, you'll need...
   
 ## Useful links
 
+### Tradfri
 * https://github.com/home-assistant/home-assistant/issues/10252
 * https://learn.pimoroni.com/tutorial/sandyj/controlling-ikea-tradfri-lights-from-your-pi
+
+### 433 Mhz
 * https://www.einplatinencomputer.com/raspberry-pi-433-mhz-funksteckdose-schalten/
 * https://tutorials-raspberrypi.de/raspberry-pi-funksteckdosen-433-mhz-steuern/
+
+### Temperature Sensors
+* https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing?view=all
 
 
 ## coap-client Examples

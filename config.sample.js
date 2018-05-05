@@ -22,4 +22,11 @@ module.exports = {
 			fauxmoPort: 11000, // optional: if set, outlet will be exposed as a fake WeMo ("FauxMo") device on the network under this port
 		},
 	],
+	tempSensors: [
+		{
+			id: 1,
+			name: 'Office',
+			deviceId: '28-0000011a2b3f',
+		},
+	],
 }

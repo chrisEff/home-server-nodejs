@@ -12,6 +12,8 @@
 		"child-process-promise": "^2.2.1",
 		"dateformat": "^3.0.3",
 		"fauxmojs": "^1.0.1",
+		"fs-extra": "^6.0.0",
+		"lodash.get": "^4.4.2",
 		"restify": "^6.4.0",
 		"restify-errors": "^5.0.0",
 		"restify-router": "^0.5.0",
