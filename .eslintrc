@@ -1,5 +1,9 @@
 {
 	"extends": "standard",
+	"env": {
+		"node": true,
+		"mocha": true
+	},
 	"rules": {
 		"indent": [
 			"error",
@@ -28,14 +32,7 @@
 			"error",
 			"always-multiline"
 		],
-		"padded-blocks": [
-			"error",
-			{
-				"classes": "always",
-				"blocks": "never",
-				"switches": "never"
-			}
-		],
+		"padded-blocks": "off",
 		"no-return-assign": "off"
 	}
 }
