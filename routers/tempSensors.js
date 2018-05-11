@@ -9,11 +9,23 @@ const sensors = require('../config.js').tempSensors
 const router = new Router()
 router.prefix = '/tempSensors'
 
+router.get('/', async (request, response, next) => {
+	const data = await Promise.all(JSON.parse(JSON.stringify(sensors)).map(async (sensor) => {
+		sensor.celsiusValue = await readSensor(sensor.deviceId)
+		return sensor
+	}))
+
+	response.send(data)
+	response.end()
+	next()
+})
+
 router.get('/:id', async (request, response, next) => {
-	const sensor = sensors.find(sensor => sensor.id === parseInt(request.params.id))
+	let sensor = sensors.find(sensor => sensor.id === parseInt(request.params.id))
 	if (!sensor) {
 		return next(new errors.NotFoundError(`sensor ID ${request.params.id} not found`))
 	}
+	sensor = JSON.parse(JSON.stringify(sensor))
 	sensor.celsiusValue = await readSensor(sensor.deviceId)
 
 	response.send(sensor)
