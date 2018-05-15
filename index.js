@@ -57,7 +57,7 @@ const fauxMoDevices =  config.outlets
 		port: o.fauxmoPort,
 		handler: (action) => {
 			Logger.debug(`FauxMo device '${o.name}' switched ${action}`)
-			RfController.switchOutlet(1, (action === 'on') ? 1 : 0)
+			RfController.switchOutlet(o.id, (action === 'on') ? 1 : 0)
 		},
 	}))
 
