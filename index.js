@@ -4,11 +4,13 @@ const fs = require('fs')
 const get = require('lodash.get')
 const restify = require('restify')
 const errors = require('restify-errors')
-const Logger = require('./src/Logger')
 const FauxMo = require('fauxmojs')
-const RfController = require('./src/RfController')
 
 const config = require('./config.js')
+
+const Logger = require('./src/Logger')
+const RfController = require('./src/RfController')
+const RfSniffer = require('./src/RfSniffer')
 
 const routers = [
 	require('./routers/rfoutlets'),
@@ -68,3 +70,20 @@ if (fauxMoDevices.length) {
 	Logger.info(`registered ${fauxMo.getNumberOfRegisteredDevices()} FauxMo devices`)
 }
 
+if (config.rfButtons && config.rfButtons.length) {
+	const sniffer = new RfSniffer(500)
+	
+	config.rfButtons.forEach(button => {
+		sniffer.on(button.code, button.callback)
+	})
+	
+	process.on('SIGINT', () => {
+		sniffer.stop()
+		process.exit()
+	})
+	
+	process.on('SIGTERM', () => {
+		sniffer.stop()
+		process.exit()
+	})
+}

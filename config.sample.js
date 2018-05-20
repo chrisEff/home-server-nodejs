@@ -29,4 +29,16 @@ module.exports = {
 			deviceId: '28-0000011a2b3f',
 		},
 	],
+	rfButtons: [
+		{
+			id: 1,
+			name: 'Remote Button #1',
+			code: '12345678',
+			callback: () => {
+				const Tradfri = require('./src/Tradfri.js')
+				const tradfri = new Tradfri(module.exports.tradfri.user, module.exports.tradfri.psk, module.exports.tradfri.gateway)
+				tradfri.toggleDeviceState(65539)
+			},
+		},
+	],
 }
