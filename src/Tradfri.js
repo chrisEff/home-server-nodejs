@@ -82,9 +82,18 @@ class Tradfri {
 		}
 		return result
 	}
+
+	async getDeviceState (id) {
+		const device = await this.getDevice(id)
+		return device[3311][0][5850]
+	}
 	
 	setDeviceState (id, state) {
 		return this.setState(`15001/${id}`, state)
+	}
+
+	async toggleDeviceState (id) {
+		return this.setDeviceState(id, await this.getDeviceState(id) ? 0 : 1)
 	}
 	
 	setDeviceBrightness (id, brightness, transitionTime = null, timeUnit = 's') {
