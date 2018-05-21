@@ -17,7 +17,13 @@ class RfController {
 	 */
 	static switchOutlet (id, state) {
 		const outlet = outlets.find(o => o.id === parseInt(id))
+		outlet.state = state
 		return RfController._sendCode(outlet[state], outlet.protocol, outlet.pulseLength)
+	}
+	
+	static toggleOutlet (id) {
+		const outlet = outlets.find(o => o.id === parseInt(id))
+		return RfController.switchOutlet(id, outlet.state ? 0 : 1 )
 	}
 
 	/**
