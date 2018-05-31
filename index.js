@@ -5,6 +5,7 @@ const get = require('lodash.get')
 const restify = require('restify')
 const errors = require('restify-errors')
 const FauxMo = require('fauxmojs')
+const dhcpSpy = require('dhcp-spy')
 
 const config = require('./config.js')
 
@@ -76,6 +77,8 @@ if (config.rfButtons && config.rfButtons.length) {
 	config.rfButtons.forEach(button => {
 		sniffer.on(button.code, button.callback)
 	})
+
+	Logger.info(`registered ${config.rfButtons.length} RF buttons`)
 	
 	process.on('SIGINT', () => {
 		sniffer.stop()
@@ -87,3 +90,19 @@ if (config.rfButtons && config.rfButtons.length) {
 		process.exit()
 	})
 }
+
+if (config.dashButtons && config.dashButtons.length) {
+	dhcpSpy.listening.then(() => {
+		Logger.info('Listening for DHCP requests')
+	})
+
+	config.dashButtons.forEach(button => {
+		dhcpSpy.on(button.macAddress, () => {
+			Logger.debug(`dash button "${button.label}" pressed`)
+			button.callback()
+		})
+	})
+
+	Logger.info(`registered ${config.dashButtons.length} Amazon Dash buttons`)
+}
+

@@ -11,6 +11,7 @@
 	"dependencies": {
 		"child-process-promise": "^2.2.1",
 		"dateformat": "^3.0.3",
+		"dhcp-spy": "^1.0.0",
 		"fauxmojs": "^1.0.1",
 		"fs-extra": "^6.0.0",
 		"lodash.debounce": "^4.0.8",

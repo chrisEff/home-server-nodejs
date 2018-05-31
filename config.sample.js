@@ -41,4 +41,15 @@ module.exports = {
 			},
 		},
 	],
+	dashButtons: [
+		{
+			id: 1,
+			macAddress: '01:23:45:67:89:0A',
+			label: 'Afri Cola',
+			callback: () => {
+				const RfController = require('./src/RfController')
+				RfController.toggleOutlet(2)
+			},
+		},
+	],
 }
