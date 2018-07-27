@@ -17,6 +17,7 @@
 		"lodash.debounce": "^4.0.8",
 		"lodash.get": "^4.4.2",
 		"restify": "^7.2.0",
+		"restify-cors-middleware": "^1.1.1",
 		"restify-errors": "^6.1.0",
 		"restify-router": "^0.5.0",
 		"winston": "^3.0.0"

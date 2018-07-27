@@ -3,6 +3,7 @@
 const fs = require('fs')
 const get = require('lodash.get')
 const restify = require('restify')
+const cors = require('restify-cors-middleware')
 const errors = require('restify-errors')
 const FauxMo = require('fauxmojs')
 const dhcpSpy = require('dhcp-spy')
@@ -38,6 +39,10 @@ server.pre((request, response, next) => {
 })
 
 server.use(restify.plugins.jsonBodyParser())
+
+server.use(cors({
+	origins: ['*'],
+}).actual)
 
 server.get('/', (request, response, next) => {
 	response.send(routers.map(router => router.prefix))
