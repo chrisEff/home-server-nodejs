@@ -19,7 +19,42 @@ If you want to control 433 MHz power outlets, you'll need...
   * https://www.amazon.com/dp/B01LZF1ZSZ
   * https://www.amazon.de/dp/B01EV70C78
   
-  
+## Installation
+
+* allow node to bind ports < 1024:
+	```
+	sudo setcap 'cap_net_bind_service=+ep' `which node`
+	```
+
+* clone this repo with its submodules:
+	```
+	git clone --recursive git@github.com:chrisEff/home-server-nodejs.git
+	```
+
+* install the dependencies:
+	```
+	cd home-server-nodejs
+	npm i --production
+	```
+
+* compile RPi_utils
+	```
+	cd 433Utils/RPi_utils
+	make
+	cd ../..
+	```
+
+* create a config file by copying the sample config
+	```
+	cp config.sample.js config.js
+	```
+
+* adjust the config file according to your needs
+* start the server
+	```
+	npm start
+	```
+
 ## Useful links
 
 ### Tradfri
