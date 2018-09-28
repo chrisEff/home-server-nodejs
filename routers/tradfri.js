@@ -68,6 +68,12 @@ router.put('/device/:id', (request, response, next) => {
 	next()
 })
 
+router.put('/device/:id/state/:state', async (request, response, next) => {
+	response.send(await tradfri.setDeviceState(request.params.id, request.params.state))
+	response.end()
+	next()
+})
+
 async function setBrightness (request, response, next) {
 	response.send(await tradfri.setDeviceBrightness(request.params.id, request.params.brightness, request.params.transitionTime, request.params.timeUnit))
 	response.end()
