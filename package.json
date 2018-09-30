@@ -4,10 +4,13 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
+		"postinstall": "cp -n ./config.sample.js ./config.js || true",
 		"start": "bash -c \"exec -a homeserver node index.js >> logs.txt &\"",
 		"stop": "pkill -f homeserver",
 		"status": "ps axu | grep -e homeserver -e RFSniffer | grep -v grep || echo not running",
-		"test": "mocha"
+		"test": "mocha",
+		"eslint": "eslint src test",
+		"allow-portbind": "sudo setcap 'cap_net_bind_service=+ep' `which node`"
 	},
 	"author": "",
 	"license": "MIT",

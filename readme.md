@@ -21,11 +21,6 @@ If you want to control 433 MHz power outlets, you'll need...
   
 ## Installation
 
-* allow node to bind ports < 1024:
-	```
-	sudo setcap 'cap_net_bind_service=+ep' `which node`
-	```
-
 * clone this repo with its submodules:
 	```
 	git clone --recursive git@github.com:chrisEff/home-server-nodejs.git
@@ -44,12 +39,13 @@ If you want to control 433 MHz power outlets, you'll need...
 	cd ../..
 	```
 
-* create a config file by copying the sample config
-	```
-	cp config.sample.js config.js
-	```
+* adjust `config.js` according to your needs
 
-* adjust the config file according to your needs
+* allow node to bind ports < 1024:
+	```
+	npm run allow-portbind
+	```
+	
 * start the server
 	```
 	npm start
@@ -81,13 +77,16 @@ coap-client -m get -u "<IDENTITY>" -k "<PSK>" "coaps://<GATEWAY_IP>:5684/15001"
 coap-client -m get -u "<IDENTITY>" -k "<PSK>" "coaps://<GATEWAY_IP>:5684/15004"
 
 ### get device infos
-coap-client -m get -u "<IDENTITY>" -k "<PSK>" "coaps://<GATEWAY_IP>:5684/15001/65537"
+coap-client -m get -u "<IDENTITY>" -k "<PSK>" "coaps://<GATEWAY_IP>:5684/15001/<DEVICE_ID>"
 
 ### get group infos
-coap-client -m get -u "<IDENTITY>" -k "<PSK>" "coaps://<GATEWAY_IP>:5684/15004/131073"
+coap-client -m get -u "<IDENTITY>" -k "<PSK>" "coaps://<GATEWAY_IP>:5684/15004/<GROUP_ID>"
 
 ### turn bulb on
-coap-client -m put -u "<IDENTITY>" -k "<PSK>" -e '{ "3311" : [{ "5850" : 1 }] }' "coaps://<GATEWAY_IP>:5684/15001/65537"
+coap-client -m put -u "<IDENTITY>" -k "<PSK>" -e '{ "3311" : [{ "5850" : 1 }] }' "coaps://<GATEWAY_IP>:5684/15001/<DEVICE_ID>"
 
 ### turn bulb off
-coap-client -m put -u "<IDENTITY>" -k "<PSK>" -e '{ "3311" : [{ "5850" : 0 }] }' "coaps://<GATEWAY_IP>:5684/15001/65537"
+coap-client -m put -u "<IDENTITY>" -k "<PSK>" -e '{ "3311" : [{ "5850" : 0 }] }' "coaps://<GATEWAY_IP>:5684/15001/<DEVICE_ID>"
+
+### set bulb to warm white
+coap-client -m put -u "<IDENTITY>" -k "<PSK>" -e '{ "3311" : [{ "5706" : "efd275" }] }' "coaps://<GATEWAY_IP>:5684/15001/<DEVICE_ID>"
