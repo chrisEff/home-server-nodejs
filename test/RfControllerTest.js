@@ -1,6 +1,6 @@
 const chai = require('chai')
 
-const RfController = require('../src/RfController')
+const RfController = require('../src/classes/RfController')
 
 describe('RfController', () => {
 	

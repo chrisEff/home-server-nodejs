@@ -2,7 +2,7 @@
 
 const exec = require('child-process-promise').exec
 
-const outlets = require('../config.js').outlets
+const outlets = require('../../config.js').outlets
 
 class RfController {
 	

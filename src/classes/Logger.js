@@ -4,7 +4,7 @@ const dateFormat = require('dateformat')
 
 const winston = require('winston')
 winston.configure({
-	level: require('../config.js').logLevel,
+	level: require('../../config.js').logLevel,
 	transports: [
 		new (winston.transports.Console)({
 			timestamp: () => {

@@ -2,7 +2,7 @@ const assert = require('assert')
 const sinon = require('sinon')
 const chai = require('chai')
 
-const Tradfri = require('../src/Tradfri')
+const Tradfri = require('../src/classes/Tradfri')
 
 describe('Tradfri', () => {
 	const sandbox = sinon.createSandbox()

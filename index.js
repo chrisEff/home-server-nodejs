@@ -10,14 +10,14 @@ const dhcpSpy = require('dhcp-spy')
 
 const config = require('./config.js')
 
-const Logger = require('./src/Logger')
-const RfController = require('./src/RfController')
-const RfSniffer = require('./src/RfSniffer')
+const Logger = require('./src/classes/Logger')
+const RfController = require('./src/classes/RfController')
+const RfSniffer = require('./src/classes/RfSniffer')
 
 const routers = [
-	require('./routers/rfoutlets'),
-	require('./routers/tradfri'),
-	require('./routers/tempSensors'),
+	require('./src/routers/rfoutlets'),
+	require('./src/routers/tradfri'),
+	require('./src/routers/tempSensors'),
 ]
 
 const options = {}

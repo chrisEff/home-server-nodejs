@@ -35,7 +35,7 @@ module.exports = {
 			name: 'Remote Button #1',
 			code: '12345678',
 			callback: () => {
-				const Tradfri = require('./src/Tradfri.js')
+				const Tradfri = require('./src/classes/Tradfri.js')
 				const tradfri = new Tradfri(module.exports.tradfri.user, module.exports.tradfri.psk, module.exports.tradfri.gateway)
 				tradfri.toggleDeviceState(65539)
 			},
@@ -47,7 +47,7 @@ module.exports = {
 			macAddress: '01:23:45:67:89:0A',
 			label: 'Afri Cola',
 			callback: () => {
-				const RfController = require('./src/RfController')
+				const RfController = require('./src/classes/RfController')
 				RfController.toggleOutlet(2)
 			},
 		},

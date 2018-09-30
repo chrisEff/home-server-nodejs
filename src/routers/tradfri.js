@@ -1,8 +1,8 @@
 'use strict'
 
 const Router = require('restify-router').Router
-const config = require('../config.js')
-const Tradfri = require('../src/Tradfri.js')
+const config = require('../../config.js')
+const Tradfri = require('../classes/Tradfri.js')
 
 const router = new Router()
 router.prefix = '/tradfri'

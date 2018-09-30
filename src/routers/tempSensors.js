@@ -4,7 +4,7 @@ const errors = require('restify-errors')
 const fs = require('fs-extra')
 
 const Router = require('restify-router').Router
-const sensors = require('../config.js').tempSensors
+const sensors = require('../../config.js').tempSensors
 
 const router = new Router()
 router.prefix = '/tempSensors'

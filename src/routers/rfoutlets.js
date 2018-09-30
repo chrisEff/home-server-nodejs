@@ -1,7 +1,7 @@
 'use strict'
 
 const Router = require('restify-router').Router
-const RfController = require('../src/RfController')
+const RfController = require('../classes/RfController')
 
 const router = new Router()
 router.prefix = '/rfoutlets'
