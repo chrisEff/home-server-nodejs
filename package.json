@@ -11,6 +11,10 @@
 	},
 	"author": "",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git@github.com:chrisEff/home-server-nodejs.git"
+	},
 	"dependencies": {
 		"child-process-promise": "^2.2.1",
 		"dateformat": "^3.0.3",
