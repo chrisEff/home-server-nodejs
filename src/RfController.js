@@ -23,7 +23,7 @@ class RfController {
 	
 	static toggleOutlet (id) {
 		const outlet = outlets.find(o => o.id === parseInt(id))
-		return RfController.switchOutlet(id, outlet.state ? 0 : 1 )
+		return RfController.switchOutlet(id, outlet.state ? 0 : 1)
 	}
 
 	/**

@@ -74,7 +74,7 @@ class Tradfri {
 	
 	async getDevice (deviceId) {
 		const raw = await this.request('get', `15001/${deviceId}`)
-		let model = get(raw, '3.1');
+		let model = get(raw, '3.1')
 		const result = {
 			id:         get(raw, '9003'),
 			type:       Tradfri.getDeviceTypeByModel(model),
