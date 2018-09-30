@@ -74,18 +74,19 @@ class Tradfri {
 	
 	async getDevice (deviceId) {
 		const raw = await this.request('get', `15001/${deviceId}`)
+		let model = get(raw, '3.1');
 		const result = {
 			id:         get(raw, '9003'),
-			type:       Tradfri.getDeviceTypeByModel(get(raw, '3.1')),
+			type:       Tradfri.getDeviceTypeByModel(model),
 			name:       get(raw, '9001'),
-			state:      get(raw, '3311.0.5850'),
-			brightness: get(raw, '3311.0.5851'),
-			model:      get(raw, '3.1'),
+			model:      model,
 			firmware:   get(raw, '3.3'),
 		}
 		
 		if (result.type === 'bulb') {
-			result.bulbType = Tradfri.getBulbTypeByModel(get(raw, '3.1'))
+			result.state      = get(raw, '3311.0.5850')
+			result.brightness = get(raw, '3311.0.5851')
+			result.bulbType   = Tradfri.getBulbTypeByModel(model)
 		}
 		result.raw = raw
 
@@ -93,9 +94,9 @@ class Tradfri {
 	}
 
 	static getDeviceTypeByModel (model) {
-		if (model === 'TRADFRI remote control')  return 'remote'
-		if (model === 'TRADFRI wireless dimmer') return 'dimmer'
-		if (model.startsWith('TRADFRI bulb'))    return 'bulb'
+		if (model === 'TRADFRI remote control')        return 'remote'
+		if (model === 'TRADFRI wireless dimmer')       return 'dimmer'
+		if (model && model.startsWith('TRADFRI bulb')) return 'bulb'
 		return undefined
 	}
 
