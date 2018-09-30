@@ -1,6 +1,7 @@
 'use strict'
 
 const exec = require('child-process-promise').exec
+const get = require('lodash.get')
 
 class Tradfri {
 	
@@ -71,8 +72,37 @@ class Tradfri {
 		return this.request('get', `15001`)
 	}
 	
-	getDevice (deviceId) {
-		return this.request('get', `15001/${deviceId}`)
+	async getDevice (deviceId) {
+		const raw = await this.request('get', `15001/${deviceId}`)
+		const result = {
+			id:         get(raw, '9003'),
+			type:       Tradfri.getDeviceTypeByModel(get(raw, '3.1')),
+			name:       get(raw, '9001'),
+			state:      get(raw, '3311.0.5850'),
+			brightness: get(raw, '3311.0.5851'),
+			model:      get(raw, '3.1'),
+			firmware:   get(raw, '3.3'),
+		}
+		
+		if (result.type === 'bulb') {
+			result.bulbType = Tradfri.getBulbTypeByModel(get(raw, '3.1'))
+		}
+		result.raw = raw
+
+		return result
+	}
+
+	static getDeviceTypeByModel (model) {
+		if (model === 'TRADFRI remote control')  return 'remote'
+		if (model === 'TRADFRI wireless dimmer') return 'dimmer'
+		if (model.startsWith('TRADFRI bulb'))    return 'bulb'
+		return undefined
+	}
+
+	static getBulbTypeByModel (model) {
+		if (model.includes(' CWS ')) return 'rgb'
+		if (model.includes(' WS '))  return 'white-spectrum'
+		return 'white'
 	}
 
 	async getDevices () {
