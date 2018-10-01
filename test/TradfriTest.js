@@ -125,7 +125,7 @@ describe('Tradfri', () => {
 					.withArgs('get', '15001/65537')
 					.resolves(rawDevice2)
 	
-				assert.deepStrictEqual(await tradfri.getDevices(), {65536: sanitizedDevice1, 65537: sanitizedDevice2})
+				assert.deepStrictEqual(await tradfri.getDevices(), [sanitizedDevice1, sanitizedDevice2])
 				sinon.assert.calledThrice(requestStub)
 				sinon.assert.calledWithExactly(requestStub, 'get', '15001')
 				sinon.assert.calledWithExactly(requestStub, 'get', '15001/65536')
@@ -260,7 +260,7 @@ describe('Tradfri', () => {
 					.withArgs('get', '15004/131075')
 					.resolves(rawGroup2)
 	
-				assert.deepStrictEqual(await tradfri.getGroups(), {131073: sanitizedGroup1, 131075: sanitizedGroup2})
+				assert.deepStrictEqual(await tradfri.getGroups(), [sanitizedGroup1, sanitizedGroup2])
 				sinon.assert.calledThrice(requestStub)
 				sinon.assert.calledWithExactly(requestStub, 'get', '15004')
 				sinon.assert.calledWithExactly(requestStub, 'get', '15004/131073')

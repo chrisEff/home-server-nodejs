@@ -107,9 +107,9 @@ class Tradfri {
 	}
 
 	async getDevices () {
-		const result = {}
+		const result = []
 		for (const id of await this.getDeviceIds()) {
-			result[id] = await this.getDevice(id)
+			result.push(await this.getDevice(id))
 		}
 		return result
 	}
@@ -169,9 +169,9 @@ class Tradfri {
 	}
 
 	async getGroups () {
-		const result = {}
+		const result = []
 		for (const id of await this.getGroupIds()) {
-			result[id] = await this.getGroup(id)
+			result.push(await this.getGroup(id))
 		}
 		return result
 	}
@@ -200,9 +200,9 @@ class Tradfri {
 	}
 
 	async getSchedules () {
-		const result = {}
+		const result = []
 		for (const id of await this.getScheduleIds()) {
-			result[id] = await this.getSchedule(id)
+			result.push(await this.getSchedule(id))
 		}
 		return result
 	}

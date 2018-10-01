@@ -71,6 +71,26 @@ const fauxMoDevices =  config.outlets
 		},
 	}))
 
+let discoInterval
+const Tradfri = require('./src/classes/Tradfri.js')
+const tradfri = new Tradfri(config.tradfri.user, config.tradfri.psk, config.tradfri.gateway)
+
+fauxMoDevices.push({
+	name: 'Disco',
+	port: 11001,
+	handler: (action) => {
+		Logger.debug(`Fauxmo device 'Disco' switched ${action}`)
+		if (action === 'off') {
+			clearInterval(discoInterval)
+			discoInterval = null
+			setTimeout(() => tradfri.setDeviceState(65539, 0), 500)
+		} else if (!discoInterval) {
+			tradfri.setDeviceState(65539, 1)
+			discoInterval = setInterval(() => tradfri.setDeviceColor(65539, 'random', 5, 'ds'), 500)
+		}
+	},
+})
+
 if (fauxMoDevices.length) {
 	const fauxMo = new FauxMo({
 		devices: fauxMoDevices,
