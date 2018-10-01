@@ -115,8 +115,7 @@ class Tradfri {
 	}
 
 	async getDeviceState (id) {
-		const device = await this.getDevice(id)
-		return device[3311][0][5850]
+		return (await this.getDevice(id)).state
 	}
 	
 	setDeviceState (id, state) {
