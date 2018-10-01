@@ -213,6 +213,19 @@ describe('Tradfri', () => {
 			'9108': 0,
 		}
 		
+		const sanitizedGroup1 = {
+			id: 131073,
+			name: 'Arbeitszimmer',
+			deviceIds: [65536, 65537],
+			raw: rawGroup1,
+		}
+		const sanitizedGroup2 = {
+			id: 131075,
+			name: 'Schlafzimmer',
+			deviceIds: [65538, 65541, 65556, 65557],
+			raw: rawGroup2,
+		}
+		
 		describe('getGroupIds()', () => {
 			it('should call request() correctly and pass through its response', async () => {
 				requestStub
@@ -231,7 +244,7 @@ describe('Tradfri', () => {
 					.withArgs('get', '15004/131073')
 					.resolves(rawGroup1)
 	
-				assert.deepStrictEqual(await tradfri.getGroup(131073), rawGroup1)
+				assert.deepStrictEqual(await tradfri.getGroup(131073), sanitizedGroup1)
 				sinon.assert.calledOnce(requestStub)
 				sinon.assert.calledWithExactly(requestStub, 'get', '15004/131073')
 			})
@@ -247,7 +260,7 @@ describe('Tradfri', () => {
 					.withArgs('get', '15004/131075')
 					.resolves(rawGroup2)
 	
-				assert.deepStrictEqual(await tradfri.getGroups(), {131073: rawGroup1, 131075: rawGroup2})
+				assert.deepStrictEqual(await tradfri.getGroups(), {131073: sanitizedGroup1, 131075: sanitizedGroup2})
 				sinon.assert.calledThrice(requestStub)
 				sinon.assert.calledWithExactly(requestStub, 'get', '15004')
 				sinon.assert.calledWithExactly(requestStub, 'get', '15004/131073')

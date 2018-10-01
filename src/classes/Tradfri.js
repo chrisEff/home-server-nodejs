@@ -156,8 +156,16 @@ class Tradfri {
 		return this.request('get', `15004`)
 	}
 	
-	getGroup (id) {
-		return this.request('get', `15004/${id}`)
+	async getGroup (id) {
+		const raw = await this.request('get', `15004/${id}`)
+		const result = {
+			id:   get(raw, '9003'),
+			name: get(raw, '9001'),
+			deviceIds: get(raw, '9018.15002.9003'),
+			raw,
+		}
+		
+		return result
 	}
 
 	async getGroups () {
