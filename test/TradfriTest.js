@@ -150,6 +150,18 @@ describe('Tradfri', () => {
 			})
 		})
 
+		describe('setDeviceName()', () => {
+			it('should send one PUT request to the correct path with the correct body', async () => {
+				requestStub
+					.withArgs('put', '15001/65537')
+					.resolves('OK')
+				await tradfri.setDeviceName(65537, 'foobar')
+
+				sinon.assert.calledOnce(requestStub)
+				sinon.assert.calledWithExactly(requestStub, 'put', '15001/65537', '{"9001":"foobar"}')
+			})
+		})
+
 		describe('setDeviceState()', () => {
 			it('should send one PUT request to the correct path with the correct body', async () => {
 				requestStub

@@ -113,24 +113,28 @@ class Tradfri {
 		}
 		return result
 	}
+	
+	async setDeviceName (id, name) {
+		return this.request('put', `15001/${id}`, JSON.stringify({'9001': name}))
+	}
 
 	async getDeviceState (id) {
 		return (await this.getDevice(id)).state
 	}
-	
-	setDeviceState (id, state) {
+
+	async setDeviceState (id, state) {
 		return this.setState(`15001/${id}`, state)
 	}
 
 	async toggleDeviceState (id) {
 		return this.setDeviceState(id, await this.getDeviceState(id) ? 0 : 1)
 	}
-	
-	setDeviceBrightness (id, brightness, transitionTime = null, timeUnit = 's') {
+
+	async setDeviceBrightness (id, brightness, transitionTime = null, timeUnit = 's') {
 		return this.setBrightness(`15001/${id}`, brightness, transitionTime, timeUnit)
 	}
 
-	setDeviceColor (id, color, transitionTime = null, timeUnit = 's') {
+	async setDeviceColor (id, color, transitionTime = null, timeUnit = 's') {
 		return this.setColor(`15001/${id}`, color, transitionTime, timeUnit)
 	}
 	

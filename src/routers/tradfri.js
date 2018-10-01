@@ -46,6 +46,10 @@ function putDevice (id, body) {
 		tradfri.setDeviceBrightness(id, body.brightness)
 	}
 
+	if (body.hasOwnProperty('name')) {
+		tradfri.setDeviceName(id, body.name)
+	}
+
 	// Changing the brightness will set the state to on,
 	// even if you explicitly want to set it to off or not change it at all.
 	// So we set the state last in order to revert any unwanted changes.
@@ -64,6 +68,12 @@ router.put('/device', async (request, response, next) => {
 router.put('/device/:id', (request, response, next) => {
 	putDevice(request.params.id, request.body)
 
+	response.end()
+	next()
+})
+
+router.put('/device/:id/name/:name', async (request, response, next) => {
+	response.send(await tradfri.setDeviceName(request.params.id, request.params.name))
 	response.end()
 	next()
 })
