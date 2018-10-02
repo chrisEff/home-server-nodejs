@@ -160,8 +160,8 @@ class Tradfri {
 	
 	
 	// groups
-	
-	getGroupIds () {
+
+	async getGroupIds () {
 		return this.request('get', `15004`)
 	}
 	
@@ -185,26 +185,30 @@ class Tradfri {
 		return result
 	}
 
-	setGroupState (id, state) {
+	async setGroupName (id, name) {
+		return this.request('put', `15004/${id}`, JSON.stringify({'9001': name}))
+	}
+
+	async setGroupState (id, state) {
 		return this.setState(`15004/${id}`, state)
 	}
 
-	setGroupBrightness (id, brightness, transitionTime = null, timeUnit = 's') {
+	async setGroupBrightness (id, brightness, transitionTime = null, timeUnit = 's') {
 		return this.setBrightness(`15004/${id}`, brightness, transitionTime, timeUnit)
 	}
 
-	setGroupColor (id, color, transitionTime = null, timeUnit = 's') {
+	async setGroupColor (id, color, transitionTime = null, timeUnit = 's') {
 		return this.setColor(`15004/${id}`, color, transitionTime, timeUnit)
 	}
 	
 	
 	// schedules
-	
-	getScheduleIds () {
+
+	async getScheduleIds () {
 		return this.request('get', `15010`)
 	}
 
-	getSchedule (id) {
+	async getSchedule (id) {
 		return this.request('get', `15010/${id}`)
 	}
 
@@ -219,7 +223,7 @@ class Tradfri {
 	
 	// general
 
-	setState (path, state) {
+	async setState (path, state) {
 		return this.request('put', path, JSON.stringify({
 			3311: [{
 				5850: parseInt(state),
@@ -227,7 +231,7 @@ class Tradfri {
 		}))
 	}
 
-	setBrightness (path, brightness, transitionTime = null, timeUnit = 's') {
+	async setBrightness (path, brightness, transitionTime = null, timeUnit = 's') {
 		const body = {
 			3311: [{
 				5851: parseInt(brightness),
@@ -245,7 +249,7 @@ class Tradfri {
 		return color === this.lastRandomColor ? this.getRandomColor() : this.lastRandomColor = color
 	}
 
-	setColor (path, color, transitionTime = null, timeUnit = 's') {
+	async setColor (path, color, transitionTime = null, timeUnit = 's') {
 		color = color
 			.replace('ä', 'ae')
 			.replace('ö', 'oe')

@@ -58,9 +58,19 @@ router.put('/device/:id/color/:color/:transitionTime/:timeUnit', async (req) => 
 
 
 // groups
-router.get('/group',            async ()    => tradfri.getGroups())
-router.get('/group/:id',        async (req) => tradfri.getGroup(req.params.id))
-router.put('/group/:id/:state', async (req) => tradfri.setGroupState(req.params.id, req.params.state))
+router.get('/group',     async ()    => tradfri.getGroups())
+router.get('/group/:id', async (req) => tradfri.getGroup(req.params.id))
+
+router.put('/group/:id/name/:name',   async (req) => tradfri.setGroupName(req.params.id, req.params.name))
+router.put('/group/:id/state/:state', async (req) => tradfri.setGroupState(req.params.id, req.params.state))
+
+router.put('/group/:id/brightness/:brightness',                           async (req) => tradfri.setGroupBrightness(req.params.id, req.params.brightness))
+router.put('/group/:id/brightness/:brightness/:transitionTime',           async (req) => tradfri.setGroupBrightness(req.params.id, req.params.brightness, req.params.transitionTime))
+router.put('/group/:id/brightness/:brightness/:transitionTime/:timeUnit', async (req) => tradfri.setGroupBrightness(req.params.id, req.params.brightness, req.params.transitionTime, req.params.timeUnit))
+
+router.put('/group/:id/color/:color',                           async (req) => tradfri.setGroupColor(req.params.id, req.params.color))
+router.put('/group/:id/color/:color/:transitionTime',           async (req) => tradfri.setGroupColor(req.params.id, req.params.color, req.params.transitionTime))
+router.put('/group/:id/color/:color/:transitionTime/:timeUnit', async (req) => tradfri.setGroupColor(req.params.id, req.params.color, req.params.transitionTime, req.params.timeUnit))
 
 
 // schedules
