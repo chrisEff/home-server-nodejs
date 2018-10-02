@@ -3,7 +3,7 @@
 const exec = require('child-process-promise').exec
 const get = require('lodash.get')
 
-class Tradfri {
+class TradfriClient {
 	
 	constructor (user, psk, gateway) {
 		this.user    = user
@@ -20,42 +20,12 @@ class Tradfri {
 		this.colorTemperatures.kalt = this.colorTemperatures.cold
 		
 		this.colorsRGB = {
-			red: {
-				5707: 63828,
-				5708: 65279,
-				5709: 41084,
-				5710: 21159,
-			},
-			green: {
-				5707: 20672,
-				5708: 65279,
-				5709: 19659,
-				5710: 39108,
-			},
-			blue: {
-				5707: 45333,
-				5708: 65279,
-				5709: 10121,
-				5710: 4098,
-			},
-			yellow: {
-				5707: 9611,
-				5708: 65279,
-				5709: 28800,
-				5710: 31848,
-			},
-			pink: {
-				5707: 59476,
-				5708: 65279,
-				5709: 31574,
-				5710: 15919,
-			},
-			purple: {
-				5707: 49141,
-				5708: 65279,
-				5709: 13353,
-				5710: 5879,
-			},
+			red:    { hue: 63828, saturation: 65279, colorX: 41084, colorY: 21159 },
+			green:  { hue: 20672, saturation: 65279, colorX: 19659, colorY: 39108 },
+			blue:   { hue: 45333, saturation: 65279, colorX: 10121, colorY: 4098 },
+			yellow: { hue: 9611,  saturation: 65279, colorX: 28800, colorY: 31848 },
+			pink:   { hue: 59476, saturation: 65279, colorX: 31574, colorY: 15919 },
+			purple: { hue: 49141, saturation: 65279, colorX: 13353, colorY: 5879 },
 		}
 		this.colorsRGB.rot   = this.colorsRGB.red
 		this.colorsRGB.gruen = this.colorsRGB.green
@@ -86,7 +56,7 @@ class Tradfri {
 		let model = get(raw, '3.1')
 		const result = {
 			id:         get(raw, '9003'),
-			type:       Tradfri.getDeviceTypeByModel(model),
+			type:       TradfriClient.getDeviceTypeByModel(model),
 			name:       get(raw, '9001'),
 			model:      model,
 			firmware:   get(raw, '3.3'),
@@ -95,7 +65,7 @@ class Tradfri {
 		if (result.type === 'bulb') {
 			result.state      = get(raw, '3311.0.5850')
 			result.brightness = get(raw, '3311.0.5851')
-			result.bulbType   = Tradfri.getBulbTypeByModel(model)
+			result.bulbType   = TradfriClient.getBulbTypeByModel(model)
 		}
 		result.raw = raw
 
@@ -116,11 +86,7 @@ class Tradfri {
 	}
 
 	async getDevices () {
-		const result = []
-		for (const id of await this.getDeviceIds()) {
-			result.push(await this.getDevice(id))
-		}
-		return result
+		return Promise.all((await this.getDeviceIds()).map(async id => this.getDevice(id)))
 	}
 	
 	async setDeviceName (id, name) {
@@ -147,17 +113,6 @@ class Tradfri {
 		return this.setColor(`15001/${id}`, color, transitionTime, timeUnit)
 	}
 	
-	static sanitizeTransitionTime (value, unit) {
-		value = parseInt(value)
-		switch (unit) {
-			case 'h':  return value * 36000
-			case 'm':  return value * 600
-			case 'ds': return value // deci-second (1/10 of a second), the smallest unit Tradfri understands
-			case 's':
-			default:   return value * 10
-		}
-	}
-	
 	
 	// groups
 
@@ -178,11 +133,7 @@ class Tradfri {
 	}
 
 	async getGroups () {
-		const result = []
-		for (const id of await this.getGroupIds()) {
-			result.push(await this.getGroup(id))
-		}
-		return result
+		return Promise.all((await this.getGroupIds()).map(async id => this.getGroup(id)))
 	}
 
 	async setGroupName (id, name) {
@@ -213,11 +164,7 @@ class Tradfri {
 	}
 
 	async getSchedules () {
-		const result = []
-		for (const id of await this.getScheduleIds()) {
-			result.push(await this.getSchedule(id))
-		}
-		return result
+		return Promise.all((await this.getScheduleIds()).map(async id => this.getSchedule(id)))
 	}
 	
 	
@@ -238,15 +185,9 @@ class Tradfri {
 			}],
 		}
 		if (transitionTime) {
-			body[3311][0][5712] = Tradfri.sanitizeTransitionTime(transitionTime, timeUnit)
+			body[3311][0][5712] = TradfriClient.convertTransitionTime(transitionTime, timeUnit)
 		}
 		return this.request('put', path, JSON.stringify(body))
-	}
-
-	getRandomColor () {
-		const colors = ['red', 'green', 'blue', 'yellow', 'pink', 'purple']
-		const color = colors[Math.floor(Math.random() * colors.length)]
-		return color === this.lastRandomColor ? this.getRandomColor() : this.lastRandomColor = color
 	}
 
 	async setColor (path, color, transitionTime = null, timeUnit = 's') {
@@ -258,22 +199,42 @@ class Tradfri {
 			color = this.getRandomColor()
 		}
 
-		let body = {3311: []}
+		let body
 		if (this.colorTemperatures[color]) {
-			body[3311][0] = {5706: this.colorTemperatures[color]}
+			body = {3311: [{5706: this.colorTemperatures[color]}]}
 		} else if (this.colorsRGB[color]) {
-			// JSON.parse(JSON.stringify()) is a hack for cloning the object.
-			// This is necessary because we don't wanna mess with the reference below.
-			body[3311][0] = JSON.parse(JSON.stringify(this.colorsRGB[color]))
+			body = {3311: [{
+				5707: this.colorsRGB[color].hue,
+				5708: this.colorsRGB[color].saturation,
+				5709: this.colorsRGB[color].colorX,
+				5710: this.colorsRGB[color].colorY,
+			}]}
 		} else {
-			body[3311][0] = {}
+			throw new Error(`color "${color}" not supported`)
 		}
 
 		if (transitionTime) {
-			body[3311][0][5712] = Tradfri.sanitizeTransitionTime(transitionTime, timeUnit)
+			body[3311][0][5712] = TradfriClient.convertTransitionTime(transitionTime, timeUnit)
 		}
 
 		return this.request('put', path, JSON.stringify(body))
+	}
+
+	getRandomColor () {
+		const colors = ['red', 'green', 'blue', 'yellow', 'pink', 'purple']
+		const color = colors[Math.floor(Math.random() * colors.length)]
+		return color === this.lastRandomColor ? this.getRandomColor() : this.lastRandomColor = color
+	}
+
+	static convertTransitionTime (value, unit) {
+		value = parseInt(value)
+		switch (unit) {
+			case 'h':  return value * 36000
+			case 'm':  return value * 600
+			case 'ds': return value // deci-second (1/10 of a second), the smallest unit Tradfri understands
+			case 's':  return value * 10
+			default:   throw new Error(`time unit "${unit}" not supported`)
+		}
 	}
 
 	/**
@@ -300,4 +261,4 @@ class Tradfri {
 
 }
 
-module.exports = Tradfri
+module.exports = TradfriClient

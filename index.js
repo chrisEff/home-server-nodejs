@@ -72,8 +72,8 @@ const fauxMoDevices =  config.outlets
 	}))
 
 let discoInterval
-const Tradfri = require('./src/classes/Tradfri.js')
-const tradfri = new Tradfri(config.tradfri.user, config.tradfri.psk, config.tradfri.gateway)
+const TradfriClient = require('./src/classes/tradfri/TradfriClient.js')
+const tradfri = new TradfriClient(config.tradfri.user, config.tradfri.psk, config.tradfri.gateway)
 
 fauxMoDevices.push({
 	name: 'Disco',

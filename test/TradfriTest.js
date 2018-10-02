@@ -2,12 +2,12 @@ const assert = require('assert')
 const sinon = require('sinon')
 const chai = require('chai')
 
-const Tradfri = require('../src/classes/Tradfri')
+const TradfriClient = require('../src/classes/tradfri/TradfriClient')
 
-describe('Tradfri', () => {
+describe('TradfriClient', () => {
 	const sandbox = sinon.createSandbox()
 
-	const tradfri = new Tradfri('user', 'psk', 'gate.way')
+	const tradfri = new TradfriClient('user', 'psk', 'gate.way')
 	
 	let requestStub
 

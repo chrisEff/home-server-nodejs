@@ -35,8 +35,8 @@ module.exports = {
 			name: 'Remote Button #1',
 			code: '12345678',
 			callback: () => {
-				const Tradfri = require('./src/classes/Tradfri.js')
-				const tradfri = new Tradfri(module.exports.tradfri.user, module.exports.tradfri.psk, module.exports.tradfri.gateway)
+				const TradfriClient = require('./src/classes/tradfri/TradfriClient.js')
+				const tradfri = new TradfriClient(module.exports.tradfri.user, module.exports.tradfri.psk, module.exports.tradfri.gateway)
 				tradfri.toggleDeviceState(65539)
 			},
 		},

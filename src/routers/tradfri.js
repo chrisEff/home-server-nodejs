@@ -4,13 +4,13 @@ const restifyPromise = require('restify-await-promise')
 
 const Router = require('restify-router').Router
 const config = require('../../config.js')
-const Tradfri = require('../classes/Tradfri.js')
+const TradfriClient = require('../classes/tradfri/TradfriClient.js')
 
 const router = new Router()
 router.prefix = '/tradfri'
 restifyPromise.install(router)
 
-const tradfri = new Tradfri(config.tradfri.user, config.tradfri.psk, config.tradfri.gateway)
+const tradfri = new TradfriClient(config.tradfri.user, config.tradfri.psk, config.tradfri.gateway)
 
 router.get('/', () => ['/gateway', '/device', '/group', '/schedule'])
 
