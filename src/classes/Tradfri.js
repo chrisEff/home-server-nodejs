@@ -65,10 +65,19 @@ class Tradfri {
 		this.colorsRGB.lila  = this.colorsRGB.purple
 	}
 	
+	// gateway
+	
+	async getGatewayDetails () {
+		return this.request('get', '15011/15012')
+	}
+
+	async rebootGateway () {
+		return this.request('post', '15011/9030')
+	}
 	
 	// devices
 
-	getDeviceIds () {
+	async getDeviceIds () {
 		return this.request('get', `15001`)
 	}
 	

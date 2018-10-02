@@ -1,141 +1,70 @@
 'use strict'
 
+const restifyPromise = require('restify-await-promise')
+
 const Router = require('restify-router').Router
 const config = require('../../config.js')
 const Tradfri = require('../classes/Tradfri.js')
 
 const router = new Router()
 router.prefix = '/tradfri'
+restifyPromise.install(router)
 
 const tradfri = new Tradfri(config.tradfri.user, config.tradfri.psk, config.tradfri.gateway)
 
+router.get('/', () => ['/gateway', '/device', '/group', '/schedule'])
+
+
+// gateway
+
+router.get('/gateway', async () => tradfri.getGatewayDetails())
+router.post('/gateway/reboot', async () => tradfri.rebootGateway())
+
+
 // devices
 
-router.get('/', (request, response, next) => {
-	response.send(['/device', '/group', '/schedule'])
-	response.end()
-	next()
-})
+router.get('/device',     async ()    => tradfri.getDevices())
+router.get('/device/:id', async (req) => tradfri.getDevice(req.params.id))
 
-router.get('/device', async (request, response, next) => {
-	response.send(await tradfri.getDevices())
-	response.end()
-	next()
-})
+async function putDevice (device, body) {
+	const state = body.hasOwnProperty('state') ? body.state : device.state
 
-router.get('/device/:id', async (request, response, next) => {
-	response.send(await tradfri.getDevice(request.params.id))
-	response.end()
-	next()
-})
-
-function putDevice (id, body) {
-	let state
-	if (body.hasOwnProperty('state')) {
-		state = body.state
-	} else {
-		const deviceInfo = tradfri.getDevice(id)
-		state = deviceInfo[3311][0][5850]
-	}
-
-	if (body.hasOwnProperty('color')) {
-		tradfri.setDeviceColor(id, body.color)
-	}
-
-	if (body.hasOwnProperty('brightness')) {
-		tradfri.setDeviceBrightness(id, body.brightness)
-	}
-
-	if (body.hasOwnProperty('name')) {
-		tradfri.setDeviceName(id, body.name)
-	}
+	if (body.hasOwnProperty('color'))      tradfri.setDeviceColor(device.id, body.color)
+	if (body.hasOwnProperty('brightness')) tradfri.setDeviceBrightness(device.id, body.brightness)
+	if (body.hasOwnProperty('name'))       tradfri.setDeviceName(device.id, body.name)
 
 	// Changing the brightness will set the state to on,
 	// even if you explicitly want to set it to off or not change it at all.
 	// So we set the state last in order to revert any unwanted changes.
-	tradfri.setDeviceState(id, state)
+	setTimeout(() => tradfri.setDeviceState(device.id, state), 50)
 }
 
-router.put('/device', async (request, response, next) => {
-	(await tradfri.getDeviceIds()).forEach(id => {
-		putDevice(id, request.body)
-	})
+router.put('/device', async (req) => (await tradfri.getDevices())
+	.filter(device => device.type === 'bulb')
+	.forEach(device => putDevice(device, req.body)))
 
-	response.end()
-	next()
-})
+router.put('/device/:id', async (req) => putDevice((await tradfri.getDevice(req.params.id)), req.body))
 
-router.put('/device/:id', (request, response, next) => {
-	putDevice(request.params.id, request.body)
+router.put('/device/:id/name/:name',   async (req) => tradfri.setDeviceName(req.params.id, req.params.name))
+router.put('/device/:id/state/:state', async (req) => tradfri.setDeviceState(req.params.id, req.params.state))
 
-	response.end()
-	next()
-})
+router.put('/device/:id/brightness/:brightness',                           async (req) => tradfri.setDeviceBrightness(req.params.id, req.params.brightness))
+router.put('/device/:id/brightness/:brightness/:transitionTime',           async (req) => tradfri.setDeviceBrightness(req.params.id, req.params.brightness, req.params.transitionTime))
+router.put('/device/:id/brightness/:brightness/:transitionTime/:timeUnit', async (req) => tradfri.setDeviceBrightness(req.params.id, req.params.brightness, req.params.transitionTime, req.params.timeUnit))
 
-router.put('/device/:id/name/:name', async (request, response, next) => {
-	response.send(await tradfri.setDeviceName(request.params.id, request.params.name))
-	response.end()
-	next()
-})
-
-router.put('/device/:id/state/:state', async (request, response, next) => {
-	response.send(await tradfri.setDeviceState(request.params.id, request.params.state))
-	response.end()
-	next()
-})
-
-async function setBrightness (request, response, next) {
-	response.send(await tradfri.setDeviceBrightness(request.params.id, request.params.brightness, request.params.transitionTime, request.params.timeUnit))
-	response.end()
-	next()
-}
-router.put('/device/:id/brightness/:brightness', setBrightness)
-router.put('/device/:id/brightness/:brightness/:transitionTime', setBrightness)
-router.put('/device/:id/brightness/:brightness/:transitionTime/:timeUnit', setBrightness)
-
-async function setColor (request, response, next) {
-	response.send(await tradfri.setDeviceColor(request.params.id, request.params.color, request.params.transitionTime, request.params.timeUnit))
-	response.end()
-	next()
-}
-router.put('/device/:id/color/:color', setColor)
-router.put('/device/:id/color/:color/:transitionTime', setColor)
-router.put('/device/:id/color/:color/:transitionTime/:timeUnit', setColor)
+router.put('/device/:id/color/:color',                           async (req) => tradfri.setDeviceColor(req.params.id, req.params.color))
+router.put('/device/:id/color/:color/:transitionTime',           async (req) => tradfri.setDeviceColor(req.params.id, req.params.color, req.params.transitionTime))
+router.put('/device/:id/color/:color/:transitionTime/:timeUnit', async (req) => tradfri.setDeviceColor(req.params.id, req.params.color, req.params.transitionTime, req.params.timeUnit))
 
 
 // groups
-
-router.get('/group', async (request, response, next) => {
-	response.send(await tradfri.getGroups())
-	response.end()
-	next()
-})
-
-router.get('/group/:id', async (request, response, next) => {
-	response.send(await tradfri.getGroup(request.params.id))
-	response.end()
-	next()
-})
-
-router.put('/group/:id/:state', async (request, response, next) => {
-	response.send(await tradfri.setGroupState(request.params.id, request.params.state))
-	response.end()
-	next()
-})
+router.get('/group',            async ()    => tradfri.getGroups())
+router.get('/group/:id',        async (req) => tradfri.getGroup(req.params.id))
+router.put('/group/:id/:state', async (req) => tradfri.setGroupState(req.params.id, req.params.state))
 
 
 // schedules
-
-router.get('/schedule', async (request, response, next) => {
-	response.send(await tradfri.getSchedules()).end()
-	response.end()
-	next()
-})
-
-router.get('/schedule/:id', async (request, response, next) => {
-	response.send(await tradfri.getSchedule(request.params.id))
-	response.end()
-	next()
-})
+router.get('/schedule',     async ()    => tradfri.getSchedules())
+router.get('/schedule/:id', async (req) => tradfri.getSchedule(req.params.id))
 
 module.exports = router
