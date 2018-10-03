@@ -1,4 +1,3 @@
-const assert = require('assert')
 const sinon = require('sinon')
 const chai = require('chai')
 
@@ -98,7 +97,7 @@ describe('TradfriClient', () => {
 					.withArgs('get', '15001')
 					.resolves([65536, 65537, 65538])
 				
-				assert.deepStrictEqual(await tradfri.getDeviceIds(), [65536, 65537, 65538])
+				chai.assert.deepStrictEqual(await tradfri.getDeviceIds(), [65536, 65537, 65538])
 				sinon.assert.calledOnce(requestStub)
 				sinon.assert.calledWithExactly(requestStub, 'get', '15001')
 			})
@@ -110,7 +109,7 @@ describe('TradfriClient', () => {
 					.withArgs('get', '15001/65536')
 					.resolves(rawDevice1)
 				
-				assert.deepStrictEqual(await tradfri.getDevice(65536), sanitizedDevice1)
+				chai.assert.deepStrictEqual(await tradfri.getDevice(65536), sanitizedDevice1)
 				sinon.assert.calledOnce(requestStub)
 				sinon.assert.calledWithExactly(requestStub, 'get', '15001/65536')
 			})
@@ -126,7 +125,7 @@ describe('TradfriClient', () => {
 					.withArgs('get', '15001/65537')
 					.resolves(rawDevice2)
 	
-				assert.deepStrictEqual(await tradfri.getDevices(), [sanitizedDevice1, sanitizedDevice2])
+				chai.assert.deepStrictEqual(await tradfri.getDevices(), [sanitizedDevice1, sanitizedDevice2])
 				sinon.assert.calledThrice(requestStub)
 				sinon.assert.calledWithExactly(requestStub, 'get', '15001')
 				sinon.assert.calledWithExactly(requestStub, 'get', '15001/65536')
@@ -140,14 +139,14 @@ describe('TradfriClient', () => {
 					.withArgs('get', '15001/65536')
 					.resolves(rawDevice1)
 
-				assert.strictEqual(await tradfri.getDeviceState(65536), undefined)
+				chai.assert.strictEqual(await tradfri.getDeviceState(65536), undefined)
 			})
 			it('should return 0 for device #2', async () => {
 				requestStub
 					.withArgs('get', '15001/65537')
 					.resolves(rawDevice2)
 
-				assert.strictEqual(await tradfri.getDeviceState(65537), 0)
+				chai.assert.strictEqual(await tradfri.getDeviceState(65537), 0)
 			})
 		})
 
@@ -233,7 +232,7 @@ describe('TradfriClient', () => {
 					.withArgs('get', '15004')
 					.resolves([131073, 131074, 131075])
 	
-				assert.deepStrictEqual(await tradfri.getGroupIds(), [131073, 131074, 131075])
+				chai.assert.deepStrictEqual(await tradfri.getGroupIds(), [131073, 131074, 131075])
 				sinon.assert.calledOnce(requestStub)
 				sinon.assert.calledWithExactly(requestStub, 'get', '15004')
 			})
@@ -245,7 +244,7 @@ describe('TradfriClient', () => {
 					.withArgs('get', '15004/131073')
 					.resolves(rawGroup1)
 	
-				assert.deepStrictEqual(await tradfri.getGroup(131073), sanitizedGroup1)
+				chai.assert.deepStrictEqual(await tradfri.getGroup(131073), sanitizedGroup1)
 				sinon.assert.calledOnce(requestStub)
 				sinon.assert.calledWithExactly(requestStub, 'get', '15004/131073')
 			})
@@ -261,7 +260,7 @@ describe('TradfriClient', () => {
 					.withArgs('get', '15004/131075')
 					.resolves(rawGroup2)
 	
-				assert.deepStrictEqual(await tradfri.getGroups(), [sanitizedGroup1, sanitizedGroup2])
+				chai.assert.deepStrictEqual(await tradfri.getGroups(), [sanitizedGroup1, sanitizedGroup2])
 				sinon.assert.calledThrice(requestStub)
 				sinon.assert.calledWithExactly(requestStub, 'get', '15004')
 				sinon.assert.calledWithExactly(requestStub, 'get', '15004/131073')
@@ -313,7 +312,7 @@ describe('TradfriClient', () => {
 					.withArgs('get', '15010')
 					.resolves([280397, 295373, 301852])
 
-				assert.deepStrictEqual(await tradfri.getScheduleIds(), [280397, 295373, 301852])
+				chai.assert.deepStrictEqual(await tradfri.getScheduleIds(), [280397, 295373, 301852])
 				sinon.assert.calledOnce(requestStub)
 				sinon.assert.calledWithExactly(requestStub, 'get', '15010')
 			})
@@ -325,7 +324,7 @@ describe('TradfriClient', () => {
 					.withArgs('get', '15010/280397')
 					.resolves(rawSchedule)
 
-				assert.deepStrictEqual(await tradfri.getSchedule(280397), rawSchedule)
+				chai.assert.deepStrictEqual(await tradfri.getSchedule(280397), rawSchedule)
 				sinon.assert.calledOnce(requestStub)
 				sinon.assert.calledWithExactly(requestStub, 'get', '15010/280397')
 			})
