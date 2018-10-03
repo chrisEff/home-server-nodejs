@@ -1,7 +1,8 @@
 'use strict'
 
 const exec = require('child-process-promise').exec
-const get = require('lodash.get')
+
+const TradfriSanitizer = require('./TradfriSanitizer')
 
 class TradfriClient {
 	
@@ -52,37 +53,7 @@ class TradfriClient {
 	}
 	
 	async getDevice (deviceId) {
-		const raw = await this.request('get', `15001/${deviceId}`)
-		let model = get(raw, '3.1')
-		const result = {
-			id:         get(raw, '9003'),
-			type:       TradfriClient.getDeviceTypeByModel(model),
-			name:       get(raw, '9001'),
-			model:      model,
-			firmware:   get(raw, '3.3'),
-		}
-		
-		if (result.type === 'bulb') {
-			result.state      = get(raw, '3311.0.5850')
-			result.brightness = get(raw, '3311.0.5851')
-			result.bulbType   = TradfriClient.getBulbTypeByModel(model)
-		}
-		result.raw = raw
-
-		return result
-	}
-
-	static getDeviceTypeByModel (model) {
-		if (model === 'TRADFRI remote control')        return 'remote'
-		if (model === 'TRADFRI wireless dimmer')       return 'dimmer'
-		if (model && model.startsWith('TRADFRI bulb')) return 'bulb'
-		return undefined
-	}
-
-	static getBulbTypeByModel (model) {
-		if (model.includes(' CWS ')) return 'rgb'
-		if (model.includes(' WS '))  return 'white-spectrum'
-		return 'white'
+		return TradfriSanitizer.sanitizeDevice(await this.request('get', `15001/${deviceId}`))
 	}
 
 	async getDevices () {
@@ -121,15 +92,7 @@ class TradfriClient {
 	}
 	
 	async getGroup (id) {
-		const raw = await this.request('get', `15004/${id}`)
-		const result = {
-			id:   get(raw, '9003'),
-			name: get(raw, '9001'),
-			deviceIds: get(raw, '9018.15002.9003'),
-			raw,
-		}
-		
-		return result
+		return TradfriSanitizer.sanitizeGroup(await this.request('get', `15004/${id}`))
 	}
 
 	async getGroups () {
