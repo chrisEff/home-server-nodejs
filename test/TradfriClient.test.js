@@ -88,6 +88,7 @@ describe('TradfriClient', () => {
 			model: 'TRADFRI bulb E27 WS opal 980lm',
 			firmware: '1.2.217',
 			bulbType: 'white-spectrum',
+			color: 'warm',
 			raw: rawDevice2,
 		}
 		
