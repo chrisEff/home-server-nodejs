@@ -60,36 +60,21 @@ server.listen(config.serverPort, () => {
 	Logger.info('server started, listening on port ' + config.serverPort)
 })
 
-const fauxMoDevices =  config.outlets
-	.filter(o => o.hasOwnProperty('fauxmoPort'))
-	.map(o => ({
-		name: o.name,
-		port: o.fauxmoPort,
-		handler: (action) => {
-			Logger.debug(`FauxMo device '${o.name}' switched ${action}`)
-			RfController.switchOutlet(o.id, (action === 'on') ? 1 : 0)
-		},
-	}))
+const fauxMoDevices = config.fauxMoDevices || []
 
-let discoInterval
-const TradfriClient = require('./src/classes/tradfri/TradfriClient.js')
-const tradfri = new TradfriClient(config.tradfri.user, config.tradfri.psk, config.tradfri.gateway)
-
-fauxMoDevices.push({
-	name: 'Disco',
-	port: 11001,
-	handler: (action) => {
-		Logger.debug(`Fauxmo device 'Disco' switched ${action}`)
-		if (action === 'off') {
-			clearInterval(discoInterval)
-			discoInterval = null
-			setTimeout(() => tradfri.setDeviceState(65539, 0), 500)
-		} else if (!discoInterval) {
-			tradfri.setDeviceState(65539, 1)
-			discoInterval = setInterval(() => tradfri.setDeviceColor(65539, 'random', 5, 'ds'), 500)
-		}
-	},
-})
+if (config.outlets && config.outlets.length) {
+	config.outlets
+		.filter(o => o.hasOwnProperty('fauxmoPort'))
+		.map(o => ({
+			name: o.name,
+			port: o.fauxmoPort,
+			handler: (action) => {
+				Logger.debug(`FauxMo device '${o.name}' switched ${action}`)
+				RfController.switchOutlet(o.id, (action === 'on') ? 1 : 0)
+			},
+		}))
+		.forEach(o => fauxMoDevices.push(o))
+}
 
 if (fauxMoDevices.length) {
 	const fauxMo = new FauxMo({

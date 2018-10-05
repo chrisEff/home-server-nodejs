@@ -3,3 +3,5 @@ node_modules/
 /config.js
 /logs.txt
 package-lock.json
+/tools/
+/custom-configs/
