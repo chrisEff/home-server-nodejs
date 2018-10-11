@@ -30,10 +30,19 @@ if (get(config, 'ssl.certificateFile') && get(config, 'ssl.certificateKeyFile'))
 const server = restify.createServer(options)
 
 server.pre(restify.plugins.queryParser())
+
+if (config.superSecretKey) {
+	server.pre((request, response, next) => {
+		if (request.query.key !== config.superSecretKey) {
+			return next(new errors.UnauthorizedError('nope!'))
+		}
+		next()
+	})
+} else {
+	Logger.warn('No "superSecretKey" set -> API can be accessed by anyone!')
+}
+
 server.pre((request, response, next) => {
-	if (request.query.key !== config.superSecretKey) {
-		return next(new errors.UnauthorizedError('nope!'))
-	}
 	Logger.debug(`received request: ${request.method} ${request.getPath()}`)
 	next()
 })
