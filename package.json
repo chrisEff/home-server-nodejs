@@ -26,6 +26,7 @@
 		"fs-extra": "^6.0.1",
 		"lodash.debounce": "^4.0.8",
 		"lodash.get": "^4.4.2",
+		"node-cron": "^2.0.3",
 		"restify": "^7.2.0",
 		"restify-await-promise": "^2.1.0",
 		"restify-cors-middleware": "^1.1.1",

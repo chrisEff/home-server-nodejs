@@ -118,3 +118,17 @@ if (config.dashButtons && config.dashButtons.length) {
 	Logger.info(`registered ${config.dashButtons.length} Amazon Dash buttons`)
 }
 
+if (config.cronjobs && config.cronjobs.length) {
+	const nodeCron = require('node-cron')
+	config.cronjobs.forEach(cronJob => {
+		const s = cronJob.schedule
+		let scheduleString = `${s.minute} ${s.hour} ${s.dayOfMonth} ${s.month} ${s.dayOfWeek}`
+		if (s.hasOwnProperty('second')) {
+			scheduleString = `${s.second} ${scheduleString}`
+		}
+		return nodeCron.schedule(scheduleString, () => {
+			Logger.info(`running cron job '${cronJob.name}'`)
+			cronJob.callback()
+		})
+	})
+}
