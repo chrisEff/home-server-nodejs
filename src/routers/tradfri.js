@@ -47,6 +47,7 @@ router.put('/device/:id', async (req) => putDevice((await tradfri.getDevice(req.
 
 router.put('/device/:id/name/:name',   async (req) => tradfri.setDeviceName(req.params.id, req.params.name))
 router.put('/device/:id/state/:state', async (req) => tradfri.setDeviceState(req.params.id, req.params.state))
+router.put('/device/:id/toggle',       async (req) => tradfri.toggleDeviceState(req.params.id))
 
 router.put('/device/:id/brightness/:brightness',                           async (req) => tradfri.setDeviceBrightness(req.params.id, req.params.brightness))
 router.put('/device/:id/brightness/:brightness/:transitionTime',           async (req) => tradfri.setDeviceBrightness(req.params.id, req.params.brightness, req.params.transitionTime))
@@ -68,10 +69,7 @@ router.put('/group/:id/brightness/:brightness',                           async 
 router.put('/group/:id/brightness/:brightness/:transitionTime',           async (req) => tradfri.setGroupBrightness(req.params.id, req.params.brightness, req.params.transitionTime))
 router.put('/group/:id/brightness/:brightness/:transitionTime/:timeUnit', async (req) => tradfri.setGroupBrightness(req.params.id, req.params.brightness, req.params.transitionTime, req.params.timeUnit))
 
-router.put('/group/:id/color/:color',                           async (req) => tradfri.setGroupColor(req.params.id, req.params.color))
-router.put('/group/:id/color/:color/:transitionTime',           async (req) => tradfri.setGroupColor(req.params.id, req.params.color, req.params.transitionTime))
-router.put('/group/:id/color/:color/:transitionTime/:timeUnit', async (req) => tradfri.setGroupColor(req.params.id, req.params.color, req.params.transitionTime, req.params.timeUnit))
-
+// PUT /group/:id/color/:color not implemented since it doesn't seem to be possible to set a group's color
 
 // schedules
 router.get('/schedule',     async ()    => tradfri.getSchedules())

@@ -36,7 +36,7 @@ class TradfriClient {
 		this.colorsRGB.lila  = this.colorsRGB.purple
 	}
 	
-	// gateway
+	// *** gateway ***
 	
 	async getGatewayDetails () {
 		return this.request('get', '15011/15012')
@@ -46,7 +46,8 @@ class TradfriClient {
 		return this.request('post', '15011/9030')
 	}
 	
-	// devices
+	
+	// *** devices ***
 
 	async getDeviceIds () {
 		return this.request('get', `15001`)
@@ -69,7 +70,7 @@ class TradfriClient {
 	}
 
 	async setDeviceState (id, state) {
-		return this.setState(`15001/${id}`, state)
+		return this.request('put', `15001/${id}`, JSON.stringify({3311: [{5850: parseInt(state)}]}))
 	}
 
 	async toggleDeviceState (id) {
@@ -77,15 +78,25 @@ class TradfriClient {
 	}
 
 	async setDeviceBrightness (id, brightness, transitionTime = null, timeUnit = 's') {
-		return this.setBrightness(`15001/${id}`, brightness, transitionTime, timeUnit)
+		const body = {3311: [{5851: parseInt(brightness)}]}
+		if (transitionTime) {
+			body[3311][0][5712] = TradfriClient.convertTransitionTime(transitionTime, timeUnit)
+		}
+		
+		return this.request('put', `15001/${id}`, JSON.stringify(body))
 	}
 
 	async setDeviceColor (id, color, transitionTime = null, timeUnit = 's') {
-		return this.setColor(`15001/${id}`, color, transitionTime, timeUnit)
+		const body = {3311: [this.mapColor(color)]}
+		if (transitionTime) {
+			body[3311][0][5712] = TradfriClient.convertTransitionTime(transitionTime, timeUnit)
+		}
+
+		return this.request('put', `15001/${id}`, JSON.stringify(body))
 	}
 	
 	
-	// groups
+	// *** groups ***
 
 	async getGroupIds () {
 		return this.request('get', `15004`)
@@ -100,23 +111,26 @@ class TradfriClient {
 	}
 
 	async setGroupName (id, name) {
-		return this.request('put', `15004/${id}`, JSON.stringify({'9001': name}))
+		return this.request('put', `15004/${id}`, JSON.stringify({9001: name}))
 	}
 
 	async setGroupState (id, state) {
-		return this.setState(`15004/${id}`, state)
+		return this.request('put', `15004/${id}`, JSON.stringify({5850: parseInt(state)}))
 	}
 
 	async setGroupBrightness (id, brightness, transitionTime = null, timeUnit = 's') {
-		return this.setBrightness(`15004/${id}`, brightness, transitionTime, timeUnit)
+		const body = {5851: parseInt(brightness)}
+		if (transitionTime) {
+			body[5712] = TradfriClient.convertTransitionTime(transitionTime, timeUnit)
+		}
+		
+		return this.request('put', `15004/${id}`, JSON.stringify(body))
 	}
 
-	async setGroupColor (id, color, transitionTime = null, timeUnit = 's') {
-		return this.setColor(`15004/${id}`, color, transitionTime, timeUnit)
-	}
+	// setGroupColor() not implemented since it doesn't seem to be possible to set a group's color
 	
 	
-	// schedules
+	// *** schedules ***
 
 	async getScheduleIds () {
 		return this.request('get', `15010`)
@@ -131,56 +145,32 @@ class TradfriClient {
 	}
 	
 	
-	// general
-
-	async setState (path, state) {
-		return this.request('put', path, JSON.stringify({
-			3311: [{
-				5850: parseInt(state),
-			}],
-		}))
-	}
-
-	async setBrightness (path, brightness, transitionTime = null, timeUnit = 's') {
-		const body = {
-			3311: [{
-				5851: parseInt(brightness),
-			}],
-		}
-		if (transitionTime) {
-			body[3311][0][5712] = TradfriClient.convertTransitionTime(transitionTime, timeUnit)
-		}
-		return this.request('put', path, JSON.stringify(body))
-	}
-
-	async setColor (path, color, transitionTime = null, timeUnit = 's') {
+	// *** general ***
+	
+	mapColor (color) {
 		color = color
 			.replace('ä', 'ae')
 			.replace('ö', 'oe')
 			.replace('ü', 'ue')
+		
 		if (['random', 'zufall'].indexOf(color) >= 0) {
 			color = this.getRandomColor()
 		}
 
-		let body
 		if (this.colorTemperatures[color]) {
-			body = {3311: [{5706: this.colorTemperatures[color]}]}
-		} else if (this.colorsRGB[color]) {
-			body = {3311: [{
+			return {5706: this.colorTemperatures[color]}
+		}
+		
+		if (this.colorsRGB[color]) {
+			return {
 				5707: this.colorsRGB[color].hue,
 				5708: this.colorsRGB[color].saturation,
 				5709: this.colorsRGB[color].colorX,
 				5710: this.colorsRGB[color].colorY,
-			}]}
-		} else {
-			throw new Error(`color "${color}" not supported`)
+			}
 		}
-
-		if (transitionTime) {
-			body[3311][0][5712] = TradfriClient.convertTransitionTime(transitionTime, timeUnit)
-		}
-
-		return this.request('put', path, JSON.stringify(body))
+		
+		throw new Error(`color "${color}" not supported`)
 	}
 
 	getRandomColor () {
