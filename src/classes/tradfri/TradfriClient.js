@@ -199,7 +199,7 @@ class TradfriClient {
 	async request (method, path, body = null) {
 		body = body ? `-e '${body}'` : ''
 
-		const command = `coap-client -m ${method} -u "${this.user}" -k "${this.psk}" ${body} "coaps://${this.gateway}:5684/${path}"`
+		const command = `coap-client -B 10 -m ${method} -u "${this.user}" -k "${this.psk}" ${body} "coaps://${this.gateway}:5684/${path}"`
 		const response = await exec(command)
 		const lines = response.stdout.toString().split('\n')
 
