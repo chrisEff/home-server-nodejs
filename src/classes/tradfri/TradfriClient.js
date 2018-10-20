@@ -1,6 +1,7 @@
 'use strict'
 
 const exec = require('child-process-promise').exec
+const lodashSortBy = require('lodash.sortby')
 
 const TradfriSanitizer = require('./TradfriSanitizer')
 
@@ -53,12 +54,13 @@ class TradfriClient {
 		return this.request('get', `15001`)
 	}
 	
-	async getDevice (deviceId) {
-		return TradfriSanitizer.sanitizeDevice(await this.request('get', `15001/${deviceId}`))
+	async getDevice (deviceId, withRaw = false) {
+		return TradfriSanitizer.sanitizeDevice(await this.request('get', `15001/${deviceId}`), withRaw)
 	}
 
-	async getDevices () {
-		return Promise.all((await this.getDeviceIds()).map(async id => this.getDevice(id)))
+	async getDevices (sortBy = null, withRaw = false) {
+		const devices = await Promise.all((await this.getDeviceIds()).map(async id => this.getDevice(id, withRaw)))
+		return sortBy ? lodashSortBy(devices, sortBy.split(',')) : devices
 	}
 	
 	async setDeviceName (id, name) {
@@ -102,12 +104,13 @@ class TradfriClient {
 		return this.request('get', `15004`)
 	}
 	
-	async getGroup (id) {
-		return TradfriSanitizer.sanitizeGroup(await this.request('get', `15004/${id}`))
+	async getGroup (id, withRaw = false) {
+		return TradfriSanitizer.sanitizeGroup(await this.request('get', `15004/${id}`), withRaw)
 	}
 
-	async getGroups () {
-		return Promise.all((await this.getGroupIds()).map(async id => this.getGroup(id)))
+	async getGroups (sortBy = null, withRaw = false) {
+		const groups = await Promise.all((await this.getGroupIds()).map(async id => this.getGroup(id, withRaw)))
+		return sortBy ? lodashSortBy(groups, sortBy.split(',')) : groups
 	}
 
 	async setGroupName (id, name) {

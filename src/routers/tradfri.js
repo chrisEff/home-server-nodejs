@@ -14,6 +14,7 @@ const tradfri = new TradfriClient(config.tradfri.user, config.tradfri.psk, confi
 
 router.get('/', () => ['/gateway', '/device', '/group', '/schedule'])
 
+const toBool = (value) => !!value && value !== '0' && value !== 'false'
 
 // gateway
 
@@ -23,8 +24,8 @@ router.post('/gateway/reboot', async () => tradfri.rebootGateway())
 
 // devices
 
-router.get('/device',     async ()    => tradfri.getDevices())
-router.get('/device/:id', async (req) => tradfri.getDevice(req.params.id))
+router.get('/device',     async (req) => tradfri.getDevices(req.query.sortBy, toBool(req.query.withRaw)))
+router.get('/device/:id', async (req) => tradfri.getDevice(req.params.id, toBool(req.query.withRaw)))
 
 async function putDevice (device, body) {
 	const state = body.hasOwnProperty('state') ? body.state : device.state
@@ -59,8 +60,8 @@ router.put('/device/:id/color/:color/:transitionTime/:timeUnit', async (req) => 
 
 
 // groups
-router.get('/group',     async ()    => tradfri.getGroups())
-router.get('/group/:id', async (req) => tradfri.getGroup(req.params.id))
+router.get('/group',     async (req) => tradfri.getGroups(req.query.sortBy, toBool(req.query.withRaw)))
+router.get('/group/:id', async (req) => tradfri.getGroup(req.params.id, toBool(req.query.withRaw)))
 
 router.put('/group/:id/name/:name',   async (req) => tradfri.setGroupName(req.params.id, req.params.name))
 router.put('/group/:id/state/:state', async (req) => tradfri.setGroupState(req.params.id, req.params.state))

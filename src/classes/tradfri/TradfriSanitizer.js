@@ -10,7 +10,7 @@ const BULB_TYPE_WHITE = 'white'
 
 class TradfriSanitizer {
 	
-	static sanitizeDevice (raw, includeRaw = true) {
+	static sanitizeDevice (raw, includeRaw = false) {
 		let model = get(raw, '3.1')
 		const result = {
 			id:         get(raw, '9003'),
@@ -58,12 +58,11 @@ class TradfriSanitizer {
 		return undefined
 	}
 
-	static sanitizeGroup (raw, includeRaw = true) {
+	static sanitizeGroup (raw, includeRaw = false) {
 		const result = {
 			id:   get(raw, '9003'),
 			name: get(raw, '9001'),
 			deviceIds: get(raw, '9018.15002.9003'),
-			raw,
 		}
 		if (includeRaw) {
 			result.raw = raw
