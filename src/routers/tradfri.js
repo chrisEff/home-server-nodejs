@@ -1,14 +1,12 @@
 'use strict'
 
-const restifyPromise = require('restify-await-promise')
-
 const Router = require('restify-router').Router
 const config = require('../../config.js')
 const TradfriClient = require('../classes/tradfri/TradfriClient.js')
 
 const router = new Router()
 router.prefix = '/tradfri'
-restifyPromise.install(router)
+require('restify-await-promise').install(router)
 
 const tradfri = new TradfriClient(config.tradfri.user, config.tradfri.psk, config.tradfri.gateway)
 

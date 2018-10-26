@@ -8,39 +8,18 @@ const sensors = require('../../config.js').tempSensors
 
 const router = new Router()
 router.prefix = '/tempSensors'
+require('restify-await-promise').install(router)
 
-router.get('/', async (request, response, next) => {
-	const data = await Promise.all(JSON.parse(JSON.stringify(sensors)).map(async (sensor) => {
-		sensor.celsiusValue = await readSensor(sensor.deviceId)
-		return sensor
-	}))
+router.get('/', async () => Promise.all(
+	sensors.map(async (sensor) => ({...sensor, celsiusValue: await readSensor(sensor.deviceId)}))
+))
 
-	response.send(data)
-	response.end()
-	next()
-})
-
-router.get('/:id', async (request, response, next) => {
-	let sensor = sensors.find(sensor => sensor.id === parseInt(request.params.id))
+router.get('/:id', async (req) => {
+	const sensor = sensors.find(sensor => sensor.id === parseInt(req.params.id))
 	if (!sensor) {
-		return next(new errors.NotFoundError(`sensor ID ${request.params.id} not found`))
+		throw new errors.NotFoundError(`sensor ID ${req.params.id} not found`)
 	}
-	sensor = JSON.parse(JSON.stringify(sensor))
-	sensor.celsiusValue = await readSensor(sensor.deviceId)
-
-	response.send(sensor)
-	response.end()
-	next()
-})
-
-router.get('/:id/value', async (request, response, next) => {
-	const sensor = sensors.find(sensor => sensor.id === parseInt(request.params.id))
-	if (!sensor) {
-		return next(new errors.NotFoundError(`sensor ID ${request.params.id} not found`))
-	}
-	response.send(200, await readSensor(sensor.deviceId))
-	response.end()
-	next()
+	return {...sensor, celsiusValue: await readSensor(sensor.deviceId)}
 })
 
 const readSensor = async (deviceId) => {

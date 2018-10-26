@@ -5,31 +5,18 @@ const RfController = require('../classes/RfController')
 
 const router = new Router()
 router.prefix = '/rfoutlets'
+require('restify-await-promise').install(router)
 
-// outlets
+router.get('/', () => ['/outlet'])
+router.get('/outlet', () => RfController.getOutlets())
 
-router.get('/', (request, response, next) => {
-	response.send(['/outlet'])
-	response.end()
-	next()
-})
-
-router.get('/outlet', (request, response, next) => {
-	response.send(RfController.getOutlets())
-	response.end()
-	next()
-})
-
-router.put('/outlet/:id/:state', async (request, response, next) => {
+router.put('/outlet/:id/:state', async (req) => {
 	try {
-		await RfController.switchOutlet(request.params.id, request.params.state)
-		response.send('OK')
+		await RfController.switchOutlet(req.params.id, req.params.state)
+		return 'OK'
 	} catch (e) {
 		console.log('codesend failed: ', e)
-		response.send({error: e})
-	} finally {
-		response.end()
-		next()
+		throw e
 	}
 })
 
