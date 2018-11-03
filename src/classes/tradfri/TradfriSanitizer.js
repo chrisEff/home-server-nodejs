@@ -25,8 +25,15 @@ class TradfriSanitizer {
 			result.brightness = get(raw, '3311.0.5851')
 			result.bulbType   = TradfriSanitizer.getBulbTypeByModel(model)
 
-			if (result.bulbType === BULB_TYPE_WHITE_SPECTRUM) {
-				result.color = TradfriSanitizer.getColorTemperatureByHex(get(raw, '3311.0.5706'))
+			if (get(raw, '3311.0.5706') && get(raw, '3311.0.5706') !== '0') {
+				result.color = TradfriSanitizer.getColorByHex(get(raw, '3311.0.5706'))
+			} else if (get(raw, '3311.0.5707')) {
+				result.color = TradfriSanitizer.getColorByHueSaturationXY(
+					parseInt(get(raw, '3311.0.5707')),
+					parseInt(get(raw, '3311.0.5708')),
+					parseInt(get(raw, '3311.0.5709')),
+					parseInt(get(raw, '3311.0.5710'))
+				)
 			}
 		}
 		if (includeRaw) {
@@ -49,12 +56,26 @@ class TradfriSanitizer {
 		return BULB_TYPE_WHITE
 	}
 	
-	static getColorTemperatureByHex (hex) {
+	static getColorByHex (hex) {
 		switch (hex) {
 			case 'efd275': return 'warm'
 			case 'f1e0b5': return 'neutral'
 			case 'f5faf6': return 'cold'
+			case 'd6e44b': return 'yellow'
+			case 'd9337c': return 'pink'
+			case '8f2686': return 'purple'
+			case 'e78834': return 'orange'
+			case 'e8bedd': return 'lightPink'
+			case 'c984bb': return 'lightPurple'
+			case 'dcf0f8': return 'coldSky'
 		}
+		return undefined
+	}
+
+	static getColorByHueSaturationXY (hue, saturation, x, y) {
+		if (hue === 63828 && saturation === 65279 && x === 41084 && y === 21159) return 'red'
+		if (hue === 20673 && saturation === 65279 && x === 19659 && y === 39108) return 'green'
+		if (hue === 45333 && saturation === 65279 && x === 10121 && y === 4098)  return 'blue'
 		return undefined
 	}
 

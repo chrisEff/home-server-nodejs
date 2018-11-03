@@ -333,7 +333,7 @@ describe('TradfriClient', () => {
 
 	describe('getRandomColor()', () => {
 		it('should return a valid random color', async () => {
-			chai.assert.include(['red', 'green', 'blue', 'yellow', 'pink', 'purple'], tradfri.getRandomColor())
+			chai.assert.include(['red', 'green', 'blue', 'yellow', 'pink', 'purple', 'orange'], tradfri.getRandomColor())
 			sinon.assert.notCalled(requestStub)
 		})
 	})

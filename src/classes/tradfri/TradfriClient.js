@@ -22,12 +22,17 @@ class TradfriClient {
 		this.colorTemperatures.kalt = this.colorTemperatures.cold
 		
 		this.colorsRGB = {
-			red:    { hue: 63828, saturation: 65279, colorX: 41084, colorY: 21159 },
-			green:  { hue: 20672, saturation: 65279, colorX: 19659, colorY: 39108 },
-			blue:   { hue: 45333, saturation: 65279, colorX: 10121, colorY: 4098 },
-			yellow: { hue: 9611,  saturation: 65279, colorX: 28800, colorY: 31848 },
-			pink:   { hue: 59476, saturation: 65279, colorX: 31574, colorY: 15919 },
-			purple: { hue: 49141, saturation: 65279, colorX: 13353, colorY: 5879 },
+			red:          { hue: 63828, saturation: 65279, colorX: 41084, colorY: 21159 },
+			green:        { hue: 20673, saturation: 65279, colorX: 19659, colorY: 39108 },
+			blue:         { hue: 45333, saturation: 65279, colorX: 10121, colorY: 4098  },
+			yellow:       { hue: 8572,  saturation: 55985, colorX: 29491, colorY: 30802 }, // Yellow
+			pink:         { hue: 59789, saturation: 65279, colorX: 32768, colorY: 15729 }, // Saturated Pink
+			purple:       { hue: 53953, saturation: 65279, colorX: 20316, colorY: 8520  }, // Saturated Purple
+			orange:       { hue: 4137,  saturation: 65279, colorX: 38011, colorY: 24904 }, // Warm Amber
+			lightPink:    { hue: 62007, saturation: 41158, colorX: 29491, colorY: 18350 }, // Light Pink
+			lightPurple:  { hue: 55784, saturation: 44554, colorX: 22282, colorY: 12452 }, // Light Purple
+			coldSky:      { hue: 2681,  saturation: 4360,  colorX: 21109, colorY: 21738 }, // Cold Sky
+			coolDaylight: { hue: 5989,  saturation: 12964, colorX: 22584, colorY: 23272 }, // Cool Daylight
 		}
 		this.colorsRGB.rot   = this.colorsRGB.red
 		this.colorsRGB.gruen = this.colorsRGB.green
@@ -177,7 +182,7 @@ class TradfriClient {
 	}
 
 	getRandomColor () {
-		const colors = ['red', 'green', 'blue', 'yellow', 'pink', 'purple']
+		const colors = ['red', 'green', 'blue', 'yellow', 'pink', 'purple', 'orange']
 		const color = colors[Math.floor(Math.random() * colors.length)]
 		return color === this.lastRandomColor ? this.getRandomColor() : this.lastRandomColor = color
 	}
@@ -187,8 +192,9 @@ class TradfriClient {
 		switch (unit) {
 			case 'h':  return value * 36000
 			case 'm':  return value * 600
-			case 'ds': return value // deci-second (1/10 of a second), the smallest unit Tradfri understands
 			case 's':  return value * 10
+			case 'ds': return value // deci-second (1/10 of a second), the smallest unit Tradfri understands
+			case 'ms': return Math.round(value / 100)
 			default:   throw new Error(`time unit "${unit}" not supported`)
 		}
 	}
