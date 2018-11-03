@@ -151,8 +151,24 @@ class TradfriClient {
 	async getSchedules () {
 		return Promise.all((await this.getScheduleIds()).map(async id => this.getSchedule(id)))
 	}
-	
-	
+
+
+	// *** fancy features ***
+
+	disco (deviceIds, on, intervalMs = 500, transitionMs = 300) {
+		if (!on) {
+			if (this.discoInterval) {
+				clearInterval(this.discoInterval)
+				this.discoInterval = null
+				setTimeout(() => deviceIds.forEach(deviceId => this.setDeviceState(deviceId, 0)), 500)
+			}
+		} else if (!this.discoInterval) {
+			deviceIds.forEach(deviceId => this.setDeviceState(deviceId, 1))
+			this.discoInterval = setInterval(() => deviceIds.forEach(deviceId => this.setDeviceColor(deviceId, 'random', transitionMs, 'ms')), intervalMs)
+		}
+	}
+
+
 	// *** general ***
 	
 	mapColor (color) {
