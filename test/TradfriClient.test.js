@@ -276,7 +276,7 @@ describe('TradfriClient', () => {
 				await tradfri.setGroupState(131073, 1)
 
 				sinon.assert.calledOnce(requestStub)
-				sinon.assert.calledWithExactly(requestStub, 'put', '15004/131073', '{"3311":[{"5850":1}]}')
+				sinon.assert.calledWithExactly(requestStub, 'put', '15004/131073', '{"5850":1}')
 			})
 		})
 	})
