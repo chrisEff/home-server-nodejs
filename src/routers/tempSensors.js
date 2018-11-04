@@ -11,15 +11,14 @@ router.prefix = '/tempSensors'
 require('restify-await-promise').install(router)
 
 router.get('/', async () => Promise.all(
-	sensors.map(async (sensor) => ({...sensor, celsiusValue: await readSensor(sensor.deviceId)}))
+	sensors.map(async (sensor) => ({ ...sensor, celsiusValue: await readSensor(sensor.deviceId) }))
 ))
 
 router.get('/:id', async (req) => {
 	const sensor = sensors.find(sensor => sensor.id === parseInt(req.params.id))
-	if (!sensor) {
-		throw new errors.NotFoundError(`sensor ID ${req.params.id} not found`)
-	}
-	return {...sensor, celsiusValue: await readSensor(sensor.deviceId)}
+	return sensor
+		? { ...sensor, celsiusValue: await readSensor(sensor.deviceId) }
+		: new errors.NotFoundError(`sensor ID ${req.params.id} not found`)
 })
 
 const readSensor = async (deviceId) => {
