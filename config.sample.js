@@ -52,4 +52,19 @@ module.exports = {
 			},
 		},
 	],
+	cronjobs: [
+		{
+			name: 'do something every minute',
+			schedule: {
+				minute: '*',
+				hour: '*',
+				dayOfMonth: '*',
+				month: '*',
+				dayOfWeek: '*',
+			},
+			callback: () => {
+				// do something
+			},
+		},
+	],
 }
