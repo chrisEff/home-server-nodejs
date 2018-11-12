@@ -11,6 +11,7 @@ module.exports = {
 		psk: 'abcdEfgHijklMnOP',
 		gateway: 'tradfri.fritz.box',
 	},
+	awsProfile: 'private', // leave blank for default
 	outlets: [
 		{
 			id: 0,
@@ -22,13 +23,17 @@ module.exports = {
 			fauxmoPort: 11000, // optional: if set, outlet will be exposed as a fake WeMo ("FauxMo") device on the network under this port
 		},
 	],
-	tempSensors: [
-		{
-			id: 1,
-			name: 'Office',
-			deviceId: '28-0000011a2b3f',
-		},
-	],
+	temperature: {
+		recordIntervalMinutes: 5,
+		dynamoDbTable: 'home-server_temperatures',
+		sensors: [
+			{
+				id: 1,
+				name: 'Office',
+				deviceId: '28-0000011a2b3f',
+			},
+		],
+	},
 	rfButtons: [
 		{
 			id: 1,

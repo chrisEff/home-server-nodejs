@@ -1,35 +1,43 @@
 'use strict'
 
 const errors = require('restify-errors')
-const fs = require('fs-extra')
-
 const Router = require('restify-router').Router
-const sensors = require('../../config.js').tempSensors
+const { dynamoDbTable, sensors } = require('../../config.js').temperature
 
 const router = new Router()
 router.prefix = '/tempSensors'
 require('restify-await-promise').install(router)
 
+const TemperatureReader = require('../classes/TemperatureReader')
+const AWS = require('aws-sdk')
+const dynamoClient = new AWS.DynamoDB.DocumentClient()
+
 router.get('/', async () => Promise.all(
-	sensors.map(async (sensor) => ({ ...sensor, celsiusValue: await readSensor(sensor.deviceId) }))
+	sensors.map(async (sensor) => ({ ...sensor, celsiusValue: await TemperatureReader.readSensor(sensor.deviceId) }))
 ))
 
 router.get('/:id', async (req) => {
 	const sensor = sensors.find(sensor => sensor.id === parseInt(req.params.id))
 	return sensor
-		? { ...sensor, celsiusValue: await readSensor(sensor.deviceId) }
+		? { ...sensor, celsiusValue: await TemperatureReader.readSensor(sensor.deviceId) }
 		: new errors.NotFoundError(`sensor ID ${req.params.id} not found`)
 })
 
-const readSensor = async (deviceId) => {
-	const lines = (await fs.readFile(`/sys/bus/w1/devices/${deviceId}/w1_slave`, 'utf8')).trim().split('\n')
-	if (lines.length === 2 && lines[0].endsWith(' YES')) {
-		const match = lines[1].match(/^(?:[0-9a-f]{2} )+t=([0-9]+)$/)
-		if (match) {
-			return match[1] / 1000
-		}
-	}
-	return null
-}
+router.get('/:id/history', async (req) => {
+	const response = await dynamoClient.query({
+		TableName: dynamoDbTable,
+		KeyConditionExpression: 'sensorId = :sensorId AND #timestamp BETWEEN :min AND :max',
+		ExpressionAttributeNames: {
+			'#timestamp': 'timestamp',
+		},
+		ExpressionAttributeValues: {
+			':sensorId': parseInt(req.params.id),
+			':min': parseInt(req.query.min) || 1500000000,
+			':max': parseInt(req.query.max) || Math.floor(Date.now() / 1000),
+		},
+	}).promise()
+
+	return response.Items.map(item => ({ time: item.timestamp, val: item.val }))
+})
 
 module.exports = router

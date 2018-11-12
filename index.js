@@ -10,9 +10,16 @@ const dhcpSpy = require('dhcp-spy')
 
 const config = require('./config.js')
 
+process.env['AWS_SDK_LOAD_CONFIG'] = '1'
+if (config.awsProfile) {
+	process.env['AWS_PROFILE'] = config.awsProfile
+}
+const AWS = require('aws-sdk')
+
 const Logger = require('./src/classes/Logger')
 const RfController = require('./src/classes/RfController')
 const RfSniffer = require('./src/classes/RfSniffer')
+const TemperatureReader = require('./src/classes/TemperatureReader')
 
 const routers = [
 	require('./src/routers/rfoutlets'),
@@ -90,6 +97,39 @@ if (fauxMoDevices.length) {
 		devices: fauxMoDevices,
 	})
 	Logger.info(`registered ${fauxMo.getNumberOfRegisteredDevices()} FauxMo devices`)
+}
+
+if (!config.cronjobs) {
+	config.cronjobs = []
+}
+
+const temperatureRecordIntervalMinutes = get(config, 'temperature.recordIntervalMinutes')
+const temperatureSensors = get(config, 'temperature.sensors')
+const temperatureDynamoDbTable = get(config, 'temperature.dynamoDbTable')
+
+if (temperatureRecordIntervalMinutes && temperatureSensors && temperatureSensors.length && temperatureDynamoDbTable) {
+	const dynamoClient = new AWS.DynamoDB.DocumentClient()
+
+	config.cronjobs.push({
+		name: 'record temperature to DynamoDB',
+		schedule: { second: '0', minute: `*/${temperatureRecordIntervalMinutes}`, hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*' },
+		callback: async () => {
+			temperatureSensors.forEach(async (sensor) => {
+				try {
+					await dynamoClient.put({
+						TableName: temperatureDynamoDbTable,
+						Item: {
+							sensorId: sensor.id,
+							timestamp: Math.floor(Date.now() / 10000) * 10,
+							val: await TemperatureReader.readSensor(sensor.deviceId),
+						},
+					}).promise()
+				} catch (e) {
+					console.log('failed reading temperature sensor: ', e)
+				}
+			})
+		},
+	})
 }
 
 if (config.rfButtons && config.rfButtons.length) {
