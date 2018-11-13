@@ -38,15 +38,22 @@ const server = restify.createServer(options)
 
 server.pre(restify.plugins.queryParser())
 
-if (config.superSecretKey) {
+if (config.users && config.users.length) {
 	server.pre((request, response, next) => {
-		if (request.query.key !== config.superSecretKey) {
+		if (request.method === 'OPTIONS') {
+			return next()
+		}
+		const apiUser = request.headers.apiuser || request.query.apiuser
+		const apiKey  = request.headers.apikey  || request.query.apikey
+
+		const user = config.users.find(user => user.id === apiUser && user.key === apiKey)
+		if (!user) {
 			return next(new errors.UnauthorizedError('nope!'))
 		}
 		next()
 	})
 } else {
-	Logger.warn('No "superSecretKey" set -> API can be accessed by anyone!')
+	Logger.warn('No users configured -> API can be accessed by anyone!')
 }
 
 server.pre((request, response, next) => {
@@ -58,6 +65,7 @@ server.use(restify.plugins.jsonBodyParser())
 
 let cors = corsMiddleware({
 	origins: ['*'],
+	allowHeaders: ['apiuser', 'apikey'],
 })
 server.pre(cors.preflight)
 server.use(cors.actual)

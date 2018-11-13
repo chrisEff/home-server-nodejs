@@ -1,5 +1,7 @@
 module.exports = {
-	superSecretKey: 'my-5up3r_53cr3t.KeY!!1',
+	users: [
+		{ id: 'admin', key: 'vpe485zgoe48nvpe485zbpvow4zpeo458' },
+	],
 	serverPort: 8080,
 	logLevel: 'silly',
 	ssl: {
