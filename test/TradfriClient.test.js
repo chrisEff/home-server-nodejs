@@ -355,6 +355,24 @@ describe('TradfriClient', () => {
 				sinon.assert.calledWithExactly(requestStub, 'get', '15010/280397')
 			})
 		})
+
+		describe('getSchedules()', () => {
+			it('should fetch schedules', async () => {
+				requestStub
+					.withArgs('get', '15010')
+					.resolves([280397])
+					.withArgs('get', '15010/280397')
+					.resolves(rawSchedule)
+
+				chai.assert.deepStrictEqual(await tradfri.getSchedules(), [rawSchedule])
+			})
+		})
+	})
+
+	describe('mapColor()', () => {
+		chai.assert.deepStrictEqual(tradfri.mapColor('warm'),    { 5706:  'efd275' })
+		chai.assert.deepStrictEqual(tradfri.mapColor('neutral'), { 5706:  'f1e0b5' })
+		chai.assert.deepStrictEqual(tradfri.mapColor('cold'),    { 5706:  'f5faf6' })
 	})
 
 	describe('getRandomColor()', () => {
@@ -362,6 +380,14 @@ describe('TradfriClient', () => {
 			chai.assert.include(['red', 'green', 'blue', 'yellow', 'pink', 'purple', 'orange'], tradfri.getRandomColor())
 			sinon.assert.notCalled(requestStub)
 		})
+	})
+
+	describe('convertTransitionTime()', () => {
+		chai.assert.equal(TradfriClient.convertTransitionTime(1, 'h'), 36000)
+		chai.assert.equal(TradfriClient.convertTransitionTime(1, 'm'), 600)
+		chai.assert.equal(TradfriClient.convertTransitionTime(1, 's'), 10)
+		chai.assert.equal(TradfriClient.convertTransitionTime(1, 'ds'), 1)
+		chai.assert.equal(TradfriClient.convertTransitionTime(100, 'ms'), 1)
 	})
 
 })
