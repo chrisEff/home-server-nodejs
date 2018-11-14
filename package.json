@@ -57,5 +57,8 @@
 		"env": [
 			"mocha"
 		]
+	},
+	"nyc": {
+		"include": "src"
 	}
 }
