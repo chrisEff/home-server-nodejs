@@ -1,6 +1,7 @@
 # Home Server
 
 [![Build Status](https://travis-ci.com/chrisEff/home-server-nodejs.svg?branch=master)](https://travis-ci.com/chrisEff/home-server-nodejs)
+[![Coverage Status](https://coveralls.io/repos/github/chrisEff/home-server-nodejs/badge.svg?branch=master)](https://coveralls.io/github/chrisEff/home-server-nodejs?branch=master)
 
 This server provides a simple little REST API that allows you to
 * control Ikea Trådfri lights by connecting to a Trådfri gateway
