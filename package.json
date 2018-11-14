@@ -9,6 +9,7 @@
 		"stop": "pkill -f homeserver",
 		"status": "ps axu | grep -e homeserver -e RFSniffer | grep -v grep || echo not running",
 		"test": "mocha",
+		"coverage": "./node_modules/.bin/nyc npm run test && ./node_modules/.bin/nyc report --reporter=text-lcov | coveralls",
 		"eslint": "eslint src test",
 		"allow-portbind": "sudo setcap 'cap_net_bind_service=+ep' `which node`"
 	},
@@ -40,7 +41,8 @@
 		"@types/chai": "^4.1.7",
 		"@types/mocha": "^5.2.5",
 		"chai": "^4.2.0",
-		"eslint": "^5.8.0",
+		"coveralls": "^3.0.2",
+		"eslint": "^5.9.0",
 		"eslint-config-standard": "^12.0.0",
 		"eslint-plugin-import": "^2.14.0",
 		"eslint-plugin-node": "^8.0.0",
@@ -48,6 +50,7 @@
 		"eslint-plugin-standard": "^4.0.0",
 		"lodash.sortby": "^4.7.0",
 		"mocha": "^5.2.0",
+		"nyc": "^13.1.0",
 		"sinon": "^7.1.1"
 	},
 	"standard": {
