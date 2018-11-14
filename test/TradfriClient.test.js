@@ -76,7 +76,6 @@ describe('TradfriClient', () => {
 			name: 'Remote AZ',
 			model: 'TRADFRI remote control',
 			firmware: '1.2.214',
-			raw: rawDevice1,
 		}
 		const sanitizedDevice2 = {
 			id: 65537,
@@ -88,7 +87,6 @@ describe('TradfriClient', () => {
 			firmware: '1.2.217',
 			bulbType: 'white-spectrum',
 			color: 'warm',
-			raw: rawDevice2,
 		}
 		
 		describe('getDeviceIds()', () => {
@@ -104,19 +102,25 @@ describe('TradfriClient', () => {
 		})
 	
 		describe('getDevice()', () => {
-			it('should call request() correctly and sanitize its response', async () => {
+			beforeEach(() => {
 				requestStub
 					.withArgs('get', '15001/65536')
 					.resolves(rawDevice1)
-				
+			})
+
+			it('should call request() correctly and sanitize its response', async () => {
 				chai.assert.deepStrictEqual(await tradfri.getDevice(65536), sanitizedDevice1)
 				sinon.assert.calledOnce(requestStub)
 				sinon.assert.calledWithExactly(requestStub, 'get', '15001/65536')
 			})
+
+			it('should append raw data if requested', async () => {
+				chai.assert.deepStrictEqual(await tradfri.getDevice(65536, true), { ...sanitizedDevice1, raw: rawDevice1 })
+			})
 		})
 	
 		describe('getDevices()', () => {
-			it('should fetch the devices and aggregate them', async () => {
+			beforeEach(() => {
 				requestStub
 					.withArgs('get', '15001')
 					.resolves([65536, 65537])
@@ -124,12 +128,21 @@ describe('TradfriClient', () => {
 					.resolves(rawDevice1)
 					.withArgs('get', '15001/65537')
 					.resolves(rawDevice2)
-	
+			})
+
+			it('should fetch the devices and aggregate them', async () => {
 				chai.assert.deepStrictEqual(await tradfri.getDevices(), [sanitizedDevice1, sanitizedDevice2])
 				sinon.assert.calledThrice(requestStub)
 				sinon.assert.calledWithExactly(requestStub, 'get', '15001')
 				sinon.assert.calledWithExactly(requestStub, 'get', '15001/65536')
 				sinon.assert.calledWithExactly(requestStub, 'get', '15001/65537')
+			})
+
+			it('should append raw data if requested', async () => {
+				chai.assert.deepStrictEqual(await tradfri.getDevices(null, true), [
+					{ ...sanitizedDevice1, raw: rawDevice1 },
+					{ ...sanitizedDevice2, raw: rawDevice2 },
+				])
 			})
 		})
 
@@ -217,13 +230,11 @@ describe('TradfriClient', () => {
 			id: 131073,
 			name: 'Arbeitszimmer',
 			deviceIds: [65536, 65537],
-			raw: rawGroup1,
 		}
 		const sanitizedGroup2 = {
 			id: 131075,
 			name: 'Schlafzimmer',
 			deviceIds: [65538, 65541, 65556, 65557],
-			raw: rawGroup2,
 		}
 		
 		describe('getGroupIds()', () => {
@@ -239,19 +250,25 @@ describe('TradfriClient', () => {
 		})
 	
 		describe('getGroup()', () => {
-			it('should call request() correctly and pass through its response', async () => {
+			beforeEach(() => {
 				requestStub
 					.withArgs('get', '15004/131073')
 					.resolves(rawGroup1)
-	
+			})
+
+			it('should call request() correctly and pass through its response', async () => {
 				chai.assert.deepStrictEqual(await tradfri.getGroup(131073), sanitizedGroup1)
 				sinon.assert.calledOnce(requestStub)
 				sinon.assert.calledWithExactly(requestStub, 'get', '15004/131073')
 			})
+
+			it('should append raw data if requested', async () => {
+				chai.assert.deepStrictEqual(await tradfri.getGroup(131073, true), { ...sanitizedGroup1, raw: rawGroup1 })
+			})
 		})
 	
 		describe('getGroups()', () => {
-			it('should fetch the groups and aggregate them', async () => {
+			beforeEach(() => {
 				requestStub
 					.withArgs('get', '15004')
 					.resolves([131073, 131075])
@@ -259,12 +276,21 @@ describe('TradfriClient', () => {
 					.resolves(rawGroup1)
 					.withArgs('get', '15004/131075')
 					.resolves(rawGroup2)
-	
+			})
+
+			it('should fetch the groups and aggregate them', async () => {
 				chai.assert.deepStrictEqual(await tradfri.getGroups(), [sanitizedGroup1, sanitizedGroup2])
 				sinon.assert.calledThrice(requestStub)
 				sinon.assert.calledWithExactly(requestStub, 'get', '15004')
 				sinon.assert.calledWithExactly(requestStub, 'get', '15004/131073')
 				sinon.assert.calledWithExactly(requestStub, 'get', '15004/131075')
+			})
+
+			it('should append raw data if requested', async () => {
+				chai.assert.deepStrictEqual(await tradfri.getGroups(null, true), [
+					{ ...sanitizedGroup1, raw: rawGroup1 },
+					{ ...sanitizedGroup2, raw: rawGroup2 },
+				])
 			})
 		})
 
