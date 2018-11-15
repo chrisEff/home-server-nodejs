@@ -186,6 +186,40 @@ describe('TradfriClient', () => {
 				sinon.assert.calledWithExactly(requestStub, 'put', '15001/65537', '{"3311":[{"5850":1}]}')
 			})
 		})
+
+		describe('setDeviceBrightness()', () => {
+			it('should send one PUT request to the correct path with the correct body', async () => {
+				requestStub.resolves('OK')
+
+				await tradfri.setDeviceBrightness(65537, 254)
+				sinon.assert.calledOnce(requestStub)
+				sinon.assert.calledWithExactly(requestStub, 'put', '15001/65537', '{"3311":[{"5851":254}]}')
+			})
+		})
+
+		describe('setDeviceColor()', () => {
+			beforeEach(() => {
+				requestStub.resolves('OK')
+			})
+
+			it('should set the color "warm" correctly', async () => {
+				await tradfri.setDeviceColor(65537, 'warm')
+				sinon.assert.calledOnce(requestStub)
+				sinon.assert.calledWithExactly(requestStub, 'put', '15001/65537', '{"3311":[{"5706":"efd275"}]}')
+			})
+
+			it('should set the color "neutral" correctly', async () => {
+				await tradfri.setDeviceColor(65537, 'neutral')
+				sinon.assert.calledOnce(requestStub)
+				sinon.assert.calledWithExactly(requestStub, 'put', '15001/65537', '{"3311":[{"5706":"f1e0b5"}]}')
+			})
+
+			it('should set the color "cold" correctly', async () => {
+				await tradfri.setDeviceColor(65537, 'cold')
+				sinon.assert.calledOnce(requestStub)
+				sinon.assert.calledWithExactly(requestStub, 'put', '15001/65537', '{"3311":[{"5706":"f5faf6"}]}')
+			})
+		})
 	})
 
 	describe('groups', () => {
@@ -370,9 +404,11 @@ describe('TradfriClient', () => {
 	})
 
 	describe('mapColor()', () => {
-		chai.assert.deepStrictEqual(tradfri.mapColor('warm'),    { 5706:  'efd275' })
-		chai.assert.deepStrictEqual(tradfri.mapColor('neutral'), { 5706:  'f1e0b5' })
-		chai.assert.deepStrictEqual(tradfri.mapColor('cold'),    { 5706:  'f5faf6' })
+		it('should map the colors correctly', async () => {
+			chai.assert.deepStrictEqual(tradfri.mapColor('warm'), {5706: 'efd275'})
+			chai.assert.deepStrictEqual(tradfri.mapColor('neutral'), {5706: 'f1e0b5'})
+			chai.assert.deepStrictEqual(tradfri.mapColor('cold'), {5706: 'f5faf6'})
+		})
 	})
 
 	describe('getRandomColor()', () => {
@@ -383,11 +419,13 @@ describe('TradfriClient', () => {
 	})
 
 	describe('convertTransitionTime()', () => {
-		chai.assert.equal(TradfriClient.convertTransitionTime(1, 'h'), 36000)
-		chai.assert.equal(TradfriClient.convertTransitionTime(1, 'm'), 600)
-		chai.assert.equal(TradfriClient.convertTransitionTime(1, 's'), 10)
-		chai.assert.equal(TradfriClient.convertTransitionTime(1, 'ds'), 1)
-		chai.assert.equal(TradfriClient.convertTransitionTime(100, 'ms'), 1)
+		it('should convert the time correctly', async () => {
+			chai.assert.equal(TradfriClient.convertTransitionTime(1, 'h'), 36000)
+			chai.assert.equal(TradfriClient.convertTransitionTime(1, 'm'), 600)
+			chai.assert.equal(TradfriClient.convertTransitionTime(1, 's'), 10)
+			chai.assert.equal(TradfriClient.convertTransitionTime(1, 'ds'), 1)
+			chai.assert.equal(TradfriClient.convertTransitionTime(100, 'ms'), 1)
+		})
 	})
 
 })
