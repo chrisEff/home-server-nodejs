@@ -9,7 +9,8 @@
 		"stop": "pkill -f homeserver",
 		"status": "ps axu | grep -e homeserver -e RFSniffer | grep -v grep || echo not running",
 		"test": "mocha",
-		"coverage": "./node_modules/.bin/nyc npm run test && ./node_modules/.bin/nyc report --reporter=text-lcov | coveralls",
+		"cover": "nyc npm run test",
+		"coveralls": "nyc npm run test && ./node_modules/.bin/nyc report --reporter=text-lcov | coveralls",
 		"eslint": "eslint src test",
 		"allow-portbind": "sudo setcap 'cap_net_bind_service=+ep' `which node`"
 	},
