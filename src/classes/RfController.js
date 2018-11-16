@@ -5,9 +5,13 @@ const exec = require('child-process-promise').exec
 const outlets = require('../../config.js').outlets
 
 class RfController {
+
+	constructor (outlets) {
+		this.outlets = outlets
+	}
 	
-	static getOutlets () {
-		return outlets
+	getOutlets () {
+		return this.outlets
 	}
 	
 	/**
@@ -18,12 +22,12 @@ class RfController {
 	static switchOutlet (id, state) {
 		const outlet = outlets.find(o => o.id === parseInt(id))
 		outlet.state = parseInt(state)
-		return RfController._sendCode(outlet[state], outlet.protocol, outlet.pulseLength)
+		return this._sendCode(outlet[state], outlet.protocol, outlet.pulseLength)
 	}
 	
-	static toggleOutlet (id) {
+	toggleOutlet (id) {
 		const outlet = outlets.find(o => o.id === parseInt(id))
-		return RfController.switchOutlet(id, outlet.state ? 0 : 1)
+		return this.switchOutlet(id, outlet.state ? 0 : 1)
 	}
 
 	/**
@@ -33,7 +37,7 @@ class RfController {
 	 * @returns {Promise}
 	 * @private
 	 */
-	static _sendCode (code, protocol, pulseLength) {
+	_sendCode (code, protocol, pulseLength) {
 		return exec(`codesend ${code} ${protocol} ${pulseLength}`)
 	}
 	

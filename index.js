@@ -21,6 +21,8 @@ const RfController = require('./src/classes/RfController')
 const RfSniffer = require('./src/classes/RfSniffer')
 const TemperatureReader = require('./src/classes/TemperatureReader')
 
+const rfController = new RfController(config.outlets)
+
 const routers = [
 	require('./src/routers/rfoutlets'),
 	require('./src/routers/tradfri'),
@@ -94,7 +96,7 @@ if (config.outlets && config.outlets.length) {
 			port: o.fauxmoPort,
 			handler: (action) => {
 				Logger.debug(`FauxMo device '${o.name}' switched ${action}`)
-				RfController.switchOutlet(o.id, (action === 'on') ? 1 : 0)
+				rfController.switchOutlet(o.id, (action === 'on') ? 1 : 0)
 			},
 		}))
 		.forEach(o => fauxMoDevices.push(o))
