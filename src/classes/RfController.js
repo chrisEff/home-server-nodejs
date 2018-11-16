@@ -1,13 +1,10 @@
 'use strict'
 
-const exec = require('child-process-promise').exec
-
-const outlets = require('../../config.js').outlets
-
 class RfController {
 
 	constructor (outlets) {
 		this.outlets = outlets
+		this.exec = require('child-process-promise').exec
 	}
 	
 	getOutlets () {
@@ -20,13 +17,13 @@ class RfController {
 	 * @returns {Promise}
 	 */
 	switchOutlet (id, state) {
-		const outlet = outlets.find(o => o.id === parseInt(id))
+		const outlet = this.outlets.find(o => o.id === parseInt(id))
 		outlet.state = parseInt(state)
 		return this._sendCode(outlet[state], outlet.protocol, outlet.pulseLength)
 	}
 	
 	toggleOutlet (id) {
-		const outlet = outlets.find(o => o.id === parseInt(id))
+		const outlet = this.outlets.find(o => o.id === parseInt(id))
 		return this.switchOutlet(id, outlet.state ? 0 : 1)
 	}
 
@@ -38,7 +35,7 @@ class RfController {
 	 * @private
 	 */
 	_sendCode (code, protocol, pulseLength) {
-		return exec(`codesend ${code} ${protocol} ${pulseLength}`)
+		return this.exec(`codesend ${code} ${protocol} ${pulseLength}`)
 	}
 	
 }
