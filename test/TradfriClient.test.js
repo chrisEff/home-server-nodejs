@@ -451,8 +451,20 @@ describe('TradfriClient', () => {
 			})
 		})
 
+		describe('setGroupName()', () => {
+			it('should set the name correctly', async () => {
+				requestStub
+					.withArgs('put', '15004/131073')
+					.resolves('OK')
+				await tradfri.setGroupName(131073, 'foobar')
+
+				sinon.assert.calledOnce(requestStub)
+				sinon.assert.calledWithExactly(requestStub, 'put', '15004/131073', '{"9001":"foobar"}')
+			})
+		})
+
 		describe('setGroupState()', () => {
-			it('should send one PUT request to the correct path with the correct body', async () => {
+			it('should set the state correctly', async () => {
 				requestStub
 					.withArgs('put', '15004/131073')
 					.resolves('OK')
@@ -460,6 +472,28 @@ describe('TradfriClient', () => {
 
 				sinon.assert.calledOnce(requestStub)
 				sinon.assert.calledWithExactly(requestStub, 'put', '15004/131073', '{"5850":1}')
+			})
+		})
+
+		describe('setGroupBrightness()',  () => {
+			beforeEach(() => {
+				requestStub
+					.withArgs('put', '15004/131073')
+					.resolves('OK')
+			})
+
+			it('should set the brightness correctly', async () => {
+				await tradfri.setGroupBrightness(131073, 128)
+
+				sinon.assert.calledOnce(requestStub)
+				sinon.assert.calledWithExactly(requestStub, 'put', '15004/131073', '{"5851":128}')
+			})
+
+			it('should handle the transition time correctly', async () => {
+				await tradfri.setGroupBrightness(131073, 128, 500, 'ms')
+
+				sinon.assert.calledOnce(requestStub)
+				sinon.assert.calledWithExactly(requestStub, 'put', '15004/131073', '{"5712":5,"5851":128}')
 			})
 		})
 	})
@@ -531,6 +565,16 @@ describe('TradfriClient', () => {
 			chai.assert.deepStrictEqual(tradfri.mapColor('warm'), { 5706: 'efd275' })
 			chai.assert.deepStrictEqual(tradfri.mapColor('neutral'), { 5706: 'f1e0b5' })
 			chai.assert.deepStrictEqual(tradfri.mapColor('cold'), { 5706: 'f5faf6' })
+			chai.assert.deepStrictEqual(tradfri.mapColor('green'), {
+				'5707': 20673,
+				'5708': 65279,
+				'5709': 19659,
+				'5710': 39108,
+			})
+		})
+
+		it('should throw an error for unknown colors', async () => {
+			chai.assert.throws(() => tradfri.mapColor('foobar'), Error)
 		})
 	})
 
@@ -548,6 +592,10 @@ describe('TradfriClient', () => {
 			chai.assert.equal(TradfriClient.convertTransitionTime(1, 's'), 10)
 			chai.assert.equal(TradfriClient.convertTransitionTime(1, 'ds'), 1)
 			chai.assert.equal(TradfriClient.convertTransitionTime(100, 'ms'), 1)
+		})
+
+		it('should throw an error for unknown time units', async () => {
+			chai.assert.throws(() => TradfriClient.convertTransitionTime(1, 'x'), Error)
 		})
 	})
 
