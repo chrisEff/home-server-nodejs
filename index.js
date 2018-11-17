@@ -27,6 +27,7 @@ const routers = [
 	require('./src/routers/rfoutlets'),
 	require('./src/routers/tradfri'),
 	require('./src/routers/tempSensors'),
+	require('./src/routers/shutters'),
 ]
 
 const options = {}

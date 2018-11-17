@@ -26,6 +26,16 @@ const outlets = [
 	},
 ]
 
+const shutters = [
+	{
+		id: 1,
+		name: 'Arbeitszimmer',
+		codeUp: 12550316,
+		codeDown: 11916668,
+		protocol: 4,
+	},
+]
+
 const RfController = require('./src/classes/RfController')
 const rfController = new RfController(module.exports.outlets)
 
@@ -86,6 +96,7 @@ module.exports = {
 	tradfri,
 	awsProfile,
 	outlets,
+	shutters,
 	temperature,
 	rfButtons,
 	dashButtons,
