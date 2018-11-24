@@ -22,17 +22,17 @@ class TradfriClient {
 		this.colorTemperatures.kalt = this.colorTemperatures.cold
 		
 		this.colorsRGB = {
-			red:          { hue: 63828, saturation: 65279, colorX: 41084, colorY: 21159 },
-			green:        { hue: 20673, saturation: 65279, colorX: 19659, colorY: 39108 },
-			blue:         { hue: 45333, saturation: 65279, colorX: 10121, colorY: 4098  },
-			yellow:       { hue: 8572,  saturation: 55985, colorX: 29491, colorY: 30802 }, // Yellow
-			pink:         { hue: 59789, saturation: 65279, colorX: 32768, colorY: 15729 }, // Saturated Pink
-			purple:       { hue: 53953, saturation: 65279, colorX: 20316, colorY: 8520  }, // Saturated Purple
-			orange:       { hue: 4137,  saturation: 65279, colorX: 38011, colorY: 24904 }, // Warm Amber
-			lightPink:    { hue: 62007, saturation: 41158, colorX: 29491, colorY: 18350 }, // Light Pink
-			lightPurple:  { hue: 55784, saturation: 44554, colorX: 22282, colorY: 12452 }, // Light Purple
-			coldSky:      { hue: 2681,  saturation: 4360,  colorX: 21109, colorY: 21738 }, // Cold Sky
-			coolDaylight: { hue: 5989,  saturation: 12964, colorX: 22584, colorY: 23272 }, // Cool Daylight
+			red:          {hue: 63828, saturation: 65279, colorX: 41084, colorY: 21159},
+			green:        {hue: 20673, saturation: 65279, colorX: 19659, colorY: 39108},
+			blue:         {hue: 45333, saturation: 65279, colorX: 10121, colorY: 4098},
+			yellow:       {hue: 8572,  saturation: 55985, colorX: 29491, colorY: 30802}, // Yellow
+			pink:         {hue: 59789, saturation: 65279, colorX: 32768, colorY: 15729}, // Saturated Pink
+			purple:       {hue: 53953, saturation: 65279, colorX: 20316, colorY: 8520}, // Saturated Purple
+			orange:       {hue: 4137,  saturation: 65279, colorX: 38011, colorY: 24904}, // Warm Amber
+			lightPink:    {hue: 62007, saturation: 41158, colorX: 29491, colorY: 18350}, // Light Pink
+			lightPurple:  {hue: 55784, saturation: 44554, colorX: 22282, colorY: 12452}, // Light Purple
+			coldSky:      {hue: 2681,  saturation: 4360,  colorX: 21109, colorY: 21738}, // Cold Sky
+			coolDaylight: {hue: 5989,  saturation: 12964, colorX: 22584, colorY: 23272}, // Cool Daylight
 		}
 		this.colorsRGB.rot   = this.colorsRGB.red
 		this.colorsRGB.gruen = this.colorsRGB.green

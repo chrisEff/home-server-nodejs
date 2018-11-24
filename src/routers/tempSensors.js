@@ -2,7 +2,7 @@
 
 const errors = require('restify-errors')
 const Router = require('restify-router').Router
-const { dynamoDbTable, sensors } = require('../../config.js').temperature
+const {dynamoDbTable, sensors} = require('../../config.js').temperature
 
 const router = new Router()
 router.prefix = '/tempSensors'
@@ -13,13 +13,13 @@ const AWS = require('aws-sdk')
 const dynamoClient = new AWS.DynamoDB.DocumentClient()
 
 router.get('/', async () => Promise.all(
-	sensors.map(async (sensor) => ({ ...sensor, celsiusValue: await TemperatureReader.readSensor(sensor.deviceId) }))
+	sensors.map(async (sensor) => ({...sensor, celsiusValue: await TemperatureReader.readSensor(sensor.deviceId)}))
 ))
 
 router.get('/:id', async (req) => {
 	const sensor = sensors.find(sensor => sensor.id === parseInt(req.params.id))
 	return sensor
-		? { ...sensor, celsiusValue: await TemperatureReader.readSensor(sensor.deviceId) }
+		? {...sensor, celsiusValue: await TemperatureReader.readSensor(sensor.deviceId)}
 		: new errors.NotFoundError(`sensor ID ${req.params.id} not found`)
 })
 
@@ -37,7 +37,7 @@ router.get('/:id/history', async (req) => {
 		},
 	}).promise()
 
-	return response.Items.map(item => ({ time: item.timestamp, val: item.val }))
+	return response.Items.map(item => ({time: item.timestamp, val: item.val}))
 })
 
 module.exports = router

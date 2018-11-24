@@ -214,10 +214,10 @@ describe('TradfriClient', () => {
 			});
 
 			[
-				{ deviceId: sanitizedDevice1.id, expectedResult: sanitizedDevice1 },
-				{ deviceId: sanitizedDevice2.id, expectedResult: sanitizedDevice2 },
-				{ deviceId: sanitizedDevice3.id, expectedResult: sanitizedDevice3 },
-			].forEach(({ deviceId, expectedResult }) => {
+				{deviceId: sanitizedDevice1.id, expectedResult: sanitizedDevice1},
+				{deviceId: sanitizedDevice2.id, expectedResult: sanitizedDevice2},
+				{deviceId: sanitizedDevice3.id, expectedResult: sanitizedDevice3},
+			].forEach(({deviceId, expectedResult}) => {
 				it(`should correctly fetch and sanitize device #${deviceId}`, async () => {
 					chai.assert.deepStrictEqual(await tradfri.getDevice(deviceId), expectedResult)
 					sinon.assert.calledOnce(requestStub)
@@ -226,7 +226,7 @@ describe('TradfriClient', () => {
 			})
 
 			it('should append raw data if requested', async () => {
-				chai.assert.deepStrictEqual(await tradfri.getDevice(65536, true), { ...sanitizedDevice1, raw: rawDevice1 })
+				chai.assert.deepStrictEqual(await tradfri.getDevice(65536, true), {...sanitizedDevice1, raw: rawDevice1})
 			})
 		})
 	
@@ -254,9 +254,9 @@ describe('TradfriClient', () => {
 
 			it('should append raw data if requested', async () => {
 				chai.assert.deepStrictEqual(await tradfri.getDevices(null, null, true), [
-					{ ...sanitizedDevice1, raw: rawDevice1 },
-					{ ...sanitizedDevice2, raw: rawDevice2 },
-					{ ...sanitizedDevice3, raw: rawDevice3 },
+					{...sanitizedDevice1, raw: rawDevice1},
+					{...sanitizedDevice2, raw: rawDevice2},
+					{...sanitizedDevice3, raw: rawDevice3},
 				])
 			})
 		})
@@ -424,7 +424,7 @@ describe('TradfriClient', () => {
 			})
 
 			it('should append raw data if requested', async () => {
-				chai.assert.deepStrictEqual(await tradfri.getGroup(131073, true), { ...sanitizedGroup1, raw: rawGroup1 })
+				chai.assert.deepStrictEqual(await tradfri.getGroup(131073, true), {...sanitizedGroup1, raw: rawGroup1})
 			})
 		})
 	
@@ -449,8 +449,8 @@ describe('TradfriClient', () => {
 
 			it('should append raw data if requested', async () => {
 				chai.assert.deepStrictEqual(await tradfri.getGroups(null, true), [
-					{ ...sanitizedGroup1, raw: rawGroup1 },
-					{ ...sanitizedGroup2, raw: rawGroup2 },
+					{...sanitizedGroup1, raw: rawGroup1},
+					{...sanitizedGroup2, raw: rawGroup2},
 				])
 			})
 		})
@@ -566,9 +566,9 @@ describe('TradfriClient', () => {
 
 	describe('mapColor()', () => {
 		it('should map the colors correctly', async () => {
-			chai.assert.deepStrictEqual(tradfri.mapColor('warm'), { 5706: 'efd275' })
-			chai.assert.deepStrictEqual(tradfri.mapColor('neutral'), { 5706: 'f1e0b5' })
-			chai.assert.deepStrictEqual(tradfri.mapColor('cold'), { 5706: 'f5faf6' })
+			chai.assert.deepStrictEqual(tradfri.mapColor('warm'), {5706: 'efd275'})
+			chai.assert.deepStrictEqual(tradfri.mapColor('neutral'), {5706: 'f1e0b5'})
+			chai.assert.deepStrictEqual(tradfri.mapColor('cold'), {5706: 'f5faf6'})
 			chai.assert.deepStrictEqual(tradfri.mapColor('green'), {
 				'5707': 20673,
 				'5708': 65279,

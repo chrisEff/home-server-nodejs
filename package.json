@@ -38,7 +38,7 @@
 		"winston": "^3.1.0"
 	},
 	"devDependencies": {
-		"@chriseff/eslint-config": "^1.0.1",
+		"@chriseff/eslint-config": "^1.0.2",
 		"@types/chai": "^4.1.7",
 		"@types/mocha": "^5.2.5",
 		"chai": "^4.2.0",
