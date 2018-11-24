@@ -158,8 +158,10 @@ describe('TradfriClient', () => {
 
 		const sanitizedDevice1 = {
 			id: 65536,
-			type: 'remote',
+			type: 'switch',
+			subType: 'remote',
 			name: 'Remote AZ',
+			manufacturer: 'IKEA of Sweden',
 			model: 'TRADFRI remote control',
 			firmware: '1.2.214',
 		}
@@ -169,6 +171,7 @@ describe('TradfriClient', () => {
 			name: 'Decke AZ',
 			state: 0,
 			brightness: 254,
+			manufacturer: 'IKEA of Sweden',
 			model: 'TRADFRI bulb E27 WS opal 980lm',
 			firmware: '1.2.217',
 			bulbType: 'white-spectrum',
@@ -180,6 +183,7 @@ describe('TradfriClient', () => {
 			name: 'Bedroom Ceiling',
 			state: 0,
 			brightness: 218,
+			manufacturer: 'IKEA of Sweden',
 			model: 'TRADFRI bulb E14 WS opal 400lm',
 			firmware: '1.2.217',
 			bulbType: 'white-spectrum',
@@ -249,7 +253,7 @@ describe('TradfriClient', () => {
 			})
 
 			it('should append raw data if requested', async () => {
-				chai.assert.deepStrictEqual(await tradfri.getDevices(null, true), [
+				chai.assert.deepStrictEqual(await tradfri.getDevices(null, null, true), [
 					{ ...sanitizedDevice1, raw: rawDevice1 },
 					{ ...sanitizedDevice2, raw: rawDevice2 },
 					{ ...sanitizedDevice3, raw: rawDevice3 },

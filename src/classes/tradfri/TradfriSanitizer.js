@@ -1,41 +1,40 @@
 const get = require('lodash.get')
 
-const TYPE_REMOTE = 'remote'
-const TYPE_DIMMER = 'dimmer'
+const TYPE_MOTION_SENSOR = 'motionSensor'
+const TYPE_PLUG = 'plug'
 const TYPE_BULB = 'bulb'
+const TYPE_SWITCH = 'switch'
 
 const BULB_TYPE_RGB = 'rgb'
 const BULB_TYPE_WHITE_SPECTRUM = 'white-spectrum'
 const BULB_TYPE_WHITE = 'white'
 
+const SWITCH_TYPE_REMOTE = 'remote'
+const SWITCH_TYPE_DIMMER = 'dimmer'
+
 class TradfriSanitizer {
 	
 	static sanitizeDevice (raw, includeRaw = false) {
-		let model = get(raw, '3.1')
 		const result = {
-			id:         get(raw, '9003'),
-			type:       TradfriSanitizer.getDeviceTypeByModel(model),
-			name:       get(raw, '9001'),
-			model:      model,
-			firmware:   get(raw, '3.3'),
+			id:           get(raw, '9003'),
+			type:         TradfriSanitizer.getDeviceType(raw),
+			name:         get(raw, '9001'),
+			model:        get(raw, '3.1'),
+			firmware:     get(raw, '3.3'),
+			manufacturer: get(raw, '3.0'),
 		}
 
 		if (result.type === TYPE_BULB) {
 			result.state      = get(raw, '3311.0.5850')
 			result.brightness = get(raw, '3311.0.5851')
-			result.bulbType   = TradfriSanitizer.getBulbTypeByModel(model)
-
-			if (get(raw, '3311.0.5706') && get(raw, '3311.0.5706') !== '0') {
-				result.color = TradfriSanitizer.getColorByHex(get(raw, '3311.0.5706'))
-			} else if (get(raw, '3311.0.5707')) {
-				result.color = TradfriSanitizer.getColorByHueSaturationXY(
-					parseInt(get(raw, '3311.0.5707')),
-					parseInt(get(raw, '3311.0.5708')),
-					parseInt(get(raw, '3311.0.5709')),
-					parseInt(get(raw, '3311.0.5710'))
-				)
-			}
+			result.bulbType   = TradfriSanitizer.getBulbType(raw)
+			result.color      = TradfriSanitizer.getColor(raw)
 		}
+
+		if (result.type === TYPE_SWITCH) {
+			result.subType = TradfriSanitizer.getSwitchType(raw)
+		}
+
 		if (includeRaw) {
 			result.raw = raw
 		}
@@ -43,17 +42,50 @@ class TradfriSanitizer {
 		return result
 	}
 
-	static getDeviceTypeByModel (model) {
-		if (model === 'TRADFRI remote control')        return TYPE_REMOTE
-		if (model === 'TRADFRI wireless dimmer')       return TYPE_DIMMER
-		if (model && model.startsWith('TRADFRI bulb')) return TYPE_BULB
+	static getDeviceType (raw) {
+		const ikeaType = get(raw, '5750')
+
+		if (ikeaType === 4) return TYPE_MOTION_SENSOR
+		if (ikeaType === 3) return TYPE_PLUG
+		if (ikeaType === 2) return TYPE_BULB
+		if (ikeaType === 0) return TYPE_SWITCH
+
 		return undefined
 	}
 
-	static getBulbTypeByModel (model) {
+	static getBulbType (raw) {
+		const model = get(raw, '3.1')
+
 		if (model.includes(' CWS ')) return BULB_TYPE_RGB
 		if (model.includes(' WS '))  return BULB_TYPE_WHITE_SPECTRUM
+
 		return BULB_TYPE_WHITE
+	}
+
+	static getSwitchType (raw) {
+		const model = get(raw, '3.1')
+
+		if (model === 'TRADFRI remote control')  return SWITCH_TYPE_REMOTE
+		if (model === 'TRADFRI wireless dimmer') return SWITCH_TYPE_DIMMER
+
+		return undefined
+	}
+
+	static getColor (raw) {
+		let hexColor = get(raw, '3311.0.5706')
+		if (hexColor && hexColor !== '0') {
+			return TradfriSanitizer.getColorByHex(hexColor)
+		}
+		if (get(raw, '3311.0.5707')) {
+			return TradfriSanitizer.getColorByHueSaturationXY(
+				parseInt(get(raw, '3311.0.5707')),
+				parseInt(get(raw, '3311.0.5708')),
+				parseInt(get(raw, '3311.0.5709')),
+				parseInt(get(raw, '3311.0.5710'))
+			)
+		}
+
+		return undefined
 	}
 	
 	static getColorByHex (hex) {

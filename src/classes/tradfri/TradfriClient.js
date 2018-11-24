@@ -63,9 +63,10 @@ class TradfriClient {
 		return TradfriSanitizer.sanitizeDevice(await this.request('get', `15001/${deviceId}`), withRaw)
 	}
 
-	async getDevices (sortBy = null, withRaw = false) {
+	async getDevices (type = null, sortBy = null, withRaw = false) {
 		const devices = await Promise.all((await this.getDeviceIds()).map(async id => this.getDevice(id, withRaw)))
-		return sortBy ? lodashSortBy(devices, sortBy.split(',')) : devices
+		const filtered = type ? devices.filter(d => d.type === type) : devices
+		return sortBy ? lodashSortBy(filtered, sortBy.split(',')) : filtered
 	}
 	
 	async setDeviceName (id, name) {

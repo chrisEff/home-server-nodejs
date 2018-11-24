@@ -22,7 +22,7 @@ router.post('/gateway/reboot', async () => tradfri.rebootGateway())
 
 // devices
 
-router.get('/device',     async (req) => tradfri.getDevices(req.query.sortBy, toBool(req.query.withRaw)))
+router.get('/device',     async (req) => tradfri.getDevices(req.query.type, req.query.sortBy, toBool(req.query.withRaw)))
 router.get('/device/:id', async (req) => tradfri.getDevice(req.params.id, toBool(req.query.withRaw)))
 
 async function putDevice (device, body) {
