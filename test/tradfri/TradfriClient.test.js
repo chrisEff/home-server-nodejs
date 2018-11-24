@@ -1,16 +1,16 @@
 const sinon = require('sinon')
 const chai = require('chai')
 
-const TradfriClient = require('../src/classes/tradfri/TradfriClient')
+const TradfriClient = require('../../src/classes/tradfri/TradfriClient')
 
 describe('TradfriClient', () => {
 	const sandbox = sinon.createSandbox()
 
-	const tradfri = new TradfriClient('user', 'psk', 'gate.way')
-	
+	let tradfri
 	let requestStub
 
 	beforeEach(() => {
+		tradfri = new TradfriClient('user', 'psk', 'gate.way')
 		requestStub = sandbox.stub(tradfri, 'request')
 	})
 
@@ -302,6 +302,32 @@ describe('TradfriClient', () => {
 			})
 		})
 
+		describe('toggleDeviceState()', () => {
+			let getDeviceStateStub
+			let setDeviceStateSpy
+
+			beforeEach(() => {
+				getDeviceStateStub = sandbox.stub(tradfri, 'getDeviceState')
+				setDeviceStateSpy = sandbox.spy(tradfri, 'setDeviceState')
+			})
+
+			it('should set the state to 1 if it is 0', async () => {
+				getDeviceStateStub.resolves(0)
+
+				await tradfri.toggleDeviceState(65537)
+				sinon.assert.calledOnce(setDeviceStateSpy)
+				sinon.assert.calledWithExactly(setDeviceStateSpy, 65537, 1)
+			})
+
+			it('should set the state to 0 if it is 1', async () => {
+				getDeviceStateStub.resolves(1)
+
+				await tradfri.toggleDeviceState(65537)
+				sinon.assert.calledOnce(setDeviceStateSpy)
+				sinon.assert.calledWithExactly(setDeviceStateSpy, 65537, 0)
+			})
+		})
+
 		describe('setDeviceBrightness()', () => {
 			it('should send one PUT request to the correct path with the correct body', async () => {
 				requestStub.resolves('OK')
@@ -561,6 +587,53 @@ describe('TradfriClient', () => {
 
 				chai.assert.deepStrictEqual(await tradfri.getSchedules(), [rawSchedule])
 			})
+		})
+	})
+
+	describe('disco()', () => {
+		let setIntervalStub
+		let clearIntervalStub
+		let setTimeoutStub
+
+		beforeEach(() => {
+			setIntervalStub = sandbox.stub(tradfri, 'setInterval')
+			clearIntervalStub = sandbox.stub(tradfri, 'clearInterval')
+			setTimeoutStub = sandbox.stub(tradfri, 'setTimeout')
+		})
+
+		it('should set an interval when turning on', async () => {
+			tradfri.disco([65537], true)
+
+			sinon.assert.notCalled(clearIntervalStub)
+			sinon.assert.notCalled(setTimeoutStub)
+			sinon.assert.calledOnce(setIntervalStub)
+			sinon.assert.calledWith(setIntervalStub, sinon.match.func)
+		})
+
+		it('should do nothing when turning on if already on', async () => {
+			tradfri.discoInterval = 1
+			tradfri.disco([65537], true)
+
+			sinon.assert.notCalled(clearIntervalStub)
+			sinon.assert.notCalled(setTimeoutStub)
+			sinon.assert.notCalled(setIntervalStub)
+		})
+
+		it('should clear interval when turning off', async () => {
+			tradfri.discoInterval = 1
+			tradfri.disco([65537], false)
+
+			sinon.assert.calledOnce(clearIntervalStub)
+			sinon.assert.calledOnce(setTimeoutStub)
+			sinon.assert.notCalled(setIntervalStub)
+		})
+
+		it('should do nothing when turning off if already off', async () => {
+			tradfri.disco([65537], false)
+
+			sinon.assert.notCalled(clearIntervalStub)
+			sinon.assert.notCalled(setTimeoutStub)
+			sinon.assert.notCalled(setIntervalStub)
 		})
 	})
 

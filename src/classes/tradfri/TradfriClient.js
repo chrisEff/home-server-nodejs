@@ -159,13 +159,13 @@ class TradfriClient {
 	disco (deviceIds, on, intervalMs = 500, transitionMs = 300) {
 		if (!on) {
 			if (this.discoInterval) {
-				clearInterval(this.discoInterval)
+				this.clearInterval(this.discoInterval)
 				this.discoInterval = null
-				setTimeout(() => deviceIds.forEach(deviceId => this.setDeviceState(deviceId, 0)), 500)
+				this.setTimeout(() => deviceIds.forEach(deviceId => this.setDeviceState(deviceId, 0)), 500)
 			}
 		} else if (!this.discoInterval) {
 			deviceIds.forEach(deviceId => this.setDeviceState(deviceId, 1))
-			this.discoInterval = setInterval(() => deviceIds.forEach(deviceId => this.setDeviceColor(deviceId, 'random', transitionMs, 'ms')), intervalMs)
+			this.discoInterval = this.setInterval(() => deviceIds.forEach(deviceId => this.setDeviceColor(deviceId, 'random', transitionMs, 'ms')), intervalMs)
 		}
 	}
 
@@ -236,6 +236,21 @@ class TradfriClient {
 		}
 
 		return 'OK'
+	}
+
+
+	// *** for stubbing in unit tests
+
+	setInterval (handler, timeout) {
+		return setInterval(handler, timeout)
+	}
+
+	clearInterval (handler) {
+		clearInterval(handler)
+	}
+
+	setTimeout (handler, timeout) {
+		setTimeout(handler, timeout)
 	}
 
 }
