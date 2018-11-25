@@ -1,0 +1,12 @@
+{
+	"id": 65537,
+	"type": "bulb",
+	"name": "Decke AZ",
+	"state": 0,
+	"brightness": 254,
+	"manufacturer": "IKEA of Sweden",
+	"model": "TRADFRI bulb E27 WS opal 980lm",
+	"firmware": "1.2.217",
+	"bulbType": "white-spectrum",
+	"color": "warm"
+}

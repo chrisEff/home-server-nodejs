@@ -77,126 +77,21 @@ describe('TradfriClient', () => {
 	})
 
 	describe('devices', () => {
-		const rawDevice1 = {
-			'3': {
-				'0': 'IKEA of Sweden',
-				'1': 'TRADFRI remote control',
-				'2': '',
-				'3': '1.2.214',
-				'6': 3,
-				'9': 34,
-			},
-			'5750': 0,
-			'9001': 'Remote AZ',
-			'9002': 1513380504,
-			'9003': 65536,
-			'9019': 1,
-			'9020': 1538262131,
-			'9054': 0,
-			'15009': [
-				{
-					'9003': 0,
-				},
-			],
-		}
-		const rawDevice2 = {
-			'3': {
-				'0': 'IKEA of Sweden',
-				'1': 'TRADFRI bulb E27 WS opal 980lm',
-				'2': '',
-				'3': '1.2.217',
-				'6': 1,
-			},
-			'3311': [
-				{
-					'5706': 'efd275',
-					'5709': 30138,
-					'5710': 26909,
-					'5711': 454,
-					'5717': 0,
-					'5850': 0,
-					'5851': 254,
-					'9003': 0,
-				},
-			],
-			'5750': 2,
-			'9001': 'Decke AZ',
-			'9002': 1513380565,
-			'9003': 65537,
-			'9019': 1,
-			'9020': 1538258221,
-			'9054': 0,
-		}
-		const rawDevice3 = {
-			'3': {
-				'0': 'IKEA of Sweden',
-				'1': 'TRADFRI bulb E14 WS opal 400lm',
-				'2': '',
-				'3': '1.2.217',
-				'6': 1,
-			},
-			'3311': [
-				{
-					'5706': 'f1e0b5',
-					'5709': 30138,
-					'5710': 26909,
-					'5711': 400,
-					'5717': 0,
-					'5850': 0,
-					'5851': 218,
-					'9003': 0,
-				},
-			],
-			'5750': 2,
-			'9001': 'Bedroom Ceiling',
-			'9002': 1530824734,
-			'9003': 65538,
-			'9019': 1,
-			'9020': 1542327499,
-			'9054': 0,
-		}
+		const rawDevice1 = require('./data/raw-device-remote')
+		const rawDevice2 = require('./data/raw-device-bulb-white-spectrum')
+		const rawDevice3 = require('./data/raw-device-bulb-rgb')
 
-		const sanitizedDevice1 = {
-			id: 65536,
-			type: 'switch',
-			subType: 'remote',
-			name: 'Remote AZ',
-			manufacturer: 'IKEA of Sweden',
-			model: 'TRADFRI remote control',
-			firmware: '1.2.214',
-		}
-		const sanitizedDevice2 = {
-			id: 65537,
-			type: 'bulb',
-			name: 'Decke AZ',
-			state: 0,
-			brightness: 254,
-			manufacturer: 'IKEA of Sweden',
-			model: 'TRADFRI bulb E27 WS opal 980lm',
-			firmware: '1.2.217',
-			bulbType: 'white-spectrum',
-			color: 'warm',
-		}
-		const sanitizedDevice3 = {
-			id: 65538,
-			type: 'bulb',
-			name: 'Bedroom Ceiling',
-			state: 0,
-			brightness: 218,
-			manufacturer: 'IKEA of Sweden',
-			model: 'TRADFRI bulb E14 WS opal 400lm',
-			firmware: '1.2.217',
-			bulbType: 'white-spectrum',
-			color: 'neutral',
-		}
+		const sanitizedDevice1 = require('./data/sanitized-device-remote')
+		const sanitizedDevice2 = require('./data/sanitized-device-bulb-white-spectrum')
+		const sanitizedDevice3 = require('./data/sanitized-device-bulb-rgb')
 		
 		describe('getDeviceIds()', () => {
 			it('should call request() correctly and pass through its response', async () => {
 				requestStub
 					.withArgs('get', '15001')
-					.resolves([65536, 65537, 65538])
+					.resolves([sanitizedDevice1.id, sanitizedDevice2.id, sanitizedDevice3.id])
 				
-				chai.assert.deepStrictEqual(await tradfri.getDeviceIds(), [65536, 65537, 65538])
+				chai.assert.deepStrictEqual(await tradfri.getDeviceIds(), [sanitizedDevice1.id, sanitizedDevice2.id, sanitizedDevice3.id])
 				sinon.assert.calledOnce(requestStub)
 				sinon.assert.calledWithExactly(requestStub, 'get', '15001')
 			})
@@ -205,11 +100,11 @@ describe('TradfriClient', () => {
 		describe('getDevice()', () => {
 			beforeEach(() => {
 				requestStub
-					.withArgs('get', '15001/65536')
+					.withArgs('get', `15001/${sanitizedDevice1.id}`)
 					.resolves(rawDevice1)
-					.withArgs('get', '15001/65537')
+					.withArgs('get', `15001/${sanitizedDevice2.id}`)
 					.resolves(rawDevice2)
-					.withArgs('get', '15001/65538')
+					.withArgs('get', `15001/${sanitizedDevice3.id}`)
 					.resolves(rawDevice3)
 			});
 
@@ -234,12 +129,12 @@ describe('TradfriClient', () => {
 			beforeEach(() => {
 				requestStub
 					.withArgs('get', '15001')
-					.resolves([65536, 65537, 65538])
-					.withArgs('get', '15001/65536')
+					.resolves([sanitizedDevice1.id, sanitizedDevice2.id, sanitizedDevice3.id])
+					.withArgs('get', `15001/${sanitizedDevice1.id}`)
 					.resolves(rawDevice1)
-					.withArgs('get', '15001/65537')
+					.withArgs('get', `15001/${sanitizedDevice2.id}`)
 					.resolves(rawDevice2)
-					.withArgs('get', '15001/65538')
+					.withArgs('get', `15001/${sanitizedDevice3.id}`)
 					.resolves(rawDevice3)
 			})
 
@@ -247,9 +142,9 @@ describe('TradfriClient', () => {
 				chai.assert.deepStrictEqual(await tradfri.getDevices(), [sanitizedDevice1, sanitizedDevice2, sanitizedDevice3])
 				chai.assert.equal(requestStub.callCount, 4)
 				sinon.assert.calledWithExactly(requestStub, 'get', '15001')
-				sinon.assert.calledWithExactly(requestStub, 'get', '15001/65536')
-				sinon.assert.calledWithExactly(requestStub, 'get', '15001/65537')
-				sinon.assert.calledWithExactly(requestStub, 'get', '15001/65538')
+				sinon.assert.calledWithExactly(requestStub, 'get', `15001/${sanitizedDevice1.id}`)
+				sinon.assert.calledWithExactly(requestStub, 'get', `15001/${sanitizedDevice2.id}`)
+				sinon.assert.calledWithExactly(requestStub, 'get', `15001/${sanitizedDevice3.id}`)
 			})
 
 			it('should append raw data if requested', async () => {
@@ -264,17 +159,17 @@ describe('TradfriClient', () => {
 		describe('getDeviceState()', () => {
 			it('should return undefined for device #1', async () => {
 				requestStub
-					.withArgs('get', '15001/65536')
+					.withArgs('get', `15001/${sanitizedDevice1.id}`)
 					.resolves(rawDevice1)
 
-				chai.assert.strictEqual(await tradfri.getDeviceState(65536), undefined)
+				chai.assert.strictEqual(await tradfri.getDeviceState(sanitizedDevice1.id), sanitizedDevice1.state)
 			})
 			it('should return 0 for device #2', async () => {
 				requestStub
-					.withArgs('get', '15001/65537')
+					.withArgs('get', `15001/${sanitizedDevice2.id}`)
 					.resolves(rawDevice2)
 
-				chai.assert.strictEqual(await tradfri.getDeviceState(65537), 0)
+				chai.assert.strictEqual(await tradfri.getDeviceState(sanitizedDevice2.id), sanitizedDevice2.state)
 			})
 		})
 

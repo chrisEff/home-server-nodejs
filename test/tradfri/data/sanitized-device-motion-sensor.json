@@ -1,0 +1,8 @@
+{
+	"id": 65540,
+	"type": "motionSensor",
+	"name": "TRADFRI motion sensor",
+	"model": "TRADFRI motion sensor",
+	"firmware": "1.2.214",
+	"manufacturer": "IKEA of Sweden"
+}

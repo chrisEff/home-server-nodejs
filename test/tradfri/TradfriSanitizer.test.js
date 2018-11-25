@@ -1,5 +1,6 @@
 const sinon = require('sinon')
 const chai = require('chai')
+const deepFreeze = require('deep-freeze-strict')
 
 const TradfriSanitizer = require('../../src/classes/tradfri/TradfriSanitizer')
 
@@ -11,6 +12,36 @@ describe('TradfriSanitizer', () => {
 
 	afterEach(() => {
 		sandbox.verifyAndRestore()
+	})
+
+	describe('sanitizeDevice', () => {
+		it('should correctly sanitize a remote', async () => {
+			const raw = require('./data/raw-device-remote')
+			const sanitized = require('./data/sanitized-device-remote')
+
+			chai.assert.deepStrictEqual(TradfriSanitizer.sanitizeDevice(deepFreeze(raw)), sanitized)
+		})
+
+		it('should correctly sanitize a white-spectrum bulb', async () => {
+			const raw = require('./data/raw-device-bulb-white-spectrum')
+			const sanitized = require('./data/sanitized-device-bulb-white-spectrum')
+
+			chai.assert.deepStrictEqual(TradfriSanitizer.sanitizeDevice(deepFreeze(raw)), sanitized)
+		})
+
+		it('should correctly sanitize an rgb bulb', async () => {
+			const raw = require('./data/raw-device-bulb-rgb')
+			const sanitized = require('./data/sanitized-device-bulb-rgb')
+
+			chai.assert.deepStrictEqual(TradfriSanitizer.sanitizeDevice(deepFreeze(raw)), sanitized)
+		})
+
+		it('should correctly sanitize a motion sensor', async () => {
+			const raw = require('./data/raw-device-motion-sensor')
+			const sanitized = require('./data/sanitized-device-motion-sensor')
+
+			chai.assert.deepStrictEqual(TradfriSanitizer.sanitizeDevice(deepFreeze(raw)), sanitized)
+		})
 	})
 
 	describe('getColorByHex', () => {
@@ -25,6 +56,7 @@ describe('TradfriSanitizer', () => {
 			chai.assert.equal(TradfriSanitizer.getColorByHex('e8bedd'), 'lightPink')
 			chai.assert.equal(TradfriSanitizer.getColorByHex('c984bb'), 'lightPurple')
 			chai.assert.equal(TradfriSanitizer.getColorByHex('dcf0f8'), 'coldSky')
+			chai.assert.equal(TradfriSanitizer.getColorByHex('invalid'), undefined)
 		})
 	})
 
@@ -33,6 +65,7 @@ describe('TradfriSanitizer', () => {
 			chai.assert.equal(TradfriSanitizer.getColorByHueSaturationXY(63828, 65279, 41084, 21159), 'red')
 			chai.assert.equal(TradfriSanitizer.getColorByHueSaturationXY(20673, 65279, 19659, 39108), 'green')
 			chai.assert.equal(TradfriSanitizer.getColorByHueSaturationXY(45333, 65279, 10121, 4098), 'blue')
+			chai.assert.equal(TradfriSanitizer.getColorByHueSaturationXY(1, 2, 3, 4), undefined)
 		})
 	})
 

@@ -1,0 +1,9 @@
+{
+	"id": 65536,
+	"type": "switch",
+	"subType": "remote",
+	"name": "Remote AZ",
+	"manufacturer": "IKEA of Sweden",
+	"model": "TRADFRI remote control",
+	"firmware": "1.2.214"
+}

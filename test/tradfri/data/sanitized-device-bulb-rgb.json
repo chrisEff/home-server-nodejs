@@ -1,0 +1,12 @@
+{
+	"id": 65538,
+	"type": "bulb",
+	"name": "Bedroom Ceiling",
+	"model": "TRADFRI bulb E27 CWS opal 600lm",
+	"firmware": "1.3.002",
+	"manufacturer": "IKEA of Sweden",
+	"state": 1,
+	"brightness": 254,
+	"bulbType": "rgb",
+	"color": "neutral"
+}
