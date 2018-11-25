@@ -1,6 +1,5 @@
 'use strict'
 
-const exec = require('child-process-promise').exec
 const lodashSortBy = require('lodash.sortby')
 
 const TradfriSanitizer = require('./TradfriSanitizer')
@@ -11,6 +10,8 @@ class TradfriClient {
 		this.user    = user
 		this.psk     = psk
 		this.gateway = gateway
+
+		this.exec = require('child-process-promise').exec
 		
 		this.lastRandomColor = ''
 		
@@ -226,7 +227,7 @@ class TradfriClient {
 		body = body ? `-e '${body}'` : ''
 
 		const command = `coap-client -B 10 -m ${method} -u "${this.user}" -k "${this.psk}" ${body} "coaps://${this.gateway}:5684/${path}"`
-		const response = await exec(command)
+		const response = await this.exec(command)
 		const lines = response.stdout.toString().split('\n')
 
 		for (let i in lines) {
