@@ -54,11 +54,8 @@ class TradfriSanitizer {
 	}
 
 	static getBulbType (raw) {
-		const model = get(raw, '3.1')
-
-		if (model.includes(' CWS ')) return BULB_TYPE_RGB
-		if (model.includes(' WS '))  return BULB_TYPE_WHITE_SPECTRUM
-
+		if (get(raw, '3311.0.5707') !== undefined) return BULB_TYPE_RGB
+		if (get(raw, '3311.0.5706') !== undefined) return BULB_TYPE_WHITE_SPECTRUM
 		return BULB_TYPE_WHITE
 	}
 
