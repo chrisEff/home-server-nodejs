@@ -94,3 +94,6 @@ coap-client -m put -u "<IDENTITY>" -k "<PSK>" -e '{ "3311" : [{ "5850" : 0 }] }'
 
 ### set bulb to warm white
 coap-client -m put -u "<IDENTITY>" -k "<PSK>" -e '{ "3311" : [{ "5706" : "efd275" }] }' "coaps://<GATEWAY_IP>:5684/15001/<DEVICE_ID>"
+
+### rename bulb to "foobar"
+coap-client -m put -u "<IDENTITY>" -k "<PSK>" -e '{ "9001" : "foobar" }' "coaps://<GATEWAY_IP>:5684/15001/<DEVICE_ID>"
