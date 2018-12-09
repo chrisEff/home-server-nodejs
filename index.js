@@ -87,7 +87,7 @@ server.listen(config.serverPort, () => {
 	Logger.info('server started, listening on port ' + config.serverPort)
 })
 
-const fauxMoDevices = config.fauxMoDevices || []
+const fauxMoDevices = []
 
 if (config.outlets && config.outlets.length) {
 	config.outlets
