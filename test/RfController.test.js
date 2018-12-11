@@ -10,8 +10,8 @@ describe('RfController', () => {
 	const rfController = new RfController([{
 		id: 123,
 		name: 'Outlet A',
-		0: 12345678,
-		1: 87654321,
+		off: 12345678,
+		on: 87654321,
 		protocol: 0,
 		pulseLength: 100,
 		state: 0,
