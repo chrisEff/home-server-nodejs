@@ -7,8 +7,8 @@ git:
 jobs:
   include:
     - stage: "test"
-      script: npm run eslint
-    - script: npm t
+      script: npm test
+    - script: npm run eslint
     - stage: "coveralls report"
-      node_js: "10"
+      node_js: "node"
       script: npm run coveralls
