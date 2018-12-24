@@ -1,8 +1,12 @@
 {
 	"name": "home-server",
 	"version": "1.0.0",
-	"description": "",
+	"description": "My own little home automation API for controlling lights, power outlets, shutters, etc.",
+	"keywords": ["smarthome", "homeautomation"],
 	"main": "index.js",
+	"author": "chrisEff",
+	"license": "MIT",
+	"repository": "github:chrisEff/home-server-nodejs",
 	"scripts": {
 		"postinstall": "cp -n ./config.sample.js ./config.js || true",
 		"start": "bash -c \"exec -a homeserver node index.js >> logs.txt &\"",
@@ -13,12 +17,6 @@
 		"coveralls": "nyc npm test && ./node_modules/.bin/nyc report --reporter=text-lcov | coveralls",
 		"eslint": "eslint src test",
 		"allow-portbind": "sudo setcap 'cap_net_bind_service=+ep' `which node`"
-	},
-	"author": "",
-	"license": "MIT",
-	"repository": {
-		"type": "git",
-		"url": "git@github.com:chrisEff/home-server-nodejs.git"
 	},
 	"dependencies": {
 		"aws-sdk": "^2.361.0",
