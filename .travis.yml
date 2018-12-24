@@ -7,8 +7,10 @@ git:
 jobs:
   include:
     - stage: "test"
+      name: "unit tests"
       script: npm test
-    - script: npm run eslint
+    - name: "Linter"
+      script: npm run eslint
     - stage: "coveralls report"
       node_js: "node"
       script: npm run coveralls
