@@ -1,5 +1,6 @@
 'use strict'
 
+const nodeCoapClient = require('node-coap-client')
 const lodashSortBy = require('lodash.sortby')
 
 const TradfriSanitizer = require('./TradfriSanitizer')
@@ -7,11 +8,9 @@ const TradfriSanitizer = require('./TradfriSanitizer')
 class TradfriClient {
 	
 	constructor (user, psk, gateway) {
-		this.user    = user
-		this.psk     = psk
 		this.gateway = gateway
-
-		this.exec = require('child-process-promise').exec
+		this.coapClient = nodeCoapClient.CoapClient
+		this.coapClient.setSecurityParams(gateway, {psk: {[user]: psk}})
 		
 		this.lastRandomColor = ''
 		
@@ -218,25 +217,16 @@ class TradfriClient {
 	}
 
 	/**
-	 * @param {string} method
+	 * @param {"get" | "post" | "put" | "delete"} method
 	 * @param {string} path
 	 * @param {string} body
 	 * @returns {Promise<*>}
 	 */
-	async request (method, path, body = null) {
-		body = body ? `-e '${body}'` : ''
+	async request (method, path, body = undefined) {
+		const response = await this.coapClient.request(`coaps://${this.gateway}:5684/${path}`, method, body ? Buffer.from(body) : undefined)
+		const responseString = response.payload.toString('utf8')
 
-		const command = `coap-client -B 10 -m ${method} -u "${this.user}" -k "${this.psk}" ${body} "coaps://${this.gateway}:5684/${path}"`
-		const response = await this.exec(command)
-		const lines = response.stdout.toString().split('\n')
-
-		for (let i in lines) {
-			if (lines[i].startsWith('{') || lines[i].startsWith('[')) {
-				return JSON.parse(lines[i])
-			}
-		}
-
-		return 'OK'
+		return responseString ? JSON.parse(responseString) : 'OK'
 	}
 
 

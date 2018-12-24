@@ -571,29 +571,4 @@ describe('TradfriClient', () => {
 		})
 	})
 
-	describe('exec()', () => {
-		let execStub
-
-		beforeEach(() => {
-			sandbox.restore()
-			execStub = sandbox.stub(tradfri, 'exec')
-		})
-
-		it('should execute the correct command', async () => {
-			execStub.resolves({stdout: {toString: () => '{}'}})
-
-			const result = await tradfri.request('get', '15011/15012')
-			chai.assert.deepStrictEqual(result, {})
-			sinon.assert.calledOnce(execStub)
-			sinon.assert.calledWithExactly(execStub, 'coap-client -B 10 -m get -u "user" -k "psk"  "coaps://gate.way:5684/15011/15012"')
-		})
-
-		it('should return "OK" if the output of the command is empty', async () => {
-			execStub.resolves({stdout: {toString: () => ''}})
-
-			const result = await tradfri.request('get', '15011/15012')
-			chai.assert.deepStrictEqual(result, 'OK')
-		})
-	})
-
 })
