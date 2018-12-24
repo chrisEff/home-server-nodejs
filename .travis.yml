@@ -1,20 +1,17 @@
 language: node_js
-node_js:
-  - "node"
-  - "10"
 git:
   submodules: false
 jobs:
   include:
     - stage: "Test"
-      name: "Unit Tests"
-      script: npm test
       node_js:
         - "node"
         - "10"
+      name: "Unit Tests"
+      script: npm test
     - name: "Linter"
-      script: npm run eslint
       node_js: "node"
+      script: npm run eslint
     - stage: "Coveralls Report"
       node_js: "node"
       script: npm run coveralls
