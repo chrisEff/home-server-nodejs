@@ -4,4 +4,5 @@ node_js:
 git:
   submodules: false
 script:
+- npm run eslint
 - npm run coveralls
