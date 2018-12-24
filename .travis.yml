@@ -4,10 +4,11 @@ git:
 jobs:
   include:
     - stage: "Test"
-      node_js:
-        - "node"
-        - "10"
-      name: "Unit Tests"
+      name: "Unit Tests: node latest"
+      node_js: "node"
+      script: npm test
+    - name: "Unit Tests: node 10"
+      node_js: "10"
       script: npm test
     - name: "Linter"
       node_js: "node"
