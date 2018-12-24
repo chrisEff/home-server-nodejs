@@ -15,7 +15,7 @@
 		"test": "mocha --recursive test",
 		"cover": "nyc npm test",
 		"coveralls": "nyc npm test && ./node_modules/.bin/nyc report --reporter=text-lcov | coveralls",
-		"eslint": "eslint src test",
+		"eslint": "eslint index.js src test",
 		"allow-portbind": "sudo setcap 'cap_net_bind_service=+ep' `which node`"
 	},
 	"dependencies": {

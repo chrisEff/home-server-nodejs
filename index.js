@@ -123,7 +123,7 @@ if (temperatureRecordIntervalMinutes && temperatureSensors && temperatureSensors
 
 	config.cronjobs.push({
 		name: 'record temperature to DynamoDB',
-		schedule: { second: '0', minute: `*/${temperatureRecordIntervalMinutes}`, hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*' },
+		schedule: {second: '0', minute: `*/${temperatureRecordIntervalMinutes}`, hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'},
 		callback: async () => {
 			temperatureSensors.forEach(async (sensor) => {
 				try {
