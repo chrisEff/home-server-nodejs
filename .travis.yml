@@ -11,4 +11,4 @@ jobs:
     - script: npm t
     - stage: "coveralls report"
       node_js: "10"
-      npm run coveralls
+      script: npm run coveralls
