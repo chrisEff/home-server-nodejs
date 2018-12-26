@@ -1,22 +1,20 @@
 'use strict'
 
-const exec = require('child-process-promise').exec
-
 const Router = require('restify-router').Router
+const ShutterController = require('../classes/ShutterController')
 
 const router = new Router()
 router.prefix = '/shutters'
 require('restify-await-promise').install(router)
 
-const shutters = require('../../config').shutters
+const shutterController = new ShutterController(require('../../config').shutters)
 
 router.get('/', () => ['/shutter'])
-router.get('/shutter', () => shutters)
+router.get('/shutter', () => shutterController.getShutters())
 
 router.put('/shutter/:id/up', async (req) => {
 	try {
-		const shutter = shutters.find(shutter => shutter.id === parseInt(req.params.id))
-		await exec(`codesend ${shutter.codeUp} ${shutter.protocol}`)
+		await shutterController.up(req.params.id)
 		return 'OK'
 	} catch (e) {
 		console.log('codesend failed: ', e)
@@ -26,8 +24,7 @@ router.put('/shutter/:id/up', async (req) => {
 
 router.put('/shutter/:id/down', async (req) => {
 	try {
-		const shutter = shutters.find(shutter => shutter.id === parseInt(req.params.id))
-		await exec(`codesend ${shutter.codeDown} ${shutter.protocol}`)
+		await shutterController.down(req.params.id)
 		return 'OK'
 	} catch (e) {
 		console.log('codesend failed: ', e)
