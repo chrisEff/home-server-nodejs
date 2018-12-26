@@ -2,7 +2,10 @@
 	"name": "home-server",
 	"version": "1.0.0",
 	"description": "My own little home automation API for controlling lights, power outlets, shutters, etc.",
-	"keywords": ["smarthome", "homeautomation"],
+	"keywords": [
+		"smarthome",
+		"homeautomation"
+	],
 	"main": "index.js",
 	"author": "chrisEff",
 	"license": "MIT",
@@ -23,7 +26,6 @@
 		"child-process-promise": "^2.2.1",
 		"dateformat": "^3.0.3",
 		"dhcp-spy": "^1.0.0",
-		"fauxmojs": "^1.0.3",
 		"fs-extra": "^7.0.1",
 		"lodash.debounce": "^4.0.8",
 		"lodash.get": "^4.4.2",
@@ -34,6 +36,7 @@
 		"restify-cors-middleware": "^1.1.1",
 		"restify-errors": "^6.1.1",
 		"restify-router": "^0.5.1",
+		"wemore": "^0.6.1",
 		"winston": "^3.1.0"
 	},
 	"devDependencies": {

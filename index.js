@@ -5,7 +5,7 @@ const get = require('lodash.get')
 const restify = require('restify')
 const corsMiddleware = require('restify-cors-middleware')
 const errors = require('restify-errors')
-const FauxMo = require('fauxmojs')
+const wemore = require('wemore')
 const dhcpSpy = require('dhcp-spy')
 
 const config = require('./config.js')
@@ -97,17 +97,18 @@ if (config.outlets && config.outlets.length) {
 			port: o.fauxmoPort,
 			handler: (action) => {
 				Logger.debug(`FauxMo device '${o.name}' switched ${action}`)
-				rfController.switchOutlet(o.id, (action === 'on') ? 1 : 0)
+				rfController.switchOutlet(o.id, action  ? 1 : 0)
 			},
 		}))
 		.forEach(o => fauxMoDevices.push(o))
 }
 
 if (fauxMoDevices.length) {
-	const fauxMo = new FauxMo({
-		devices: fauxMoDevices,
+	fauxMoDevices.forEach(device => {
+		const wemoEmulator = wemore.Emulate({friendlyName: device.name, port: device.port})
+		wemoEmulator.on('state', device.handler)
 	})
-	Logger.info(`registered ${fauxMo.getNumberOfRegisteredDevices()} FauxMo devices`)
+	Logger.info(`registered ${fauxMoDevices.length} (fake) WeMo devices: (${fauxMoDevices.map(d => d.name).join(',')})`)
 }
 
 if (!config.cronjobs) {
