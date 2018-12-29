@@ -29,6 +29,7 @@
 		"fs-extra": "^7.0.1",
 		"lodash.debounce": "^4.0.8",
 		"lodash.get": "^4.4.2",
+		"lodash.sortby": "^4.7.0",
 		"node-coap-client": "1.0.2",
 		"node-cron": "^2.0.3",
 		"restify": "^7.2.3",
@@ -52,7 +53,6 @@
 		"eslint-plugin-node": "^8.0.0",
 		"eslint-plugin-promise": "^4.0.1",
 		"eslint-plugin-standard": "^4.0.0",
-		"lodash.sortby": "^4.7.0",
 		"mocha": "^5.2.0",
 		"nyc": "^13.1.0",
 		"sinon": "^7.1.1"
