@@ -160,7 +160,7 @@ if (temperatureRecordIntervalMinutes && temperatureSensors && temperatureSensors
 	})
 }
 
-if (config.rfButtons && config.rfButtons.length) {
+if ((config.rfButtons && config.rfButtons.length) || (config.windowSensors && config.windowSensors.length)) {
 	const sniffer = new RfSniffer(500)
 	
 	config.rfButtons.forEach(button => {
@@ -168,6 +168,13 @@ if (config.rfButtons && config.rfButtons.length) {
 	})
 
 	Logger.info(`registered ${config.rfButtons.length} RF buttons`)
+
+	config.windowSensors.forEach(sensor => {
+		sniffer.on(sensor.codeOpened, () => sensor.callback(true))
+		sniffer.on(sensor.codeClosed, () => sensor.callback(false))
+	})
+
+	Logger.info(`registered ${config.windowSensors.length} window sensors`)
 	
 	process.on('SIGINT', () => {
 		sniffer.stop()

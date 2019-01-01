@@ -48,6 +48,18 @@ const shutters = [
 	},
 ]
 
+const windowSensors = [
+	{
+		id: 1,
+		name: 'Bedroom',
+		codeOpened: 12345678,
+		codeClosed: 87654321,
+		callback: () => {
+			tradfriClient.toggleDeviceState(65539)
+		},
+	},
+]
+
 const temperature = {
 	recordIntervalMinutes: 5,
 	dynamoDbTable: 'home-server_temperatures',
@@ -81,6 +93,7 @@ const dashButtons = [
 		},
 	},
 ]
+
 const cronjobs = [
 	{
 		name: 'turn off living room light at midnight',
@@ -92,7 +105,7 @@ const cronjobs = [
 			dayOfWeek: '*',
 		},
 		callback: () => {
-			// tradfriClient.setDeviceState(3, 0)
+			// tradfriClient.setDeviceState(65539, 0)
 		},
 	},
 ]
@@ -106,6 +119,7 @@ module.exports = {
 	awsProfile,
 	outlets,
 	shutters,
+	windowSensors,
 	temperature,
 	rfButtons,
 	dashButtons,
