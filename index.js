@@ -17,12 +17,12 @@ if (config.awsProfile) {
 const AWS = require('aws-sdk')
 
 const Logger = require('./src/classes/Logger')
-const RfController = require('./src/classes/RfController')
-const ShutterController = require('./src/classes/ShutterController')
+const OutletController = require('./src/classes/rf/OutletController')
+const ShutterController = require('./src/classes/rf/ShutterController')
 const RfSniffer = require('./src/classes/RfSniffer')
 const TemperatureReader = require('./src/classes/TemperatureReader')
 
-const rfController = new RfController(config.outlets)
+const outletController = new OutletController(config.outlets)
 const shutterController = new ShutterController(config.shutters)
 
 const routers = [
@@ -99,7 +99,7 @@ if (config.outlets && config.outlets.length) {
 			port: o.fauxmoPort,
 			handler: (action) => {
 				Logger.debug(`FauxMo device '${o.name}' switched ${action}`)
-				rfController.switchOutlet(o.id, action  ? 1 : 0)
+				outletController.switchOutlet(o.id, action  ? 1 : 0)
 			},
 		}))
 		.forEach(o => fauxMoDevices.push(o))

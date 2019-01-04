@@ -1,13 +1,13 @@
 'use strict'
 
-
 const {InternalServerError} = require('restify-errors')
+const RfCodeSender = require('./RfCodeSender')
 
-class RfController {
+class OutletController extends RfCodeSender {
 
 	constructor (outlets) {
+		super()
 		this.outlets = outlets
-		this.exec = require('child-process-promise').exec
 	}
 	
 	getOutlets () {
@@ -26,7 +26,7 @@ class RfController {
 
 		if (Number.isInteger(codeOrHandler)) {
 			// we have a simple 433 Mhz code -> send it
-			return this._sendCode(codeOrHandler, outlet.protocol, outlet.pulseLength)
+			return this.sendCode(codeOrHandler, outlet.protocol, outlet.pulseLength)
 		}
 		if (typeof codeOrHandler === 'function') {
 			// we have a custom handler function -> execute it
@@ -41,18 +41,7 @@ class RfController {
 		const outlet = this.outlets.find(o => o.id === parseInt(id))
 		return this.switchOutlet(id, outlet.state ? 0 : 1)
 	}
-
-	/**
-	 * @param {int} code
-	 * @param {int} protocol
-	 * @param {int} pulseLength
-	 * @returns {Promise}
-	 * @private
-	 */
-	_sendCode (code, protocol, pulseLength) {
-		return this.exec(`codesend ${code} ${protocol} ${pulseLength}`)
-	}
 	
 }
 
-module.exports = RfController
+module.exports = OutletController

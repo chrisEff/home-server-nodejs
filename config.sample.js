@@ -1,7 +1,7 @@
 'use strict'
 
 const TradfriClient = require('./src/classes/tradfri/TradfriClient.js')
-const RfController = require('./src/classes/RfController')
+const OutletController = require('./src/classes/rf/OutletController')
 
 const users = [
 	// in order to be used as a GET param, key MUST NOT have the following characters in it:
@@ -36,7 +36,7 @@ const outlets = [
 	},
 ]
 
-const rfController = new RfController(outlets)
+const outletController = new OutletController(outlets)
 
 const shutters = [
 	{
@@ -89,7 +89,7 @@ const dashButtons = [
 		macAddress: '01:23:45:67:89:0A',
 		label: 'Afri Cola',
 		callback: () => {
-			rfController.toggleOutlet(2)
+			outletController.toggleOutlet(2)
 		},
 	},
 ]

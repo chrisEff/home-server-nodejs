@@ -1,7 +1,7 @@
 'use strict'
 
 const Router = require('restify-router').Router
-const ShutterController = require('../classes/ShutterController')
+const ShutterController = require('../classes/rf/ShutterController')
 
 const router = new Router()
 router.prefix = '/shutters'

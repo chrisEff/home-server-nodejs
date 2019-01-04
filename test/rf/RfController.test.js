@@ -1,13 +1,13 @@
 const sinon = require('sinon')
 const chai = require('chai')
 
-const RfController = require('../src/classes/RfController')
+const OutletController = require('../../src/classes/rf/OutletController')
 
-describe('RfController', () => {
+describe('OutletController', () => {
 
 	const sandbox = sinon.createSandbox()
 
-	const rfController = new RfController([{
+	const outletController = new OutletController([{
 		id: 123,
 		name: 'Outlet A',
 		off: 12345678,
@@ -20,10 +20,10 @@ describe('RfController', () => {
 	let sendCodeStub, switchOutletSpy
 
 	beforeEach(() => {
-		sendCodeStub = sandbox.stub(rfController, 'exec')
+		sendCodeStub = sandbox.stub(outletController, 'exec')
 		sendCodeStub.resolves('')
 
-		switchOutletSpy = sandbox.spy(rfController, 'switchOutlet')
+		switchOutletSpy = sandbox.spy(outletController, 'switchOutlet')
 	})
 
 	afterEach(() => {
@@ -32,20 +32,20 @@ describe('RfController', () => {
 
 	describe('getOutlets()', () => {
 		it('should return an array', () => {
-			chai.assert.isArray(rfController.getOutlets())
+			chai.assert.isArray(outletController.getOutlets())
 		})
 	})
 
 	describe('switchOutlet()', () => {
 		it('should send the right "ON" code', () => {
-			rfController.switchOutlet(123, 1)
+			outletController.switchOutlet(123, 1)
 
 			sinon.assert.calledOnce(sendCodeStub)
 			sinon.assert.calledWithExactly(sendCodeStub, `codesend 87654321 0 100`)
 		})
 
 		it('should send the right "OFF" code', () => {
-			rfController.switchOutlet(123, 0)
+			outletController.switchOutlet(123, 0)
 
 			sinon.assert.calledOnce(sendCodeStub)
 			sinon.assert.calledWithExactly(sendCodeStub, `codesend 12345678 0 100`)
@@ -54,16 +54,16 @@ describe('RfController', () => {
 
 	describe('toggleOutlet()', () => {
 		it('should call toggle the state', () => {
-			const expectedState = rfController.outlets[0].state ? 0 : 1
-			rfController.toggleOutlet(123)
+			const expectedState = outletController.outlets[0].state ? 0 : 1
+			outletController.toggleOutlet(123)
 
 			sinon.assert.calledOnce(switchOutletSpy)
 			sinon.assert.calledWithExactly(switchOutletSpy, 123, expectedState)
 		})
 
 		it('should call toggle the state again', () => {
-			const expectedState = rfController.outlets[0].state ? 0 : 1
-			rfController.toggleOutlet(123)
+			const expectedState = outletController.outlets[0].state ? 0 : 1
+			outletController.toggleOutlet(123)
 
 			sinon.assert.calledOnce(switchOutletSpy)
 			sinon.assert.calledWithExactly(switchOutletSpy, 123, expectedState)
