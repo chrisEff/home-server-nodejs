@@ -18,7 +18,7 @@ class RfCodeSender {
 	 * @protected
 	 */
 	sendCode (code, protocol, pulseLength = undefined) {
-		return this.exec(`codesend ${code} ${protocol} ${pulseLength}`)
+		return this.exec(`codesend ${code} ${protocol} ${pulseLength || ''}`)
 	}
 }
 
