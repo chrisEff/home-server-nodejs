@@ -15,22 +15,28 @@ class ShutterController extends RfCodeSender {
 
 	/**
 	 * @param {string|int} id
+	 * @param {int} delaySeconds
 	 * @returns {Promise}
 	 */
-	async up (id) {
+	async up (id, delaySeconds = 0) {
 		const shutter = this.shutters.find(s => s.id === parseInt(id))
 
-		return this.sendCode(shutter.codeUp, shutter.protocol)
+		setTimeout(async () => {
+			await this.sendCode(shutter.codeUp, shutter.protocol)
+		}, delaySeconds * 1000)
 	}
 
 	/**
 	 * @param {string|int} id
+	 * @param {int} delaySeconds
 	 * @returns {Promise}
 	 */
-	async down (id) {
+	async down (id, delaySeconds = 0) {
 		const shutter = this.shutters.find(s => s.id === parseInt(id))
 
-		return this.sendCode(shutter.codeDown, shutter.protocol)
+		setTimeout(async () => {
+			await this.sendCode(shutter.codeDown, shutter.protocol)
+		}, delaySeconds * 1000)
 	}
 	
 }

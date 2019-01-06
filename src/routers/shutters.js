@@ -14,7 +14,7 @@ router.get('/shutter', () => shutterController.getShutters())
 
 router.put('/shutter/:id/up', async (req) => {
 	try {
-		await shutterController.up(req.params.id)
+		await shutterController.up(req.params.id, req.query.delay)
 		return 'OK'
 	} catch (e) {
 		console.log('codesend failed: ', e)
@@ -24,7 +24,7 @@ router.put('/shutter/:id/up', async (req) => {
 
 router.put('/shutter/:id/down', async (req) => {
 	try {
-		await shutterController.down(req.params.id)
+		await shutterController.down(req.params.id, req.query.delay)
 		return 'OK'
 	} catch (e) {
 		console.log('codesend failed: ', e)
