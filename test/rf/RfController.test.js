@@ -90,7 +90,7 @@ describe('OutletController', () => {
 		})
 
 		it('should throw if "ON" is neither a code nor a callback', async () => {
-			return chai.assert.isRejected(outletController.switchOutlet(789, 1) )
+			return chai.assert.isRejected(outletController.switchOutlet(789, 1))
 		})
 	})
 
