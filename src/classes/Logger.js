@@ -3,15 +3,29 @@
 const dateFormat = require('dateformat')
 
 const winston = require('winston')
+const config = require('../../config.js')
+
+const transports = [
+	new winston.transports.Console({
+		level: config.logLevel,
+		timestamp: () => {
+			return dateFormat(new Date(), 'yyyy-mm-dd HH:MM:ss')
+		},
+	}),
+]
+
+if (config.logzIoToken) {
+	const LogzioWinstonTransport = require('winston-logzio')
+	transports.push(new LogzioWinstonTransport({
+		level: 'info',
+		name: 'winston_logzio',
+		token: config.logzIoToken,
+		host: 'listener.logz.io',
+	}))
+}
+
 winston.configure({
-	level: require('../../config.js').logLevel,
-	transports: [
-		new (winston.transports.Console)({
-			timestamp: () => {
-				return dateFormat(new Date(), 'yyyy-mm-dd HH:MM:ss')
-			},
-		}),
-	],
+	transports,
 })
 
 class Logger {
