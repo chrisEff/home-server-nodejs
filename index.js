@@ -62,7 +62,18 @@ if (config.users && config.users.length) {
 }
 
 server.pre((request, response, next) => {
-	Logger.debug(`received request: ${request.method} ${request.getPath()}`)
+	Logger.debug('received request', {
+		method: request.method,
+		path: request.getPath(),
+		query: {
+			...request.query,
+			apikey: request.query.apikey ? 'XXX' : undefined,
+		},
+		headers: {
+			...request.headers,
+			apikey: request.headers.apikey ? 'XXX' : undefined,
+		},
+	})
 	next()
 })
 

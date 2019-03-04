@@ -17,7 +17,7 @@ const transports = [
 if (config.logzIoToken) {
 	const LogzioWinstonTransport = require('winston-logzio')
 	transports.push(new LogzioWinstonTransport({
-		level: 'info',
+		level: 'silly',
 		name: 'winston_logzio',
 		token: config.logzIoToken,
 		host: 'listener.logz.io',
@@ -30,28 +30,28 @@ winston.configure({
 
 class Logger {
 
-	static error (msg) {
-		winston.error(msg)
+	static error (msg, meta = undefined) {
+		winston.error(msg, meta)
 	}
 
-	static warn (msg) {
-		winston.warn(msg)
+	static warn (msg, meta = undefined) {
+		winston.warn(msg, meta)
 	}
 
-	static info (msg) {
-		winston.info(msg)
+	static info (msg, meta = undefined) {
+		winston.info(msg, meta)
 	}
 
-	static verbose (msg) {
-		winston.verbose(msg)
+	static verbose (msg, meta = undefined) {
+		winston.verbose(msg, meta)
 	}
 
-	static debug (msg) {
-		winston.debug(msg)
+	static debug (msg, meta = undefined) {
+		winston.debug(msg, meta)
 	}
 
-	static silly (msg) {
-		winston.silly(msg)
+	static silly (msg, meta = undefined) {
+		winston.silly(msg, meta)
 	}
 	
 }
