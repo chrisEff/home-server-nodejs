@@ -75,6 +75,9 @@ If you want to control 433 MHz power outlets, you'll need...
 ### get PSK
 coap-client -m post -u "Client_identity" -k "<KEY_FROM_GATEWAY>" -e '{"9090":"<IDENTITY>"}' "coaps://<GATEWAY_IP>:5684/15011/9063"
 
+# get gateway details
+coap-client -m get -u "<IDENTITY>" -k "<PSK>" "coaps://<GATEWAY_IP>:5684/15011/15012"
+
 ### get list of device IDs
 coap-client -m get -u "<IDENTITY>" -k "<PSK>" "coaps://<GATEWAY_IP>:5684/15001"
 
