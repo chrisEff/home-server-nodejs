@@ -14,13 +14,11 @@ process.env['AWS_SDK_LOAD_CONFIG'] = '1'
 if (config.awsProfile) {
 	process.env['AWS_PROFILE'] = config.awsProfile
 }
-const AWS = require('aws-sdk')
 
 const Logger = require('./src/classes/Logger')
 const OutletController = require('./src/classes/rf/OutletController')
 const ShutterController = require('./src/classes/rf/ShutterController')
 const RfSniffer = require('./src/classes/RfSniffer')
-const TemperatureReader = require('./src/classes/TemperatureReader')
 
 const outletController = new OutletController(config.outlets)
 const shutterController = new ShutterController(config.shutters)
@@ -147,7 +145,8 @@ const temperatureSensors = get(config, 'temperature.sensors')
 const temperatureDynamoDbTable = get(config, 'temperature.dynamoDbTable')
 
 if (temperatureRecordIntervalMinutes && temperatureSensors && temperatureSensors.length && temperatureDynamoDbTable) {
-	const dynamoClient = new AWS.DynamoDB.DocumentClient()
+	const TemperatureReader = require('./src/classes/temperature/TemperatureReader')
+	const TemperatureRepository = require('./src/classes/temperature/TemperatureRepository')
 
 	config.cronjobs.push({
 		name: 'record temperature to DynamoDB',
@@ -155,14 +154,11 @@ if (temperatureRecordIntervalMinutes && temperatureSensors && temperatureSensors
 		callback: async () => {
 			temperatureSensors.forEach(async (sensor) => {
 				try {
-					await dynamoClient.put({
-						TableName: temperatureDynamoDbTable,
-						Item: {
-							sensorId: sensor.id,
-							timestamp: Math.floor(Date.now() / 10000) * 10,
-							val: await TemperatureReader.readSensor(sensor.deviceId),
-						},
-					}).promise()
+					await TemperatureRepository.save(
+						sensor.id,
+						Math.floor(Date.now() / 10000) * 10,
+						await TemperatureReader.readSensor(sensor.deviceId)
+					)
 				} catch (e) {
 					console.log('failed reading temperature sensor: ', e)
 				}
