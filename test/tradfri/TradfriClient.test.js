@@ -19,37 +19,10 @@ describe('TradfriClient', () => {
 	})
 
 	describe('gateway', () => {
-		const rawGatewayDetails = {
-			'9023': '3.tradfri.pool.ntp.org',
-			'9029': '1.4.15',
-			'9054': 0,
-			'9055': 0,
-			'9059': 1542400053,
-			'9060': '2018-11-16T20:27:33.054712Z',
-			'9061': 0,
-			'9062': 0,
-			'9066': 5,
-			'9069': 1530565455,
-			'9071': 1,
-			'9072': 3,
-			'9073': 31,
-			'9074': 1,
-			'9075': 0,
-			'9076': 10,
-			'9077': 27,
-			'9078': 1,
-			'9079': 0,
-			'9080': 60,
-			'9081': '7e196d5204400158',
-			'9082': true,
-			'9083': '376-65-898',
-			'9092': 1,
-			'9093': 1,
-			'9105': 1,
-			'9106': 1,
-			'9107': 0,
-			'9200': 'ac83b910-7431-45f4-91c6-3c39512034f9',
-		}
+		const rawGatewayDetails = require('./data/raw-gateway-details')
+
+		// TODO gateway details are not sanitized yet
+		const sanitizedGatewayDetails = rawGatewayDetails
 
 		describe('getGatewayDetails()', () => {
 			it('should return the correct gateway details', async () => {
@@ -57,7 +30,7 @@ describe('TradfriClient', () => {
 					.withArgs('get', '15011/15012')
 					.resolves(rawGatewayDetails)
 
-				chai.assert.deepStrictEqual(await tradfri.getGatewayDetails(), rawGatewayDetails)
+				chai.assert.deepStrictEqual(await tradfri.getGatewayDetails(), sanitizedGatewayDetails)
 				sinon.assert.calledOnce(requestStub)
 				sinon.assert.calledWithExactly(requestStub, 'get', '15011/15012')
 			})
@@ -271,53 +244,11 @@ describe('TradfriClient', () => {
 	})
 
 	describe('groups', () => {
-		const rawGroup1 = {
-			'5850': 0,
-			'5851': 0,
-			'9001': 'Arbeitszimmer',
-			'9002': 1513380507,
-			'9003': 131073,
-			'9018': {
-				'15002': {
-					'9003': [
-						65536,
-						65537,
-					],
-				},
-			},
-			'9039': 196608,
-			'9108': 0,
-		}
-		const rawGroup2 = {
-			'5850': 0,
-			'5851': 0,
-			'9001': 'Schlafzimmer',
-			'9002': 1514555198,
-			'9003': 131075,
-			'9018': {
-				'15002': {
-					'9003': [
-						65538,
-						65541,
-						65556,
-						65557,
-					],
-				},
-			},
-			'9039': 196614,
-			'9108': 0,
-		}
+		const rawGroup1 = require('./data/raw-group-1')
+		const rawGroup2 = require('./data/raw-group-2')
 		
-		const sanitizedGroup1 = {
-			id: 131073,
-			name: 'Arbeitszimmer',
-			deviceIds: [65536, 65537],
-		}
-		const sanitizedGroup2 = {
-			id: 131075,
-			name: 'Schlafzimmer',
-			deviceIds: [65538, 65541, 65556, 65557],
-		}
+		const sanitizedGroup1 = require('./data/sanitized-group-1')
+		const sanitizedGroup2 = require('./data/sanitized-group-2')
 		
 		describe('getGroupIds()', () => {
 			it('should call request() correctly and pass through its response', async () => {
@@ -424,29 +355,10 @@ describe('TradfriClient', () => {
 	})
 
 	describe('schedules', () => {
-		const rawSchedule = {
-			'5850': 0,
-			'9002': 1513380759,
-			'9003': 280397,
-			'9040': 4,
-			'9041': 31,
-			'9042': {
-				'5850': 1,
-				'15013': [
-					{
-						'5712': 18000,
-						'5851': 254,
-						'9003': 65551,
-					},
-				],
-			},
-			'9044': [
-				{
-					'9046': 5,
-					'9047': 45,
-				},
-			],
-		}
+		const rawSchedule = require('./data/raw-schedule')
+
+		// TODO schedules are not sanitized yet
+		const sanitizedSchedule = rawSchedule
 		
 		describe('getScheduleIds()', () => {
 			it('should call request() correctly and pass through its response', async () => {
@@ -466,7 +378,7 @@ describe('TradfriClient', () => {
 					.withArgs('get', '15010/280397')
 					.resolves(rawSchedule)
 
-				chai.assert.deepStrictEqual(await tradfri.getSchedule(280397), rawSchedule)
+				chai.assert.deepStrictEqual(await tradfri.getSchedule(280397), sanitizedSchedule)
 				sinon.assert.calledOnce(requestStub)
 				sinon.assert.calledWithExactly(requestStub, 'get', '15010/280397')
 			})
@@ -480,7 +392,7 @@ describe('TradfriClient', () => {
 					.withArgs('get', '15010/280397')
 					.resolves(rawSchedule)
 
-				chai.assert.deepStrictEqual(await tradfri.getSchedules(), [rawSchedule])
+				chai.assert.deepStrictEqual(await tradfri.getSchedules(), [sanitizedSchedule])
 			})
 		})
 	})
