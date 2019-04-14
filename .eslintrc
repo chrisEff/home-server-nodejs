@@ -3,6 +3,16 @@
 	"env": {
 		"node": true,
 		"mocha": true
+	},
+	"plugins": [
+		"mocha"
+	],
+	"rules": {
+		"mocha/no-async-describe": "error",
+		"mocha/no-exclusive-tests": "error",
+		"mocha/no-global-tests": "error",
+		"mocha/no-identical-title": "error",
+		"mocha/no-nested-tests": "error"
 	}
 }
 
