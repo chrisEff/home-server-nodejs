@@ -26,6 +26,22 @@ If you want to control 433 MHz power outlets, you'll need...
   
 ## Installation
 
+(Assuming you're using a Raspberry Pi with a freshly installed Raspbian. Under other circumstances, some steps might be slightly different or even obsolete.)
+
+* install git
+	```
+	sudo apt install git
+	```
+
+* install node.js v12.x
+	```
+	wget https://deb.nodesource.com/setup_12.x
+	chmod +x setup_12.x
+	./setup_12.x
+	sudo apt install nodejs
+	```
+	For more info see: https://github.com/nodesource/distributions#debinstall
+
 * clone this repo with its submodules:
 	```
 	git clone --recursive git@github.com:chrisEff/home-server-nodejs.git
