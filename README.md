@@ -77,6 +77,16 @@ If you want to control 433 MHz power outlets, you'll need...
 	npm run allow-portbind
 	```
 	
+* enable reading DS18B20 temperature sensors via W1 bus:
+	```
+	sudo su
+	echo 'dtoverlay=w1-gpio,gpiopin=4,pullup=on' >> /boot/config.txt
+	echo 'w1-gpio pullup=1' >> /etc/modules
+	echo 'w1-therm' >> /etc/modules
+	reboot
+	```
+	For more info see (german): https://www.kompf.de/weather/pionewiremini.html
+
 * start the server
 	```
 	npm start
