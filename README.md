@@ -72,7 +72,7 @@ If you want to control 433 MHz power outlets, you'll need...
 
 * adjust `config.js` according to your needs
 
-* allow node to bind ports < 1024:
+* allow node to bind ports < 1024 (dhcp-spy needs to listen on port 67 in order to detect DHCP requests from dash buttons):
 	```
 	npm run allow-portbind
 	```
