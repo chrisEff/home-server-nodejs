@@ -37,10 +37,20 @@ If you want to control 433 MHz power outlets, you'll need...
 	```
 	wget https://deb.nodesource.com/setup_12.x
 	chmod +x setup_12.x
-	./setup_12.x
+	sudo ./setup_12.x
 	sudo apt install nodejs
 	```
 	For more info see: https://github.com/nodesource/distributions#debinstall
+	
+
+* install WiringPi
+	```
+	git clone git://git.drogon.net/wiringPi
+	cd wiringPi
+	./build
+	cd ..
+	```
+	For more info see: https://projects.drogon.net/raspberry-pi/wiringpi/download-and-install/
 
 * clone this repo with its submodules:
 	```
