@@ -65,14 +65,22 @@ describe('OutletController', () => {
 			outletController.switchOutlet(123, 1)
 
 			sinon.assert.calledOnce(sendCodeStub)
-			sinon.assert.calledWithExactly(sendCodeStub, `codesend 87654321 0 100`)
+			const expectedCommand = `codesend 87654321 0 100`
+			sinon.assert.calledWithExactly(
+				sendCodeStub,
+				sinon.match((value) => value.endsWith(expectedCommand), `.endsWith("${expectedCommand}")`)
+			)
 		})
 
 		it('should send the right "OFF" code', () => {
 			outletController.switchOutlet(123, 0)
 
 			sinon.assert.calledOnce(sendCodeStub)
-			sinon.assert.calledWithExactly(sendCodeStub, `codesend 12345678 0 100`)
+			const expectedCommand = `codesend 12345678 0 100`
+			sinon.assert.calledWithExactly(
+				sendCodeStub,
+				sinon.match((value) => value.endsWith(expectedCommand), `.endsWith("${expectedCommand}")`)
+			)
 		})
 
 		it('should execute OFF callback', async () => {
