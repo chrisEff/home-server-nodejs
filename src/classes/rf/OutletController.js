@@ -1,6 +1,6 @@
 'use strict'
 
-const {InternalServerError} = require('restify-errors')
+const { InternalServerError } = require('restify-errors')
 const RfCodeSender = require('./RfCodeSender')
 const path = require('path')
 

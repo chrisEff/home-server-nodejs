@@ -29,7 +29,7 @@ class TemperatureRepository {
 			},
 		}).promise()
 
-		return response.Items.map(item => ({time: item.timestamp, val: item.val}))
+		return response.Items.map(item => ({ time: item.timestamp, val: item.val }))
 	}
 
 	static async save (sensorId, timestamp, value) {
