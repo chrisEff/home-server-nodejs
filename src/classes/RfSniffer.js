@@ -6,9 +6,9 @@ const EventEmitter = require('events').EventEmitter
 const Logger = require('./Logger')
 
 class RfSniffer extends EventEmitter {
-	constructor (debounceDelay) {
+	constructor (debounceDelay, pathToExecutable = 'RFSniffer') {
 		super()
-		this.process = spawn('RFSniffer')
+		this.process = spawn(pathToExecutable)
 
 		this.process.stdout.on('data', debounce((buffer) => {
 			const data = buffer.toString().trim()

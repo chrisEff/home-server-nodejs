@@ -1,11 +1,12 @@
 'use strict'
 
 const RfCodeSender = require('./RfCodeSender')
+const path = require('path')
 
 class ShutterController extends RfCodeSender {
 
 	constructor (shutters) {
-		super()
+		super(path.join(__dirname, '../../../433Utils/RPi_utils', 'codesend'))
 		this.shutters = shutters
 	}
 

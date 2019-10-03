@@ -2,11 +2,12 @@
 
 const {InternalServerError} = require('restify-errors')
 const RfCodeSender = require('./RfCodeSender')
+const path = require('path')
 
 class OutletController extends RfCodeSender {
 
 	constructor (outlets) {
-		super()
+		super(path.join(__dirname, '../../../433Utils/RPi_utils', 'codesend'))
 		this.outlets = outlets
 	}
 	

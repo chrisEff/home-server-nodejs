@@ -6,7 +6,8 @@ const childProcessPromise = require('child-process-promise')
  * @abstract
  */
 class RfCodeSender {
-	constructor () {
+	constructor (pathToExecutable = 'codesend') {
+		this.pathToExecutable = pathToExecutable
 		this.exec = childProcessPromise.exec
 	}
 
@@ -18,7 +19,7 @@ class RfCodeSender {
 	 * @protected
 	 */
 	sendCode (code, protocol, pulseLength = undefined) {
-		return this.exec(`codesend ${code} ${protocol} ${pulseLength || ''}`)
+		return this.exec(`${this.pathToExecutable} ${code} ${protocol} ${pulseLength || ''}`)
 	}
 }
 

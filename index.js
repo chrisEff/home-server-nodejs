@@ -7,6 +7,7 @@ const corsMiddleware = require('restify-cors-middleware')
 const errors = require('restify-errors')
 const wemore = require('wemore')
 const dhcpSpy = require('dhcp-spy')
+const path = require('path')
 
 const config = require('./config.js')
 
@@ -168,7 +169,7 @@ if (temperatureRecordIntervalMinutes && temperatureSensors && temperatureSensors
 }
 
 if ((config.rfButtons && config.rfButtons.length) || (config.windowSensors && config.windowSensors.length)) {
-	const sniffer = new RfSniffer(500)
+	const sniffer = new RfSniffer(500, path.join(__dirname, '433Utils/RPi_utils', 'RFSniffer'))
 	
 	config.rfButtons.forEach(button => {
 		sniffer.on(button.code, button.callback)
