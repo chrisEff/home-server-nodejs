@@ -131,7 +131,7 @@ if (config.shutters && config.shutters.length) {
 
 if (fauxMoDevices.length) {
 	fauxMoDevices.forEach(device => {
-		const wemoEmulator = wemore.Emulate({friendlyName: device.name, port: device.port})
+		const wemoEmulator = wemore.Emulate({ friendlyName: device.name, port: device.port })
 		wemoEmulator.on('state', device.handler)
 	})
 	Logger.info(`registered ${fauxMoDevices.length} (fake) WeMo devices: (${fauxMoDevices.map(d => d.name).join(',')})`)
@@ -151,7 +151,7 @@ if (temperatureRecordIntervalMinutes && temperatureSensors && temperatureSensors
 
 	config.cronjobs.push({
 		name: 'record temperature to DynamoDB',
-		schedule: {second: '0', minute: `*/${temperatureRecordIntervalMinutes}`, hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'},
+		schedule: { second: '0', minute: `*/${temperatureRecordIntervalMinutes}`, hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*' },
 		callback: async () => {
 			temperatureSensors.forEach(async (sensor) => {
 				try {
