@@ -6,10 +6,27 @@ const OutletController = require('./src/classes/rf/OutletController')
 const users = [
 	// in order to be used as a GET param, key MUST NOT have the following characters in it:
 	// ? & #
-	{id: 'admin', key: 'vpe485zgoe48nvpe485zbpvow4zpeo458'},
+	{ id: 'admin', key: 'vpe485zgoe48nvpe485zbpvow4zpeo458' },
 ]
 const serverPort = 8080
-const logLevel = 'silly'
+
+const logging = {
+	console: {
+		active: true,
+		level: 'silly',
+	},
+	file: {
+		active: false,
+		level: 'silly',
+		filename: '/home/pi/home-server/logs.txt',
+	},
+	logzio: {
+		active: false,
+		level: 'silly',
+		token: 'abcdefghijklmnopqrstuvwxyz012345',
+	},
+}
+
 const ssl = {
 	certificateFile: '/etc/letsencrypt/live/my.domain.com/fullchain.pem',
 	certificateKeyFile: '/etc/letsencrypt/live/my.domain.com/privkey.pem',
@@ -113,7 +130,7 @@ const cronjobs = [
 module.exports = {
 	users,
 	serverPort,
-	logLevel,
+	logging,
 	ssl,
 	tradfri,
 	awsProfile,

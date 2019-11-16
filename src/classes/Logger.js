@@ -1,57 +1,76 @@
 'use strict'
 
 const dateFormat = require('dateformat')
+const get = require('lodash.get')
 
 const winston = require('winston')
+const LogzioWinstonTransport = require('winston-logzio')
+
 const config = require('../../config.js')
 
-const transports = [
-	new winston.transports.Console({
-		level: config.logLevel,
+const transports = []
+
+if (get(config, 'logging.console.active')) {
+	const level = get(config, 'logging.console.level')
+	transports.push(new winston.transports.Console({
+		level,
 		timestamp: () => {
 			return dateFormat(new Date(), 'yyyy-mm-dd HH:MM:ss')
 		},
-	}),
-]
+	}))
+}
 
-if (config.logzIoToken) {
-	const LogzioWinstonTransport = require('winston-logzio')
+if (get(config, 'logging.file.active')) {
+	const level = get(config, 'logging.file.level')
+	const filename = get(config, 'logging.file.filename')
+	transports.push(new winston.transports.File({
+		level,
+		filename,
+		timestamp: () => {
+			return dateFormat(new Date(), 'yyyy-mm-dd HH:MM:ss')
+		},
+	}))
+}
+
+if (get(config, 'logging.logzio.active')) {
+	const level = get(config, 'logging.logzio.level')
+	const token = get(config, 'logging.logzio.token')
 	transports.push(new LogzioWinstonTransport({
-		level: 'silly',
+		level,
 		name: 'winston_logzio',
-		token: config.logzIoToken,
+		token,
 		host: 'listener.logz.io',
 	}))
 }
 
-winston.configure({
+const logger = winston.createLogger({
 	transports,
 })
 
 class Logger {
 
 	static error (msg, meta = undefined) {
-		winston.error(msg, meta)
+		logger.error(msg, meta)
 	}
 
 	static warn (msg, meta = undefined) {
-		winston.warn(msg, meta)
+		logger.warn(msg, meta)
 	}
 
 	static info (msg, meta = undefined) {
-		winston.info(msg, meta)
+		logger.info(msg, meta)
 	}
 
 	static verbose (msg, meta = undefined) {
-		winston.verbose(msg, meta)
+		logger.verbose(msg, meta)
 	}
 
 	static debug (msg, meta = undefined) {
-		winston.debug(msg, meta)
+		logger.debug(msg, meta)
 	}
 
 	static silly (msg, meta = undefined) {
-		winston.silly(msg, meta)
+		logger.silly(msg, meta)
 	}
 	
 }
