@@ -137,7 +137,15 @@ class TradfriClient {
 	}
 
 	// setGroupColor() not implemented since it doesn't seem to be possible to set a group's color
-	
+
+
+	// *** notifications ***
+
+	async getNotifications (withRaw = false) {
+		const notifications = await this.request('get', `15006`)
+		return notifications.map(n => TradfriSanitizer.sanitizeNotification(n, withRaw))
+	}
+
 	
 	// *** schedules ***
 

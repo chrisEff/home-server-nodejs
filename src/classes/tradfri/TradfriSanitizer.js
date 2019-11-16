@@ -12,6 +12,14 @@ const BULB_TYPE_WHITE = 'white'
 const SWITCH_TYPE_REMOTE = 'remote'
 const SWITCH_TYPE_DIMMER = 'dimmer'
 
+const NOTIFICATION_TYPES = {
+	1001: 'NEW_FIRMWARE_AVAILABLE',
+	1003: 'GATEWAY_REBOOT_NOTIFICATION',
+	1004: 'UNKNOWN_EVENT_1004',
+	1005: 'UNKNOWN_EVENT_1005',
+	5001: 'LOSS_OF_INTERNET_CONNECTIVITY',
+}
+
 class TradfriSanitizer {
 	
 	static sanitizeDevice (raw, includeRaw = false) {
@@ -78,7 +86,7 @@ class TradfriSanitizer {
 				parseInt(get(raw, '3311.0.5707')),
 				parseInt(get(raw, '3311.0.5708')),
 				parseInt(get(raw, '3311.0.5709')),
-				parseInt(get(raw, '3311.0.5710'))
+				parseInt(get(raw, '3311.0.5710')),
 			)
 		}
 
@@ -118,6 +126,19 @@ class TradfriSanitizer {
 			result.raw = raw
 		}
 		
+		return result
+	}
+
+	static sanitizeNotification (raw, includeRaw = false) {
+		const result = {
+			time: new Date(parseInt(get(raw, '9002')) * 1000).toISOString(),
+			state: get(raw, '9014'),
+			type: NOTIFICATION_TYPES[get(raw, '9015')] || `UNKNOWN_EVENT_${get(raw, '9015')}`,
+		}
+		if (includeRaw) {
+			result.raw = raw
+		}
+
 		return result
 	}
 	

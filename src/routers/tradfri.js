@@ -70,6 +70,9 @@ router.put('/group/:id/brightness/:brightness/:transitionTime/:timeUnit', async 
 
 // PUT /group/:id/color/:color not implemented since it doesn't seem to be possible to set a group's color
 
+// notifications
+router.get('/notification', async (req) => tradfri.getNotifications(toBool(req.query.withRaw)))
+
 // schedules
 router.get('/schedule',     async ()    => tradfri.getSchedules())
 router.get('/schedule/:id', async (req) => tradfri.getSchedule(req.params.id))
