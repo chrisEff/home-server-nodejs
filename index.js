@@ -158,7 +158,7 @@ if (temperatureRecordIntervalMinutes && temperatureSensors && temperatureSensors
 					await TemperatureRepository.save(
 						sensor.id,
 						Math.floor(Date.now() / 10000) * 10,
-						await TemperatureReader.readSensor(sensor.deviceId)
+						await TemperatureReader.readSensor(sensor.deviceId),
 					)
 				} catch (e) {
 					console.log('failed reading temperature sensor: ', e)
@@ -218,9 +218,14 @@ if (config.cronjobs && config.cronjobs.length) {
 		if (s.hasOwnProperty('second')) {
 			scheduleString = `${s.second} ${scheduleString}`
 		}
-		return nodeCron.schedule(scheduleString, () => {
-			Logger.info(`running cron job '${cronJob.name}'`)
-			cronJob.callback()
+		return nodeCron.schedule(scheduleString, async () => {
+			Logger.debug(`cron job '${cronJob.name}' invoked`)
+			try {
+				await Promise.resolve(cronJob.callback())
+				Logger.debug(`cron job '${cronJob.name}' done`)
+			} catch (error) {
+				Logger.error(`cron job '${cronJob.name}' failed`, { error })
+			}
 		})
 	})
 }
