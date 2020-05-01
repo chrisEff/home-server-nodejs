@@ -3,12 +3,14 @@
 const nodeCoapClient = require('node-coap-client')
 const lodashSortBy = require('lodash.sortby')
 
+const Logger = require('../Logger')
 const TradfriSanitizer = require('./TradfriSanitizer')
 
 class TradfriClient {
 	
-	constructor (user, psk, gateway) {
+	constructor (user, psk, gateway, port = 5684) {
 		this.gateway = gateway
+		this.port = port
 		this.coapClient = nodeCoapClient.CoapClient
 		this.coapClient.setSecurityParams(gateway, { psk: { [user]: psk } })
 		
@@ -231,10 +233,24 @@ class TradfriClient {
 	 * @returns {Promise<*>}
 	 */
 	async request (method, path, body = undefined) {
-		const response = await this.coapClient.request(`coaps://${this.gateway}:5684/${path}`, method, body ? Buffer.from(body) : undefined)
-		const responseString = response.payload.toString('utf8')
+		Logger.debug(`TradfriClient.request() invoked, method: ${method}, path: ${path}`)
+		try {
+			const response = await this.coapClient.request(
+				`coaps://${this.gateway}:${this.port}/${path}`,
+				method,
+				body ? Buffer.from(body) : undefined,
+			)
+			const responseString = response.payload.toString('utf8')
+			const result = responseString ? JSON.parse(responseString) : 'OK'
 
-		return responseString ? JSON.parse(responseString) : 'OK'
+			Logger.debug(`TradfriClient.request() done, result: ${result}`)
+
+			return result
+		} catch (e) {
+			Logger.error(`TradfriClient.request() failed: ${e}`)
+			console.log(e)
+			throw e
+		}
 	}
 
 
