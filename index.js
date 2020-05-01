@@ -10,6 +10,7 @@ const dhcpSpy = require('dhcp-spy')
 const path = require('path')
 
 const config = require('./config.js')
+const hasOwnProperty = require('./src/helpers/hasOwnProperty')
 
 process.env.AWS_SDK_LOAD_CONFIG = '1'
 if (config.awsProfile) {
@@ -103,7 +104,7 @@ const fauxMoDevices = []
 
 if (config.outlets && config.outlets.length) {
 	config.outlets
-		.filter(o => Object.prototype.hasOwnProperty.call(o, 'fauxmoPort'))
+		.filter(o => hasOwnProperty(o, 'fauxmoPort'))
 		.map(o => ({
 			name: o.name,
 			port: o.fauxmoPort,
@@ -117,7 +118,7 @@ if (config.outlets && config.outlets.length) {
 
 if (config.shutters && config.shutters.length) {
 	config.shutters
-		.filter(s => Object.prototype.hasOwnProperty.call(s, 'fauxmoPort'))
+		.filter(s => hasOwnProperty(s, 'fauxmoPort'))
 		.map(s => ({
 			name: s.name,
 			port: s.fauxmoPort,

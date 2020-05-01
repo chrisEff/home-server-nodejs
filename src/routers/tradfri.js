@@ -3,6 +3,7 @@
 const Router = require('restify-router').Router
 const config = require('../../config.js')
 const TradfriClient = require('../classes/tradfri/TradfriClient.js')
+const hasOwnProperty = require('../helpers/hasOwnProperty')
 
 const router = new Router()
 router.prefix = '/tradfri'
@@ -25,11 +26,11 @@ router.get('/device',     async (req) => tradfri.getDevices(req.query.type, req.
 router.get('/device/:id', async (req) => tradfri.getDevice(req.params.id, toBool(req.query.withRaw)))
 
 async function putDevice (device, body) {
-	const state = Object.prototype.hasOwnProperty.call(body, 'state') ? body.state : device.state
+	const state = hasOwnProperty(body, 'state') ? body.state : device.state
 
-	if (Object.prototype.hasOwnProperty.call(body, 'color'))      tradfri.setDeviceColor(device.id, body.color)
-	if (Object.prototype.hasOwnProperty.call(body, 'brightness')) tradfri.setDeviceBrightness(device.id, body.brightness)
-	if (Object.prototype.hasOwnProperty.call(body, 'name'))       tradfri.setDeviceName(device.id, body.name)
+	if (hasOwnProperty(body, 'color'))      tradfri.setDeviceColor(device.id, body.color)
+	if (hasOwnProperty(body, 'brightness')) tradfri.setDeviceBrightness(device.id, body.brightness)
+	if (hasOwnProperty(body, 'name'))       tradfri.setDeviceName(device.id, body.name)
 
 	// Changing the brightness will set the state to on,
 	// even if you explicitly want to set it to off or not change it at all.
