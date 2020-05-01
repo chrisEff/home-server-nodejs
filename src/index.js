@@ -9,27 +9,27 @@ const wemore = require('wemore')
 const dhcpSpy = require('dhcp-spy')
 const path = require('path')
 
-const config = require('./config.js')
-const hasOwnProperty = require('./src/helpers/hasOwnProperty')
+const config = require('../config.js')
+const hasOwnProperty = require('./helpers/hasOwnProperty')
 
 process.env.AWS_SDK_LOAD_CONFIG = '1'
 if (config.awsProfile) {
 	process.env.AWS_PROFILE = config.awsProfile
 }
 
-const Logger = require('./src/classes/Logger')
-const OutletController = require('./src/classes/rf/OutletController')
-const ShutterController = require('./src/classes/rf/ShutterController')
-const RfSniffer = require('./src/classes/RfSniffer')
+const Logger = require('./classes/Logger')
+const OutletController = require('./classes/rf/OutletController')
+const ShutterController = require('./classes/rf/ShutterController')
+const RfSniffer = require('./classes/RfSniffer')
 
 const outletController = new OutletController(config.outlets)
 const shutterController = new ShutterController(config.shutters)
 
 const routers = [
-	require('./src/routers/rfoutlets'),
-	require('./src/routers/tradfri'),
-	require('./src/routers/tempSensors'),
-	require('./src/routers/shutters'),
+	require('./routers/rfoutlets'),
+	require('./routers/tradfri'),
+	require('./routers/tempSensors'),
+	require('./routers/shutters'),
 ]
 
 const options = {}
@@ -147,8 +147,8 @@ const temperatureSensors = get(config, 'temperature.sensors')
 const temperatureDynamoDbTable = get(config, 'temperature.dynamoDbTable')
 
 if (temperatureRecordIntervalMinutes && temperatureSensors && temperatureSensors.length && temperatureDynamoDbTable) {
-	const TemperatureReader = require('./src/classes/temperature/TemperatureReader')
-	const TemperatureRepository = require('./src/classes/temperature/TemperatureRepository')
+	const TemperatureReader = require('./classes/temperature/TemperatureReader')
+	const TemperatureRepository = require('./classes/temperature/TemperatureRepository')
 
 	config.cronjobs.push({
 		name: 'record temperature to DynamoDB',
@@ -170,7 +170,7 @@ if (temperatureRecordIntervalMinutes && temperatureSensors && temperatureSensors
 }
 
 if ((config.rfButtons && config.rfButtons.length) || (config.windowSensors && config.windowSensors.length)) {
-	const sniffer = new RfSniffer(500, path.join(__dirname, '433Utils/RPi_utils', 'RFSniffer'))
+	const sniffer = new RfSniffer(500, path.join(__dirname, '../433Utils/RPi_utils', 'RFSniffer'))
 	
 	config.rfButtons.forEach(button => {
 		sniffer.on(button.code, button.action)
