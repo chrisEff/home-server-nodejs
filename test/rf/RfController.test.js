@@ -68,7 +68,7 @@ describe('OutletController', () => {
 			const expectedCommand = `codesend 87654321 0 100`
 			sinon.assert.calledWithExactly(
 				sendCodeStub,
-				sinon.match((value) => value.endsWith(expectedCommand), `.endsWith("${expectedCommand}")`)
+				sinon.match((value) => value.endsWith(expectedCommand), `.endsWith("${expectedCommand}")`),
 			)
 		})
 
@@ -79,25 +79,25 @@ describe('OutletController', () => {
 			const expectedCommand = `codesend 12345678 0 100`
 			sinon.assert.calledWithExactly(
 				sendCodeStub,
-				sinon.match((value) => value.endsWith(expectedCommand), `.endsWith("${expectedCommand}")`)
+				sinon.match((value) => value.endsWith(expectedCommand), `.endsWith("${expectedCommand}")`),
 			)
 		})
 
-		it('should execute OFF callback', async () => {
+		it('should execute OFF action', async () => {
 			await outletController.switchOutlet(456, 0)
 
 			sinon.assert.calledOnce(offStub)
 			sinon.assert.notCalled(onStub)
 		})
 
-		it('should execute ON callback', async () => {
+		it('should execute ON action', async () => {
 			await outletController.switchOutlet(456, 1)
 
 			sinon.assert.calledOnce(onStub)
 			sinon.assert.notCalled(offStub)
 		})
 
-		it('should throw if "ON" is neither a code nor a callback', async () => {
+		it('should throw if "ON" is neither a code nor a function', async () => {
 			return chai.assert.isRejected(outletController.switchOutlet(789, 1))
 		})
 	})

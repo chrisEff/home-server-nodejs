@@ -152,7 +152,7 @@ if (temperatureRecordIntervalMinutes && temperatureSensors && temperatureSensors
 	config.cronjobs.push({
 		name: 'record temperature to DynamoDB',
 		schedule: { second: '0', minute: `*/${temperatureRecordIntervalMinutes}`, hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*' },
-		callback: async () => {
+		action: async () => {
 			temperatureSensors.forEach(async (sensor) => {
 				try {
 					await TemperatureRepository.save(
@@ -172,14 +172,14 @@ if ((config.rfButtons && config.rfButtons.length) || (config.windowSensors && co
 	const sniffer = new RfSniffer(500, path.join(__dirname, '433Utils/RPi_utils', 'RFSniffer'))
 	
 	config.rfButtons.forEach(button => {
-		sniffer.on(button.code, button.callback)
+		sniffer.on(button.code, button.action)
 	})
 
 	Logger.info(`registered ${config.rfButtons.length} RF buttons`)
 
 	config.windowSensors.forEach(sensor => {
-		sniffer.on(sensor.codeOpened, () => sensor.callback(true))
-		sniffer.on(sensor.codeClosed, () => sensor.callback(false))
+		sniffer.on(sensor.codeOpened, () => sensor.action(true))
+		sniffer.on(sensor.codeClosed, () => sensor.action(false))
 	})
 
 	Logger.info(`registered ${config.windowSensors.length} window sensors`)
@@ -203,7 +203,7 @@ if (config.dashButtons && config.dashButtons.length) {
 	config.dashButtons.forEach(button => {
 		dhcpSpy.on(button.macAddress, () => {
 			Logger.debug(`dash button "${button.label}" pressed`)
-			button.callback()
+			button.action()
 		})
 	})
 
@@ -221,7 +221,7 @@ if (config.cronjobs && config.cronjobs.length) {
 		return nodeCron.schedule(scheduleString, async () => {
 			Logger.debug(`cron job '${cronJob.name}' invoked`)
 			try {
-				await Promise.resolve(cronJob.callback())
+				await Promise.resolve(cronJob.action())
 				Logger.debug(`cron job '${cronJob.name}' done`)
 			} catch (error) {
 				Logger.error(`cron job '${cronJob.name}' failed`, { error })

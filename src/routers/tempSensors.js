@@ -12,7 +12,7 @@ const TemperatureReader = require('../classes/temperature/TemperatureReader')
 const TemperatureRepository = require('../classes/temperature/TemperatureRepository')
 
 router.get('/', async () => Promise.all(
-	sensors.map(async (sensor) => ({ ...sensor, celsiusValue: await TemperatureReader.readSensor(sensor.deviceId) }))
+	sensors.map(async (sensor) => ({ ...sensor, celsiusValue: await TemperatureReader.readSensor(sensor.deviceId) })),
 ))
 
 router.get('/:id', async (req) => {

@@ -71,7 +71,7 @@ const windowSensors = [
 		name: 'Bedroom',
 		codeOpened: 12345678,
 		codeClosed: 87654321,
-		callback: () => {
+		action: () => {
 			tradfriClient.toggleDeviceState(65539)
 		},
 	},
@@ -94,7 +94,7 @@ const rfButtons = [
 		id: 1,
 		name: 'Remote Button #1',
 		code: '12345678',
-		callback: () => {
+		action: () => {
 			tradfriClient.toggleDeviceState(65539)
 		},
 	},
@@ -105,7 +105,7 @@ const dashButtons = [
 		id: 1,
 		macAddress: '01:23:45:67:89:0A',
 		label: 'Afri Cola',
-		callback: () => {
+		action: () => {
 			outletController.toggleOutlet(2)
 		},
 	},
@@ -121,7 +121,7 @@ const cronjobs = [
 			month: '*',
 			dayOfWeek: '*',
 		},
-		callback: () => {
+		action: () => {
 			// tradfriClient.setDeviceState(65539, 0)
 		},
 	},
