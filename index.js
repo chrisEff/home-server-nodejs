@@ -11,9 +11,9 @@ const path = require('path')
 
 const config = require('./config.js')
 
-process.env['AWS_SDK_LOAD_CONFIG'] = '1'
+process.env.AWS_SDK_LOAD_CONFIG = '1'
 if (config.awsProfile) {
-	process.env['AWS_PROFILE'] = config.awsProfile
+	process.env.AWS_PROFILE = config.awsProfile
 }
 
 const Logger = require('./src/classes/Logger')
@@ -78,7 +78,7 @@ server.pre((request, response, next) => {
 
 server.use(restify.plugins.jsonBodyParser())
 
-let cors = corsMiddleware({
+const cors = corsMiddleware({
 	origins: ['*'],
 	allowHeaders: ['apiuser', 'apikey'],
 })
@@ -103,7 +103,7 @@ const fauxMoDevices = []
 
 if (config.outlets && config.outlets.length) {
 	config.outlets
-		.filter(o => o.hasOwnProperty('fauxmoPort'))
+		.filter(o => Object.prototype.hasOwnProperty.call(o, 'fauxmoPort'))
 		.map(o => ({
 			name: o.name,
 			port: o.fauxmoPort,
@@ -117,7 +117,7 @@ if (config.outlets && config.outlets.length) {
 
 if (config.shutters && config.shutters.length) {
 	config.shutters
-		.filter(s => s.hasOwnProperty('fauxmoPort'))
+		.filter(s => Object.prototype.hasOwnProperty.call(s, 'fauxmoPort'))
 		.map(s => ({
 			name: s.name,
 			port: s.fauxmoPort,
@@ -215,7 +215,7 @@ if (config.cronjobs && config.cronjobs.length) {
 	config.cronjobs.forEach(cronJob => {
 		const s = cronJob.schedule
 		let scheduleString = `${s.minute} ${s.hour} ${s.dayOfMonth} ${s.month} ${s.dayOfWeek}`
-		if (s.hasOwnProperty('second')) {
+		if (Object.prototype.hasOwnProperty.call(s, 'second')) {
 			scheduleString = `${s.second} ${scheduleString}`
 		}
 		return nodeCron.schedule(scheduleString, async () => {

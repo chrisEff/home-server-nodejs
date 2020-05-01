@@ -65,7 +65,7 @@ describe('OutletController', () => {
 			outletController.switchOutlet(123, 1)
 
 			sinon.assert.calledOnce(sendCodeStub)
-			const expectedCommand = `codesend 87654321 0 100`
+			const expectedCommand = 'codesend 87654321 0 100'
 			sinon.assert.calledWithExactly(
 				sendCodeStub,
 				sinon.match((value) => value.endsWith(expectedCommand), `.endsWith("${expectedCommand}")`),
@@ -76,7 +76,7 @@ describe('OutletController', () => {
 			outletController.switchOutlet(123, 0)
 
 			sinon.assert.calledOnce(sendCodeStub)
-			const expectedCommand = `codesend 12345678 0 100`
+			const expectedCommand = 'codesend 12345678 0 100'
 			sinon.assert.calledWithExactly(
 				sendCodeStub,
 				sinon.match((value) => value.endsWith(expectedCommand), `.endsWith("${expectedCommand}")`),

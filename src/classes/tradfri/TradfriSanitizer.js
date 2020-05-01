@@ -77,7 +77,7 @@ class TradfriSanitizer {
 	}
 
 	static getColor (raw) {
-		let hexColor = get(raw, '3311.0.5706')
+		const hexColor = get(raw, '3311.0.5706')
 		if (hexColor && hexColor !== '0') {
 			return TradfriSanitizer.getColorByHex(hexColor)
 		}

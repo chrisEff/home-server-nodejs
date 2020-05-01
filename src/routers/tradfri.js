@@ -19,18 +19,17 @@ const toBool = (value) => !!value && value !== '0' && value !== 'false'
 router.get('/gateway', async () => tradfri.getGatewayDetails())
 router.post('/gateway/reboot', async () => tradfri.rebootGateway())
 
-
 // devices
 
 router.get('/device',     async (req) => tradfri.getDevices(req.query.type, req.query.sortBy, toBool(req.query.withRaw)))
 router.get('/device/:id', async (req) => tradfri.getDevice(req.params.id, toBool(req.query.withRaw)))
 
 async function putDevice (device, body) {
-	const state = body.hasOwnProperty('state') ? body.state : device.state
+	const state = Object.prototype.hasOwnProperty.call(body, 'state') ? body.state : device.state
 
-	if (body.hasOwnProperty('color'))      tradfri.setDeviceColor(device.id, body.color)
-	if (body.hasOwnProperty('brightness')) tradfri.setDeviceBrightness(device.id, body.brightness)
-	if (body.hasOwnProperty('name'))       tradfri.setDeviceName(device.id, body.name)
+	if (Object.prototype.hasOwnProperty.call(body, 'color'))      tradfri.setDeviceColor(device.id, body.color)
+	if (Object.prototype.hasOwnProperty.call(body, 'brightness')) tradfri.setDeviceBrightness(device.id, body.brightness)
+	if (Object.prototype.hasOwnProperty.call(body, 'name'))       tradfri.setDeviceName(device.id, body.name)
 
 	// Changing the brightness will set the state to on,
 	// even if you explicitly want to set it to off or not change it at all.

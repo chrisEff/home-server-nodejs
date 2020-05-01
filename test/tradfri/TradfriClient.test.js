@@ -450,10 +450,10 @@ describe('TradfriClient', () => {
 			chai.assert.deepStrictEqual(tradfri.mapColor('neutral'), { 5706: 'f1e0b5' })
 			chai.assert.deepStrictEqual(tradfri.mapColor('cold'), { 5706: 'f5faf6' })
 			chai.assert.deepStrictEqual(tradfri.mapColor('green'), {
-				'5707': 20673,
-				'5708': 65279,
-				'5709': 19659,
-				'5710': 39108,
+				5707: 20673,
+				5708: 65279,
+				5709: 19659,
+				5710: 39108,
 			})
 		})
 

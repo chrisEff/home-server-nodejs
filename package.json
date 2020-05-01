@@ -19,6 +19,7 @@
 		"cover": "nyc npm test",
 		"coveralls": "nyc npm test && ./node_modules/.bin/nyc report --reporter=text-lcov | coveralls",
 		"eslint": "eslint index.js src test",
+		"eslint-fix": "eslint --fix index.js src test",
 		"allow-portbind": "sudo setcap 'cap_net_bind_service=+ep' `which node`"
 	},
 	"dependencies": {

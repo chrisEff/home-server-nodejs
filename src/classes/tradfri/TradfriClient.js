@@ -58,7 +58,7 @@ class TradfriClient {
 	// *** devices ***
 
 	async getDeviceIds () {
-		return this.request('get', `15001`)
+		return this.request('get', '15001')
 	}
 	
 	async getDevice (deviceId, withRaw = false) {
@@ -72,7 +72,7 @@ class TradfriClient {
 	}
 	
 	async setDeviceName (id, name) {
-		return this.request('put', `15001/${id}`, JSON.stringify({ '9001': name }))
+		return this.request('put', `15001/${id}`, JSON.stringify({ 9001: name }))
 	}
 
 	async getDeviceState (id) {
@@ -109,7 +109,7 @@ class TradfriClient {
 	// *** groups ***
 
 	async getGroupIds () {
-		return this.request('get', `15004`)
+		return this.request('get', '15004')
 	}
 	
 	async getGroup (id, withRaw = false) {
@@ -144,7 +144,7 @@ class TradfriClient {
 	// *** notifications ***
 
 	async getNotifications (withRaw = false) {
-		const notifications = await this.request('get', `15006`)
+		const notifications = await this.request('get', '15006')
 		return notifications.map(n => TradfriSanitizer.sanitizeNotification(n, withRaw))
 	}
 
@@ -152,7 +152,7 @@ class TradfriClient {
 	// *** schedules ***
 
 	async getScheduleIds () {
-		return this.request('get', `15010`)
+		return this.request('get', '15010')
 	}
 
 	async getSchedule (id) {
