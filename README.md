@@ -1,7 +1,7 @@
 # Home Server
 
 [![GitHub license](https://img.shields.io/github/license/chrisEff/home-server-nodejs.svg)](https://github.com/chrisEff/home-server-nodejs/blob/master/LICENSE)
-[![Build Status](https://travis-ci.com/chrisEff/home-server-nodejs.svg?branch=master)](https://travis-ci.com/chrisEff/home-server-nodejs)
+![CI](https://github.com/chrisEff/home-server-nodejs/workflows/CI/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/chrisEff/home-server-nodejs/badge.svg?branch=master)](https://coveralls.io/github/chrisEff/home-server-nodejs?branch=master)
 [![Known Vulnerabilities](https://snyk.io/test/github/chrisEff/home-server-nodejs/badge.svg?targetFile=package.json)](https://snyk.io/test/github/chrisEff/home-server-nodejs?targetFile=package.json)
 

@@ -32,9 +32,11 @@ jobs:
     - name: Install dependencies
       run: npm i
     
-    - name: Run tests
-      run: npm t
-
     - name: Run Linter
       run: npm run eslint
 
+    - name: Run tests
+      run: nyc npm t
+
+    - name: Report Coverage
+      run: nyc report --reporter=text-lcov | coveralls

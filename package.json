@@ -17,7 +17,6 @@
 		"status": "ps axu | grep -e homeserver -e RFSniffer | grep -v grep || echo not running",
 		"test": "mocha --recursive test",
 		"cover": "nyc npm test",
-		"coveralls": "nyc npm test && ./node_modules/.bin/nyc report --reporter=text-lcov | coveralls",
 		"eslint": "eslint src test",
 		"eslint-fix": "eslint --fix src test",
 		"allow-portbind": "sudo setcap 'cap_net_bind_service=+ep' `which node`"
