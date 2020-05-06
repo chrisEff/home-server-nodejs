@@ -36,7 +36,7 @@ jobs:
       run: npm run eslint
 
     - name: Run tests
-      run: nyc npm t
+      run: npx nyc npm t
 
     - name: Report Coverage
-      run: nyc report --reporter=text-lcov | coveralls
+      run: npx nyc report --reporter=text-lcov | coveralls
