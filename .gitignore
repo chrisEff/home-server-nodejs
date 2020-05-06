@@ -6,5 +6,6 @@ node_modules/
 /logs.txt
 package-lock.json
 /tools/
+/coverage/
 /custom-configs/
 /data/

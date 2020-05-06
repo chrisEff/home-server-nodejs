@@ -36,7 +36,7 @@ jobs:
       run: npm run eslint
 
     - name: Run tests
-      run: npx nyc npm t
+      run: npx nyc --reporter=lcovonly npm t
 
     - name: Report Coverage
       uses: coverallsapp/github-action@master
