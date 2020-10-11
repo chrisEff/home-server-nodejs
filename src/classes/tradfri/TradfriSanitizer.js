@@ -21,7 +21,7 @@ const NOTIFICATION_TYPES = {
 }
 
 class TradfriSanitizer {
-
+	// prettier-ignore
 	static sanitizeDevice(raw, includeRaw = false) {
 		const result = {
 			id:           get(raw, '9003'),
@@ -70,7 +70,7 @@ class TradfriSanitizer {
 	static getSwitchType(raw) {
 		const model = get(raw, '3.1')
 
-		if (model === 'TRADFRI remote control')  return SWITCH_TYPE_REMOTE
+		if (model === 'TRADFRI remote control') return SWITCH_TYPE_REMOTE
 		if (model === 'TRADFRI wireless dimmer') return SWITCH_TYPE_DIMMER
 
 		return undefined
@@ -94,6 +94,7 @@ class TradfriSanitizer {
 	}
 
 	static getColorByHex(hex) {
+		// prettier-ignore
 		switch (hex) {
 			case 'efd275': return 'warm'
 			case 'f1e0b5': return 'neutral'
@@ -112,13 +113,13 @@ class TradfriSanitizer {
 	static getColorByHueSaturationXY(hue, saturation, x, y) {
 		if (hue === 63828 && saturation === 65279 && x === 41084 && y === 21159) return 'red'
 		if (hue === 20673 && saturation === 65279 && x === 19659 && y === 39108) return 'green'
-		if (hue === 45333 && saturation === 65279 && x === 10121 && y === 4098)  return 'blue'
+		if (hue === 45333 && saturation === 65279 && x === 10121 && y === 4098) return 'blue'
 		return undefined
 	}
 
 	static sanitizeGroup(raw, includeRaw = false) {
 		const result = {
-			id:   get(raw, '9003'),
+			id: get(raw, '9003'),
 			name: get(raw, '9001'),
 			deviceIds: get(raw, '9018.15002.9003'),
 		}
@@ -141,7 +142,6 @@ class TradfriSanitizer {
 
 		return result
 	}
-
 }
 
 module.exports = TradfriSanitizer
