@@ -21,8 +21,8 @@ const NOTIFICATION_TYPES = {
 }
 
 class TradfriSanitizer {
-	
-	static sanitizeDevice (raw, includeRaw = false) {
+
+	static sanitizeDevice(raw, includeRaw = false) {
 		const result = {
 			id:           get(raw, '9003'),
 			type:         TradfriSanitizer.getDeviceType(raw),
@@ -50,7 +50,7 @@ class TradfriSanitizer {
 		return result
 	}
 
-	static getDeviceType (raw) {
+	static getDeviceType(raw) {
 		const ikeaType = get(raw, '5750')
 
 		if (ikeaType === 4) return TYPE_MOTION_SENSOR
@@ -61,13 +61,13 @@ class TradfriSanitizer {
 		return undefined
 	}
 
-	static getBulbType (raw) {
+	static getBulbType(raw) {
 		if (get(raw, '3311.0.5707') !== undefined) return BULB_TYPE_RGB
 		if (get(raw, '3311.0.5706') !== undefined) return BULB_TYPE_WHITE_SPECTRUM
 		return BULB_TYPE_WHITE
 	}
 
-	static getSwitchType (raw) {
+	static getSwitchType(raw) {
 		const model = get(raw, '3.1')
 
 		if (model === 'TRADFRI remote control')  return SWITCH_TYPE_REMOTE
@@ -76,7 +76,7 @@ class TradfriSanitizer {
 		return undefined
 	}
 
-	static getColor (raw) {
+	static getColor(raw) {
 		const hexColor = get(raw, '3311.0.5706')
 		if (hexColor && hexColor !== '0') {
 			return TradfriSanitizer.getColorByHex(hexColor)
@@ -92,8 +92,8 @@ class TradfriSanitizer {
 
 		return undefined
 	}
-	
-	static getColorByHex (hex) {
+
+	static getColorByHex(hex) {
 		switch (hex) {
 			case 'efd275': return 'warm'
 			case 'f1e0b5': return 'neutral'
@@ -109,14 +109,14 @@ class TradfriSanitizer {
 		return undefined
 	}
 
-	static getColorByHueSaturationXY (hue, saturation, x, y) {
+	static getColorByHueSaturationXY(hue, saturation, x, y) {
 		if (hue === 63828 && saturation === 65279 && x === 41084 && y === 21159) return 'red'
 		if (hue === 20673 && saturation === 65279 && x === 19659 && y === 39108) return 'green'
 		if (hue === 45333 && saturation === 65279 && x === 10121 && y === 4098)  return 'blue'
 		return undefined
 	}
 
-	static sanitizeGroup (raw, includeRaw = false) {
+	static sanitizeGroup(raw, includeRaw = false) {
 		const result = {
 			id:   get(raw, '9003'),
 			name: get(raw, '9001'),
@@ -125,11 +125,11 @@ class TradfriSanitizer {
 		if (includeRaw) {
 			result.raw = raw
 		}
-		
+
 		return result
 	}
 
-	static sanitizeNotification (raw, includeRaw = false) {
+	static sanitizeNotification(raw, includeRaw = false) {
 		const result = {
 			time: new Date(parseInt(get(raw, '9002')) * 1000).toISOString(),
 			state: get(raw, '9014'),
@@ -141,7 +141,7 @@ class TradfriSanitizer {
 
 		return result
 	}
-	
+
 }
 
 module.exports = TradfriSanitizer

@@ -5,23 +5,22 @@ const RfCodeSender = require('./RfCodeSender')
 const path = require('path')
 
 class OutletController extends RfCodeSender {
-
-	constructor (outlets) {
+	constructor(outlets) {
 		super(path.join(__dirname, '../../../433Utils/RPi_utils', 'codesend'))
 		this.outlets = outlets
 	}
-	
-	getOutlets () {
+
+	getOutlets() {
 		return this.outlets
 	}
-	
+
 	/**
 	 * @param {string|int} id
 	 * @param {string|int} state (0/1)
 	 * @returns {Promise}
 	 */
-	async switchOutlet (id, state) {
-		const outlet = this.outlets.find(o => o.id === parseInt(id))
+	async switchOutlet(id, state) {
+		const outlet = this.outlets.find((o) => o.id === parseInt(id))
 		outlet.state = parseInt(state)
 		const codeOrHandler = outlet.state ? outlet.on : outlet.off
 
@@ -35,14 +34,15 @@ class OutletController extends RfCodeSender {
 			return 'OK'
 		}
 
-		throw new InternalServerError(`Faulty config: Device ${id} has a handler that is neither an RF code, nor a function`)
+		throw new InternalServerError(
+			`Faulty config: Device ${id} has a handler that is neither an RF code, nor a function`,
+		)
 	}
-	
-	toggleOutlet (id) {
-		const outlet = this.outlets.find(o => o.id === parseInt(id))
+
+	toggleOutlet(id) {
+		const outlet = this.outlets.find((o) => o.id === parseInt(id))
 		return this.switchOutlet(id, outlet.state ? 0 : 1)
 	}
-	
 }
 
 module.exports = OutletController

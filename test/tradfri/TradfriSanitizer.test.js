@@ -7,8 +7,7 @@ const TradfriSanitizer = require('../../src/classes/tradfri/TradfriSanitizer')
 describe('TradfriSanitizer', () => {
 	const sandbox = sinon.createSandbox()
 
-	beforeEach(() => {
-	})
+	beforeEach(() => {})
 
 	afterEach(() => {
 		sandbox.verifyAndRestore()
@@ -62,11 +61,19 @@ describe('TradfriSanitizer', () => {
 
 	describe('getColorByHueSaturationXY', () => {
 		it('should return the correct color names', async () => {
-			chai.assert.equal(TradfriSanitizer.getColorByHueSaturationXY(63828, 65279, 41084, 21159), 'red')
-			chai.assert.equal(TradfriSanitizer.getColorByHueSaturationXY(20673, 65279, 19659, 39108), 'green')
-			chai.assert.equal(TradfriSanitizer.getColorByHueSaturationXY(45333, 65279, 10121, 4098), 'blue')
+			chai.assert.equal(
+				TradfriSanitizer.getColorByHueSaturationXY(63828, 65279, 41084, 21159),
+				'red',
+			)
+			chai.assert.equal(
+				TradfriSanitizer.getColorByHueSaturationXY(20673, 65279, 19659, 39108),
+				'green',
+			)
+			chai.assert.equal(
+				TradfriSanitizer.getColorByHueSaturationXY(45333, 65279, 10121, 4098),
+				'blue',
+			)
 			chai.assert.equal(TradfriSanitizer.getColorByHueSaturationXY(1, 2, 3, 4), undefined)
 		})
 	})
-
 })

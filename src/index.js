@@ -49,9 +49,9 @@ if (config.users && config.users.length) {
 			return next()
 		}
 		const apiUser = request.headers.apiuser || request.query.apiuser
-		const apiKey  = request.headers.apikey  || request.query.apikey
+		const apiKey = request.headers.apikey || request.query.apikey
 
-		const user = config.users.find(user => user.id === apiUser && user.key === apiKey)
+		const user = config.users.find((user) => user.id === apiUser && user.key === apiKey)
 		if (!user) {
 			return next(new errors.UnauthorizedError('nope!'))
 		}
@@ -87,14 +87,16 @@ server.pre(cors.preflight)
 server.use(cors.actual)
 
 server.get('/', (request, response, next) => {
-	response.send(routers.map(router => router.prefix))
+	response.send(routers.map((router) => router.prefix))
 	response.end()
 	next()
 })
 
-routers.forEach(/** @var Router */router => {
-	router.applyRoutes(server, router.prefix)
-})
+routers.forEach(
+	/** @var Router */ (router) => {
+		router.applyRoutes(server, router.prefix)
+	},
+)
 
 server.listen(config.serverPort, () => {
 	Logger.info('server started, listening on port ' + config.serverPort)
@@ -104,22 +106,22 @@ const fauxMoDevices = []
 
 if (config.outlets && config.outlets.length) {
 	config.outlets
-		.filter(o => hasOwnProperty(o, 'fauxmoPort'))
-		.map(o => ({
+		.filter((o) => hasOwnProperty(o, 'fauxmoPort'))
+		.map((o) => ({
 			name: o.name,
 			port: o.fauxmoPort,
 			handler: (action) => {
 				Logger.debug(`FauxMo device '${o.name}' switched ${action}`)
-				outletController.switchOutlet(o.id, action  ? 1 : 0)
+				outletController.switchOutlet(o.id, action ? 1 : 0)
 			},
 		}))
-		.forEach(o => fauxMoDevices.push(o))
+		.forEach((o) => fauxMoDevices.push(o))
 }
 
 if (config.shutters && config.shutters.length) {
 	config.shutters
-		.filter(s => hasOwnProperty(s, 'fauxmoPort'))
-		.map(s => ({
+		.filter((s) => hasOwnProperty(s, 'fauxmoPort'))
+		.map((s) => ({
 			name: s.name,
 			port: s.fauxmoPort,
 			handler: (action) => {
@@ -127,15 +129,22 @@ if (config.shutters && config.shutters.length) {
 				else shutterController.down(s.id)
 			},
 		}))
-		.forEach(o => fauxMoDevices.push(o))
+		.forEach((o) => fauxMoDevices.push(o))
 }
 
 if (fauxMoDevices.length) {
-	fauxMoDevices.forEach(device => {
-		const wemoEmulator = wemore.Emulate({ friendlyName: device.name, port: device.port })
+	fauxMoDevices.forEach((device) => {
+		const wemoEmulator = wemore.Emulate({
+			friendlyName: device.name,
+			port: device.port,
+		})
 		wemoEmulator.on('state', device.handler)
 	})
-	Logger.info(`registered ${fauxMoDevices.length} (fake) WeMo devices: (${fauxMoDevices.map(d => d.name).join(',')})`)
+	Logger.info(
+		`registered ${fauxMoDevices.length} (fake) WeMo devices: (${fauxMoDevices
+			.map((d) => d.name)
+			.join(',')})`,
+	)
 }
 
 if (!config.cronjobs) {
@@ -146,13 +155,25 @@ const temperatureRecordIntervalMinutes = get(config, 'temperature.recordInterval
 const temperatureSensors = get(config, 'temperature.sensors')
 const temperatureDynamoDbTable = get(config, 'temperature.dynamoDbTable')
 
-if (temperatureRecordIntervalMinutes && temperatureSensors && temperatureSensors.length && temperatureDynamoDbTable) {
+if (
+	temperatureRecordIntervalMinutes &&
+	temperatureSensors &&
+	temperatureSensors.length &&
+	temperatureDynamoDbTable
+) {
 	const TemperatureReader = require('./classes/temperature/TemperatureReader')
 	const TemperatureRepository = require('./classes/temperature/TemperatureRepository')
 
 	config.cronjobs.push({
 		name: 'record temperature to DynamoDB',
-		schedule: { second: '0', minute: `*/${temperatureRecordIntervalMinutes}`, hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*' },
+		schedule: {
+			second: '0',
+			minute: `*/${temperatureRecordIntervalMinutes}`,
+			hour: '*',
+			dayOfMonth: '*',
+			month: '*',
+			dayOfWeek: '*',
+		},
 		action: async () => {
 			temperatureSensors.forEach(async (sensor) => {
 				try {
@@ -169,27 +190,30 @@ if (temperatureRecordIntervalMinutes && temperatureSensors && temperatureSensors
 	})
 }
 
-if ((config.rfButtons && config.rfButtons.length) || (config.windowSensors && config.windowSensors.length)) {
+if (
+	(config.rfButtons && config.rfButtons.length) ||
+	(config.windowSensors && config.windowSensors.length)
+) {
 	const sniffer = new RfSniffer(500, path.join(__dirname, '../433Utils/RPi_utils', 'RFSniffer'))
-	
-	config.rfButtons.forEach(button => {
+
+	config.rfButtons.forEach((button) => {
 		sniffer.on(button.code, button.action)
 	})
 
 	Logger.info(`registered ${config.rfButtons.length} RF buttons`)
 
-	config.windowSensors.forEach(sensor => {
+	config.windowSensors.forEach((sensor) => {
 		sniffer.on(sensor.codeOpened, () => sensor.action(true))
 		sniffer.on(sensor.codeClosed, () => sensor.action(false))
 	})
 
 	Logger.info(`registered ${config.windowSensors.length} window sensors`)
-	
+
 	process.on('SIGINT', () => {
 		sniffer.stop()
 		process.exit()
 	})
-	
+
 	process.on('SIGTERM', () => {
 		sniffer.stop()
 		process.exit()
@@ -201,7 +225,7 @@ if (config.dashButtons && config.dashButtons.length) {
 		Logger.info('Listening for DHCP requests')
 	})
 
-	config.dashButtons.forEach(button => {
+	config.dashButtons.forEach((button) => {
 		dhcpSpy.on(button.macAddress, () => {
 			Logger.debug(`dash button "${button.label}" pressed`)
 			button.action()
@@ -213,7 +237,7 @@ if (config.dashButtons && config.dashButtons.length) {
 
 if (config.cronjobs && config.cronjobs.length) {
 	const nodeCron = require('node-cron')
-	config.cronjobs.forEach(cronJob => {
+	config.cronjobs.forEach((cronJob) => {
 		const s = cronJob.schedule
 		let scheduleString = `${s.minute} ${s.hour} ${s.dayOfMonth} ${s.month} ${s.dayOfWeek}`
 		if (Object.prototype.hasOwnProperty.call(s, 'second')) {

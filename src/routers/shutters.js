@@ -33,4 +33,3 @@ router.put('/shutter/:id/down', async (req) => {
 })
 
 module.exports = router
-

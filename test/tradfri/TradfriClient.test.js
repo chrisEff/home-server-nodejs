@@ -26,9 +26,7 @@ describe('TradfriClient', () => {
 
 		describe('getGatewayDetails()', () => {
 			it('should return the correct gateway details', async () => {
-				requestStub
-					.withArgs('get', '15011/15012')
-					.resolves(rawGatewayDetails)
+				requestStub.withArgs('get', '15011/15012').resolves(rawGatewayDetails)
 
 				chai.assert.deepStrictEqual(await tradfri.getGatewayDetails(), sanitizedGatewayDetails)
 				sinon.assert.calledOnce(requestStub)
@@ -38,9 +36,7 @@ describe('TradfriClient', () => {
 
 		describe('rebootGateway()', () => {
 			it('should reboot the gateway', async () => {
-				requestStub
-					.withArgs('post', '15011/9030')
-					.resolves('OK')
+				requestStub.withArgs('post', '15011/9030').resolves('OK')
 
 				chai.assert.deepStrictEqual(await tradfri.rebootGateway(), 'OK')
 				sinon.assert.calledOnce(requestStub)
@@ -57,19 +53,23 @@ describe('TradfriClient', () => {
 		const sanitizedDevice1 = require('./data/sanitized-device-remote')
 		const sanitizedDevice2 = require('./data/sanitized-device-bulb-white-spectrum')
 		const sanitizedDevice3 = require('./data/sanitized-device-bulb-rgb')
-		
+
 		describe('getDeviceIds()', () => {
 			it('should call request() correctly and pass through its response', async () => {
 				requestStub
 					.withArgs('get', '15001')
 					.resolves([sanitizedDevice1.id, sanitizedDevice2.id, sanitizedDevice3.id])
-				
-				chai.assert.deepStrictEqual(await tradfri.getDeviceIds(), [sanitizedDevice1.id, sanitizedDevice2.id, sanitizedDevice3.id])
+
+				chai.assert.deepStrictEqual(await tradfri.getDeviceIds(), [
+					sanitizedDevice1.id,
+					sanitizedDevice2.id,
+					sanitizedDevice3.id,
+				])
 				sinon.assert.calledOnce(requestStub)
 				sinon.assert.calledWithExactly(requestStub, 'get', '15001')
 			})
 		})
-	
+
 		describe('getDevice()', () => {
 			beforeEach(() => {
 				requestStub
@@ -79,9 +79,8 @@ describe('TradfriClient', () => {
 					.resolves(rawDevice2)
 					.withArgs('get', `15001/${sanitizedDevice3.id}`)
 					.resolves(rawDevice3)
-			});
-
-			[
+			})
+			;[
 				{ deviceId: sanitizedDevice1.id, expectedResult: sanitizedDevice1 },
 				{ deviceId: sanitizedDevice2.id, expectedResult: sanitizedDevice2 },
 				{ deviceId: sanitizedDevice3.id, expectedResult: sanitizedDevice3 },
@@ -94,10 +93,13 @@ describe('TradfriClient', () => {
 			})
 
 			it('should append raw data if requested', async () => {
-				chai.assert.deepStrictEqual(await tradfri.getDevice(65536, true), { ...sanitizedDevice1, raw: rawDevice1 })
+				chai.assert.deepStrictEqual(await tradfri.getDevice(65536, true), {
+					...sanitizedDevice1,
+					raw: rawDevice1,
+				})
 			})
 		})
-	
+
 		describe('getDevices()', () => {
 			beforeEach(() => {
 				requestStub
@@ -112,7 +114,11 @@ describe('TradfriClient', () => {
 			})
 
 			it('should fetch the devices and aggregate them', async () => {
-				chai.assert.deepStrictEqual(await tradfri.getDevices(), [sanitizedDevice1, sanitizedDevice2, sanitizedDevice3])
+				chai.assert.deepStrictEqual(await tradfri.getDevices(), [
+					sanitizedDevice1,
+					sanitizedDevice2,
+					sanitizedDevice3,
+				])
 				chai.assert.equal(requestStub.callCount, 4)
 				sinon.assert.calledWithExactly(requestStub, 'get', '15001')
 				sinon.assert.calledWithExactly(requestStub, 'get', `15001/${sanitizedDevice1.id}`)
@@ -131,26 +137,26 @@ describe('TradfriClient', () => {
 
 		describe('getDeviceState()', () => {
 			it('should return undefined for device #1', async () => {
-				requestStub
-					.withArgs('get', `15001/${sanitizedDevice1.id}`)
-					.resolves(rawDevice1)
+				requestStub.withArgs('get', `15001/${sanitizedDevice1.id}`).resolves(rawDevice1)
 
-				chai.assert.strictEqual(await tradfri.getDeviceState(sanitizedDevice1.id), sanitizedDevice1.state)
+				chai.assert.strictEqual(
+					await tradfri.getDeviceState(sanitizedDevice1.id),
+					sanitizedDevice1.state,
+				)
 			})
 			it('should return 0 for device #2', async () => {
-				requestStub
-					.withArgs('get', `15001/${sanitizedDevice2.id}`)
-					.resolves(rawDevice2)
+				requestStub.withArgs('get', `15001/${sanitizedDevice2.id}`).resolves(rawDevice2)
 
-				chai.assert.strictEqual(await tradfri.getDeviceState(sanitizedDevice2.id), sanitizedDevice2.state)
+				chai.assert.strictEqual(
+					await tradfri.getDeviceState(sanitizedDevice2.id),
+					sanitizedDevice2.state,
+				)
 			})
 		})
 
 		describe('setDeviceName()', () => {
 			it('should send one PUT request to the correct path with the correct body', async () => {
-				requestStub
-					.withArgs('put', '15001/65537')
-					.resolves('OK')
+				requestStub.withArgs('put', '15001/65537').resolves('OK')
 				await tradfri.setDeviceName(65537, 'foobar')
 
 				sinon.assert.calledOnce(requestStub)
@@ -160,11 +166,9 @@ describe('TradfriClient', () => {
 
 		describe('setDeviceState()', () => {
 			it('should send one PUT request to the correct path with the correct body', async () => {
-				requestStub
-					.withArgs('put', '15001/65537')
-					.resolves('OK')
+				requestStub.withArgs('put', '15001/65537').resolves('OK')
 				await tradfri.setDeviceState(65537, 1)
-				
+
 				sinon.assert.calledOnce(requestStub)
 				sinon.assert.calledWithExactly(requestStub, 'put', '15001/65537', '{"3311":[{"5850":1}]}')
 			})
@@ -208,7 +212,12 @@ describe('TradfriClient', () => {
 			it('should handle the transition time correctly', async () => {
 				await tradfri.setDeviceBrightness(65537, 100, 500, 'ms')
 				sinon.assert.calledOnce(requestStub)
-				sinon.assert.calledWithExactly(requestStub, 'put', '15001/65537', '{"3311":[{"5712":5,"5851":100}]}')
+				sinon.assert.calledWithExactly(
+					requestStub,
+					'put',
+					'15001/65537',
+					'{"3311":[{"5712":5,"5851":100}]}',
+				)
 			})
 		})
 
@@ -220,25 +229,45 @@ describe('TradfriClient', () => {
 			it('should set the color "warm" correctly', async () => {
 				await tradfri.setDeviceColor(65537, 'warm')
 				sinon.assert.calledOnce(requestStub)
-				sinon.assert.calledWithExactly(requestStub, 'put', '15001/65537', '{"3311":[{"5706":"efd275"}]}')
+				sinon.assert.calledWithExactly(
+					requestStub,
+					'put',
+					'15001/65537',
+					'{"3311":[{"5706":"efd275"}]}',
+				)
 			})
 
 			it('should set the color "neutral" correctly', async () => {
 				await tradfri.setDeviceColor(65537, 'neutral')
 				sinon.assert.calledOnce(requestStub)
-				sinon.assert.calledWithExactly(requestStub, 'put', '15001/65537', '{"3311":[{"5706":"f1e0b5"}]}')
+				sinon.assert.calledWithExactly(
+					requestStub,
+					'put',
+					'15001/65537',
+					'{"3311":[{"5706":"f1e0b5"}]}',
+				)
 			})
 
 			it('should set the color "cold" correctly', async () => {
 				await tradfri.setDeviceColor(65537, 'cold')
 				sinon.assert.calledOnce(requestStub)
-				sinon.assert.calledWithExactly(requestStub, 'put', '15001/65537', '{"3311":[{"5706":"f5faf6"}]}')
+				sinon.assert.calledWithExactly(
+					requestStub,
+					'put',
+					'15001/65537',
+					'{"3311":[{"5706":"f5faf6"}]}',
+				)
 			})
 
 			it('should handle the transition time correctly', async () => {
 				await tradfri.setDeviceColor(65537, 'warm', 500, 'ms')
 				sinon.assert.calledOnce(requestStub)
-				sinon.assert.calledWithExactly(requestStub, 'put', '15001/65537', '{"3311":[{"5706":"efd275","5712":5}]}')
+				sinon.assert.calledWithExactly(
+					requestStub,
+					'put',
+					'15001/65537',
+					'{"3311":[{"5706":"efd275","5712":5}]}',
+				)
 			})
 		})
 	})
@@ -246,27 +275,23 @@ describe('TradfriClient', () => {
 	describe('groups', () => {
 		const rawGroup1 = require('./data/raw-group-1')
 		const rawGroup2 = require('./data/raw-group-2')
-		
+
 		const sanitizedGroup1 = require('./data/sanitized-group-1')
 		const sanitizedGroup2 = require('./data/sanitized-group-2')
-		
+
 		describe('getGroupIds()', () => {
 			it('should call request() correctly and pass through its response', async () => {
-				requestStub
-					.withArgs('get', '15004')
-					.resolves([131073, 131074, 131075])
-	
+				requestStub.withArgs('get', '15004').resolves([131073, 131074, 131075])
+
 				chai.assert.deepStrictEqual(await tradfri.getGroupIds(), [131073, 131074, 131075])
 				sinon.assert.calledOnce(requestStub)
 				sinon.assert.calledWithExactly(requestStub, 'get', '15004')
 			})
 		})
-	
+
 		describe('getGroup()', () => {
 			beforeEach(() => {
-				requestStub
-					.withArgs('get', '15004/131073')
-					.resolves(rawGroup1)
+				requestStub.withArgs('get', '15004/131073').resolves(rawGroup1)
 			})
 
 			it('should call request() correctly and pass through its response', async () => {
@@ -276,10 +301,13 @@ describe('TradfriClient', () => {
 			})
 
 			it('should append raw data if requested', async () => {
-				chai.assert.deepStrictEqual(await tradfri.getGroup(131073, true), { ...sanitizedGroup1, raw: rawGroup1 })
+				chai.assert.deepStrictEqual(await tradfri.getGroup(131073, true), {
+					...sanitizedGroup1,
+					raw: rawGroup1,
+				})
 			})
 		})
-	
+
 		describe('getGroups()', () => {
 			beforeEach(() => {
 				requestStub
@@ -309,9 +337,7 @@ describe('TradfriClient', () => {
 
 		describe('setGroupName()', () => {
 			it('should set the name correctly', async () => {
-				requestStub
-					.withArgs('put', '15004/131073')
-					.resolves('OK')
+				requestStub.withArgs('put', '15004/131073').resolves('OK')
 				await tradfri.setGroupName(131073, 'foobar')
 
 				sinon.assert.calledOnce(requestStub)
@@ -321,9 +347,7 @@ describe('TradfriClient', () => {
 
 		describe('setGroupState()', () => {
 			it('should set the state correctly', async () => {
-				requestStub
-					.withArgs('put', '15004/131073')
-					.resolves('OK')
+				requestStub.withArgs('put', '15004/131073').resolves('OK')
 				await tradfri.setGroupState(131073, 1)
 
 				sinon.assert.calledOnce(requestStub)
@@ -331,11 +355,9 @@ describe('TradfriClient', () => {
 			})
 		})
 
-		describe('setGroupBrightness()',  () => {
+		describe('setGroupBrightness()', () => {
 			beforeEach(() => {
-				requestStub
-					.withArgs('put', '15004/131073')
-					.resolves('OK')
+				requestStub.withArgs('put', '15004/131073').resolves('OK')
 			})
 
 			it('should set the brightness correctly', async () => {
@@ -359,24 +381,20 @@ describe('TradfriClient', () => {
 
 		// TODO schedules are not sanitized yet
 		const sanitizedSchedule = rawSchedule
-		
+
 		describe('getScheduleIds()', () => {
 			it('should call request() correctly and pass through its response', async () => {
-				requestStub
-					.withArgs('get', '15010')
-					.resolves([280397, 295373, 301852])
+				requestStub.withArgs('get', '15010').resolves([280397, 295373, 301852])
 
 				chai.assert.deepStrictEqual(await tradfri.getScheduleIds(), [280397, 295373, 301852])
 				sinon.assert.calledOnce(requestStub)
 				sinon.assert.calledWithExactly(requestStub, 'get', '15010')
 			})
 		})
-		
+
 		describe('getSchedule()', () => {
 			it('should call request() correctly and pass through its response', async () => {
-				requestStub
-					.withArgs('get', '15010/280397')
-					.resolves(rawSchedule)
+				requestStub.withArgs('get', '15010/280397').resolves(rawSchedule)
 
 				chai.assert.deepStrictEqual(await tradfri.getSchedule(280397), sanitizedSchedule)
 				sinon.assert.calledOnce(requestStub)
@@ -447,7 +465,9 @@ describe('TradfriClient', () => {
 	describe('mapColor()', () => {
 		it('should map the colors correctly', async () => {
 			chai.assert.deepStrictEqual(tradfri.mapColor('warm'), { 5706: 'efd275' })
-			chai.assert.deepStrictEqual(tradfri.mapColor('neutral'), { 5706: 'f1e0b5' })
+			chai.assert.deepStrictEqual(tradfri.mapColor('neutral'), {
+				5706: 'f1e0b5',
+			})
 			chai.assert.deepStrictEqual(tradfri.mapColor('cold'), { 5706: 'f5faf6' })
 			chai.assert.deepStrictEqual(tradfri.mapColor('green'), {
 				5707: 20673,
@@ -464,7 +484,10 @@ describe('TradfriClient', () => {
 
 	describe('getRandomColor()', () => {
 		it('should return a valid random color', async () => {
-			chai.assert.include(['red', 'green', 'blue', 'yellow', 'pink', 'purple', 'orange'], tradfri.getRandomColor())
+			chai.assert.include(
+				['red', 'green', 'blue', 'yellow', 'pink', 'purple', 'orange'],
+				tradfri.getRandomColor(),
+			)
 			sinon.assert.notCalled(requestStub)
 		})
 	})
@@ -482,5 +505,4 @@ describe('TradfriClient', () => {
 			chai.assert.throws(() => TradfriClient.convertTransitionTime(1, 'x'), Error)
 		})
 	})
-
 })

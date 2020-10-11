@@ -1,12 +1,10 @@
 {
-	"extends": "@chriseff",
+	"extends": ["@chriseff", "prettier"],
 	"env": {
 		"node": true,
 		"mocha": true
 	},
-	"plugins": [
-		"mocha"
-	],
+	"plugins": ["mocha"],
 	"rules": {
 		"mocha/no-async-describe": "error",
 		"mocha/no-exclusive-tests": "error",
@@ -15,4 +13,3 @@
 		"mocha/no-nested-tests": "error"
 	}
 }
-
